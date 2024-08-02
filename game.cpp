@@ -221,7 +221,7 @@ int main() {
         if (input == 'q' || input == 'Q') break;
         movePlayer(input);
         setCursorPosition(0, 14); //13 seems to break this for now
-        std::cout << "Score: " << score << "\n";
+        //std::cout << "Score: " << score << "\n";
         //displayGrid(false);
     }
 
