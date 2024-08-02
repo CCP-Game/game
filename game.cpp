@@ -1,12 +1,8 @@
-#include "Room.h"
-#include "Player.h"
-#include "Point.h"
-#include "Enemy.h"
-#include <vector>
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
 #include <conio.h>
+#include <iostream>
 #include <windows.h>
 
 #define WIDTH 22
@@ -16,12 +12,10 @@
 
 char grid[HEIGHT][WIDTH];
 char previousGrid[HEIGHT][WIDTH];
+int playerX, playerY;
+int previousPlayerX, previousPlayerY;
 int score = 0;
 char lastDirection;
-
-Player player;
-Room currentRoom;
-Room previousRoom;
 
 void copyGrid(char dest[HEIGHT][WIDTH], char src[HEIGHT][WIDTH]) {
     for (int y = 0; y < HEIGHT; y++) {
@@ -71,20 +65,26 @@ void placeDoors() {
 }
 
 void displayGrid() {
-    system("cls");  // Clear the console (Windows-specific, use "clear" for Unix-based systems)
-    for (int y = 0; y < HEIGHT; y++) {
-        for (int x = 0; x < WIDTH; x++) {
-            std::cout << grid[y][x];
+    //if(firstRun){
+        system("cls");  // Clear the console (Windows-specific, use "clear" for Unix-based systems)
+        for (int y = 0; y < HEIGHT; y++) {
+            for (int x = 0; x < WIDTH; x++) {
+                std::cout << grid[y][x];
+            }
+            std::cout << "\n";
         }
-        std::cout << "\n";
-    }
+    // }else{
+
+    // }
+    //std::cout << "Score: " << score << "\n";
     std::cout << "Move (WASD) or Q to quit: ";
 }
 
 void initializeGrid(char entryDirection) {
     // Save the current grid and player position to allow returning
     copyGrid(previousGrid, grid);
-    previousRoom = currentRoom;
+    previousPlayerX = playerX;
+    previousPlayerY = playerY;
 
     // Fill the grid with empty spaces
     for (int y = 0; y < HEIGHT; y++) {
@@ -115,54 +115,65 @@ void initializeGrid(char entryDirection) {
 
     // Place doors in the walls
     placeDoors();
-
+    
     // Position player based on lastDirection
     switch (entryDirection) {
         case 'w':
-            player.setPosition(WIDTH / 2, HEIGHT - 2);
+            playerX = WIDTH / 2;
+            playerY = HEIGHT - 2;
             break;
         case 's':
-            player.setPosition(WIDTH / 2, 1);
+            playerX = WIDTH / 2;
+            playerY = 1;
             break;
         case 'a':
-            player.setPosition(WIDTH - 2, HEIGHT / 2);
+            playerX = WIDTH - 2;
+            playerY = HEIGHT / 2;
             break;
         case 'd':
-            player.setPosition(1, HEIGHT / 2);
+            playerX = 1;
+            playerY = HEIGHT / 2;
             break;
         default:
-            player.setPosition(WIDTH / 2, HEIGHT / 2);
+            playerX = WIDTH / 2;
+            playerY = HEIGHT / 2;
             break;
     }
 
-    Point playerPos = player.getPos();
-    grid[playerPos.getY()][playerPos.getX()] = 'P';
-    displayGrid();
+    grid[playerY][playerX] = 'P';
+    displayGrid(); 
 }
-
-// Method to move cursor to a new position on the screen
+//Method to move cursor to a new position on the screen
+//https://stackoverflow.com/questions/8285568/c-setconsolecursorposition-getstdhandlestd-output-handle-c-2-arguments
 void setCursorPosition(int x, int y) {
     COORD coord = { static_cast<SHORT>(x), static_cast<SHORT>(y) };
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-void updatePlayer(int oldX, int oldY, int newX, int newY) {
-    setCursorPosition(oldX, oldY);
-    std::cout << ' ';
-    setCursorPosition(newX, newY);
-    std::cout << 'P';
-    // Hide the console cursor
-    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO cursorInfo;
-    GetConsoleCursorInfo(consoleHandle, &cursorInfo);
-    cursorInfo.bVisible = false;
-    SetConsoleCursorInfo(consoleHandle, &cursorInfo);
+void updatePlayer(int oldX, int oldY, int newX, int newY){
+    
+        setCursorPosition(oldX, oldY);
+        std::cout << ' ';
+        setCursorPosition(newX, newY);
+        std::cout << 'P';
+        //https://learn.microsoft.com/en-us/windows/console/setconsolecursorinfo
+        HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+        CONSOLE_CURSOR_INFO cursorInfo;
+        GetConsoleCursorInfo(consoleHandle, &cursorInfo);
+        cursorInfo.bVisible = false; // Set the cursor visibility to false
+        SetConsoleCursorInfo(consoleHandle, &cursorInfo);
+        // setCursorPosition(oldX, oldY);
+        // std::cout << ' ';
+        //std::cout << "Score: " << score << "\n";
+
 }
 
+
 void movePlayer(char direction) {
-    Point currentPos = player.getPos();
-    int newX = currentPos.getX();
-    int newY = currentPos.getY();
+    int newX = playerX;
+    int newY = playerY;
+    int tempX = playerX;
+    int tempY = playerY;
 
     switch (direction) {
         case 'w': newY--; break;
@@ -181,16 +192,21 @@ void movePlayer(char direction) {
         } else if (grid[newY][newX] == 'P') {
             // Return to the previous grid and position
             copyGrid(grid, previousGrid);
-            player.setPosition(previousRoom.ptrToDisplay.getX(), previousRoom.ptrToDisplay.getY());
+            playerX = previousPlayerX;
+            playerY = previousPlayerY;
         }
 
-        grid[currentPos.getY()][currentPos.getX()] = ' ';
-        player.setPosition(newX, newY);
-        Point newPos = player.getPos();
-        grid[newPos.getY()][newPos.getX()] = 'P';
+        
+        grid[playerY][playerX] = ' ';
+        playerX = newX;
+        playerY = newY;
+        grid[playerY][playerX] = 'P';
 
-        updatePlayer(currentPos.getX(), currentPos.getY(), newPos.getX(), newPos.getY());
+
+        updatePlayer(tempX, tempY, newX, newY);
     }
+    //displayGrid(false);
+    //updatePlayer(tempX, tempY, newX, newY);
 }
 
 int main() {
@@ -199,10 +215,14 @@ int main() {
     initializeGrid(0); // Initial grid setup
 
     while (true) {
+        //displayGrid(false);
+        //std::cout << "Move (WASD) or Q to quit: ";
         input = _getch();  // Get a single character input without pressing Enter
         if (input == 'q' || input == 'Q') break;
         movePlayer(input);
-        setCursorPosition(0, 14);
+        setCursorPosition(0, 14); //13 seems to break this for now
+        //std::cout << "Score: " << score << "\n";
+        //displayGrid(false);
     }
 
     return 0;
