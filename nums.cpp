@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-const char* ASCII_NUMBERS[] = {
+const char *ASCII_NUMBERS[] = {
     "  ___  \n"
     " / _ \\ \n"
     "| | | |\n"
@@ -73,83 +73,121 @@ const char* ASCII_NUMBERS[] = {
     "   / / \n"
     "  /_/  \n",
 
-    "       \n"
-    "  _  _ \n"
-    " | || |\n"
-    " | || | \n"
-    " |__   _|\n"
-    "    |_| \n",
+    "    _   \n"
+    "  _| |_ \n"
+    " |_   _|\n"
+    "   |_|  \n"
+    "        \n"
+    "        \n",
+
+    "         \n"
+    "         \n"
+    "  ______ \n"
+    " |______|\n"
+    "         \n"
+    "         \n",
+
+    "      __\n"
+    "     / /\n"
+    "    / / \n"
+    "   / /  \n"
+    "  / /   \n"
+    " /_/    \n",
 
     "       \n"
-    "  _____\n"
-    " |____ |\n"
-    "     / / \n"
-    "    /_/ \n"
-    "   |_|  \n",
-
-    "       \n"
-    "       \n"
-    "    _  \n"
-    "  _(_)_\n"
-    " (_)___\n"
+    " __  __\n"
+    " \\ \\/ /\n"
+    "  >  < \n"
+    " /_/\\_\\\n"
     "       \n",
 
-    "  _____\n"
-    " |  __ \\\n"
-    " | |__) |\n"
-    " |  ___/\n"
-    " | |    \n"
-    " |_|   \n",
+    "        \n"
+    "  ______\n"
+    " |______|\n"
+    "  ______\n"
+    " |______|\n"
+    "        \n",
 
-    "   _  _\n"
-    "  (_)/ /\n"
-    "    / /\n"
-    "   / /\n"
-    "  /_/\n"
-    "  /_/ \n"
 };
 
-void printNums(const std::string& nums) {
-    std::vector<std::string> lines(6);
+void printNums(const std::string &nums)
+{
+    // Prepare a vector to hold each line of the final ASCII art
+    std::vector<std::string> lines(6, "");
 
-    for (char ch : nums) {
-        if ((ch >= '0' && ch <= '9') || ch == '+' || ch == '-' || ch == '/' || ch == '*') {
-            int index;
-            if (ch >= '0' && ch <= '9') {
-                index = ch - '0';
-            } else {
-                switch (ch) {
-                    case '+': index = 10; break;
-                    case '-': index = 11; break;
-                    case '/': index = 12; break;
-                    case '*': index = 13; break;
-                    default: continue;
-                }
+    // Process each character in the input string
+    for (char ch : nums)
+    {
+        int index = -1;
+        if (ch >= '0' && ch <= '9')
+        {
+            index = ch - '0';
+        }
+        else if (ch == '+')
+        {
+            index = 10;
+        }
+        else if (ch == '-')
+        {
+            index = 11;
+        }
+        else if (ch == '/')
+        {
+            index = 12;
+        }
+        else if (ch == '*')
+        {
+            index = 13;
+        }
+        else if (ch == '=')
+        {
+            index = 14;
+        }
+        else if (ch == ' ')
+        {
+            // Add spaces between characters for readability
+            for (int i = 0; i < 6; ++i)
+            {
+                lines[i] += "  "; // Two spaces for separation
             }
+            continue;
+        }
 
-            const char* ascii = ASCII_NUMBERS[index];
+        if (index != -1)
+        {
+            // Append the corresponding ASCII art to each line
+            const char *ascii = ASCII_NUMBERS[index];
             std::string line;
             int lineIndex = 0;
 
-            for (const char* p = ascii; *p; p++) {
-                if (*p == '\n') {
-                    lines[lineIndex] += line + ' '; // Add a space after each number/symbol for better readability
-                    lineIndex++;
+            for (const char *p = ascii; *p; ++p)
+            {
+                if (*p == '\n')
+                {
+                    lines[lineIndex] += line + ' ';
                     line.clear();
-                } else {
+                    ++lineIndex;
+                }
+                else
+                {
                     line += *p;
                 }
             }
         }
     }
 
-    for (const std::string& line : lines) {
+    // Print each line of the final ASCII art
+    for (const std::string &line : lines)
+    {
         std::cout << line << std::endl;
     }
 }
 
-int main() {
-    std::string input = "11+19-3/2*4";
+int main()
+{
+    // std::string input = "11 + 19 - 3 / 2 * 4";
+
+    std::string input = "=";
     printNums(input);
     return 0;
 }
