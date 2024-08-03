@@ -101,12 +101,12 @@ const char *ASCII_NUMBERS[] = {
     " /_/\\_\\\n"
     "       \n",
 
-    "        \n"
-    "  ______\n"
+    "         \n"
+    "  ______ \n"
     " |______|\n"
-    "  ______\n"
+    "  ______ \n"
     " |______|\n"
-    "        \n",
+    "         \n",
 
 };
 
@@ -185,9 +185,9 @@ void printNums(const std::string &nums)
 
 int main()
 {
-    // std::string input = "11 + 19 - 3 / 2 * 4";
+    // std::string input = "+-/*11 + 19 - 3 / 2 * 4";
 
-    std::string input = "=";
+    std::string input = "=+-/*123=4562343253509876541321";
     printNums(input);
     return 0;
 }
