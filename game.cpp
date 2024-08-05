@@ -204,6 +204,7 @@ void movePlayer(char direction) {
 
 
         updatePlayer(tempX, tempY, newX, newY);
+         std::cout.flush();
     }
     //displayGrid(false);
     //updatePlayer(tempX, tempY, newX, newY);
@@ -213,7 +214,7 @@ int main() {
     srand(static_cast<unsigned>(time(0)));
     char input;
     initializeGrid(0); // Initial grid setup
-
+    std::cout.flush();
     while (true) {
         //displayGrid(false);
         //std::cout << "Move (WASD) or Q to quit: ";
@@ -223,6 +224,7 @@ int main() {
         setCursorPosition(0, 14); //13 seems to break this for now
         //std::cout << "Score: " << score << "\n";
         //displayGrid(false);
+        
     }
 
     return 0;
