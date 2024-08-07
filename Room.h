@@ -4,13 +4,21 @@
 #include "Enemy.h"
 class Room{
     public:
-    //For the final room.    
-    char** display();
-    Room* getNextRoom();
-    Room* getPrevRoom();
-    void setNextRoom(Room* nextRoom);
-    void setPrevRoom(Room* prevRoom);
-    int getLevel();
+        Room(int id, int depth, int width, int height);
+        ~Room();
+        // For the final room.
+        char **display();
+        Room *getNextRoom();
+        Room *getPrevRoom();
+        void setNextRoom(Room *nextRoom);
+        void setPrevRoom(Room *prevRoom);
+        int getLevel();
+        void printRoom();
+
+        char getCharAt(int x, int y) const;
+
+        void setCharAt(int x, int y, char c);
+
     private:
     //unsure whether we need an ID kept anyway.
     int id;

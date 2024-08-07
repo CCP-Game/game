@@ -1,28 +1,35 @@
 #include "Point.h"
-Point::Point(int x , int y){
-    this->x=x;
-    this->y=y;
-};
 
-int Point::getX(){
-    return this->x;
-};
+// Constructor
+Point::Point(int x, int y) : x(x), y(y) {}
 
-int Point::getY(){
-    return this->y;
-};
+// Get X coordinate
+int Point::getX() const {
+    return x;
+}
 
-void Point::setX(int x){
-    this->x=x;
-};
+// Get Y coordinate
+int Point::getY() const {
+    return y;
+}
 
-void Point::setY(int y){
-    this->y=y;
-};
+// get pos
+Point Point::getPos() {
+    return Point(x, y);
+}   
 
-void Point::setXY(int x, int y){
-    setX(x);
-    setY(y);
-};
+// Set both X and Y coordinates
+void Point::setXY(int x, int y) {
+    this->x = x;
+    this->y = y;
+}
 
+// Set X coordinate
+void Point::setX(int x) {
+    this->x = x;
+}
 
+// Set Y coordinate
+void Point::setY(int y) {
+    this->y = y;
+}

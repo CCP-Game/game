@@ -1,7 +1,9 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "Room.h"
+#include "Point.h"
 #include <vector>
+
 class Player{
     public:
 
@@ -12,7 +14,11 @@ class Player{
     Point getPos();
     Room getCurrentRoom();
 
-    private:
+    const Point &getPos() const;
+
+    void setPosition(int x, int y);
+
+private:
     
     int health;
     Point currentLocation;
