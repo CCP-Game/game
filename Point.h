@@ -3,6 +3,7 @@
 class Point{
     public:
     Point(int x,int y);
+    Point();
     int getX();
     int getY();
     void setXY(int x, int y);
@@ -12,6 +13,7 @@ class Point{
     int x;
     int y;
 };
+
 
 
 #endif 

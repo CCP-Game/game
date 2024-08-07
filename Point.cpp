@@ -1,5 +1,8 @@
 #include "Point.h"
 
+// default constructor
+Point::Point() : x(0), y(0) {}
+
 // Constructor
 Point::Point(int x, int y) : x(x), y(y) {}
 

@@ -4,6 +4,7 @@
 #include "Enemy.h"
 class Room{
     public:
+        Room();
         Room(int id, int depth, int width, int height);
         ~Room();
         // For the final room.

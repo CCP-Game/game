@@ -6,6 +6,10 @@
 #define WIDTH 80
 #define HEIGHT 24
 
+// Default constructor
+Room::Room() : Room(0, 0, WIDTH, HEIGHT) {
+}
+
 // Constructor
 Room::Room(int id, int depth, int width, int height) : id(id), depth(depth) {
     // Initialize grid
