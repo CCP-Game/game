@@ -23,14 +23,14 @@
 ⠀⢸⣿⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣿⣿⣿⣿⣿⣿⡇⠀			
 ⠀⠈⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉   			
 ```
-**What is Cavern?**
+### What is Cavern?
 
 Cavern is a command-line based adventure game. Designed & created for a capstone project within COSC345.
 
-**Compiling**
+### Compiling
 g++ -o Cavern Cavern.cpp
 
-**Created by**
+### Created by
 Alex Poore
 Ben Darlington
 Ben Nicholson
