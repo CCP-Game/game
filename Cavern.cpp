@@ -3,9 +3,12 @@
 #include <ctime>
 #include <conio.h>
 #include <windows.h>
+#include "Point.cpp"
 #include "Room.h"
+#include "Room.cpp"
 #include "Player.h"
-#include "Point.h"
+#include "Player.cpp"
+
 
 #define WIDTH 22
 #define HEIGHT 12
