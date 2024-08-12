@@ -1,11 +1,11 @@
 #include "Player.h"
-#include "Point.h"
+#include "Pos.h"
 #include "Room.h"
 
 // Constructor with parameters
 Player::Player(char skin, int colour) : skin(skin), colour(colour) {
     health = 100;  // Initialize health to 100 (you can adjust this as needed)
-    currentLocation = Point(0, 0);  // Initialize position to (0,0)
+    currentLocation = Pos(0, 0);  // Initialize Position to (0,0)
 }
 
 // Default constructor
@@ -29,12 +29,12 @@ Room Player::getCurrentRoom() {
     return currentRoom;
 }
 
-// get position of player
-const Point& Player::getPos() const {
+// get Position of player
+const Pos& Player::getPos() const {
     return currentLocation;
 }
 
-// set position of player
+// set Position of player
 void Player::setPosition(int x, int y) {
-    currentLocation = Point(x, y);
+    currentLocation = Pos(x, y);
 }

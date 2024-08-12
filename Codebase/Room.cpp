@@ -1,5 +1,5 @@
 #include "Room.h"
-#include "Point.h"
+#include "Pos.h"
 #include <iostream>
 
 // width and height of the room
@@ -21,7 +21,7 @@ Room::Room(int id, int depth, int width, int height) : id(id), depth(depth) {
         }
     }
     
-    // Initialize pointers
+    // Initialize Posers
     nextRoom = nullptr;
     prevRoom = nullptr;
 }

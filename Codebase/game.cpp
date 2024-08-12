@@ -29,34 +29,34 @@ void placeDoors() {
     int doorsPlaced = 0;
     while (doorsPlaced < NUM_DOORS) {
         int wall = rand() % 4; // 0 = top, 1 = bottom, 2 = left, 3 = right
-        int pos;
+        int Pos;
 
         switch (wall) {
             case 0: // top wall
-                pos = rand() % (WIDTH - 2) + 1; // Avoid corners
-                if (grid[1][pos] != 'D') {
-                    grid[0][pos] = 'D';
+                Pos = rand() % (WIDTH - 2) + 1; // Avoid corners
+                if (grid[1][Pos] != 'D') {
+                    grid[0][Pos] = 'D';
                     doorsPlaced++;
                 }
                 break;
             case 1: // bottom wall
-                pos = rand() % (WIDTH - 2) + 1;
-                if (grid[HEIGHT-2][pos] != 'D') {
-                    grid[HEIGHT-1][pos] = 'D';
+                Pos = rand() % (WIDTH - 2) + 1;
+                if (grid[HEIGHT-2][Pos] != 'D') {
+                    grid[HEIGHT-1][Pos] = 'D';
                     doorsPlaced++;
                 }
                 break;
             case 2: // left wall
-                pos = rand() % (HEIGHT - 2) + 1;
-                if (grid[pos][1] != 'D') {
-                    grid[pos][0] = 'D';
+                Pos = rand() % (HEIGHT - 2) + 1;
+                if (grid[Pos][1] != 'D') {
+                    grid[Pos][0] = 'D';
                     doorsPlaced++;
                 }
                 break;
             case 3: // right wall
-                pos = rand() % (HEIGHT - 2) + 1;
-                if (grid[pos][WIDTH-2] != 'D') {
-                    grid[pos][WIDTH-1] = 'D';
+                Pos = rand() % (HEIGHT - 2) + 1;
+                if (grid[Pos][WIDTH-2] != 'D') {
+                    grid[Pos][WIDTH-1] = 'D';
                     doorsPlaced++;
                 }
                 break;
@@ -81,7 +81,7 @@ void displayGrid() {
 }
 
 void initializeGrid(char entryDirection) {
-    // Save the current grid and player position to allow returning
+    // Save the current grid and player Position to allow returning
     copyGrid(previousGrid, grid);
     previousPlayerX = playerX;
     previousPlayerY = playerY;
@@ -143,8 +143,8 @@ void initializeGrid(char entryDirection) {
     grid[playerY][playerX] = 'P';
     displayGrid(); 
 }
-//Method to move cursor to a new position on the screen
-//https://stackoverflow.com/questions/8285568/c-setconsolecursorposition-getstdhandlestd-output-handle-c-2-arguments
+//Method to move cursor to a new Position on the screen
+//https://stackoverflow.com/questions/8285568/c-setconsolecursorPosition-getstdhandlestd-output-handle-c-2-arguments
 void setCursorPosition(int x, int y) {
     COORD coord = { static_cast<SHORT>(x), static_cast<SHORT>(y) };
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
@@ -182,7 +182,7 @@ void movePlayer(char direction) {
         case 'd': newX++; break;
     }
 
-    // Check if the new position is not a wall before moving
+    // Check if the new Position is not a wall before moving
     if (grid[newY][newX] != '#') {
         if (grid[newY][newX] == 'C') {
             score++; // Collect coin and increment score
@@ -190,7 +190,7 @@ void movePlayer(char direction) {
             lastDirection = direction;
             initializeGrid(direction); // Regenerate the map if player moves through a door
         } else if (grid[newY][newX] == 'P') {
-            // Return to the previous grid and position
+            // Return to the previous grid and Position
             copyGrid(grid, previousGrid);
             playerX = previousPlayerX;
             playerY = previousPlayerY;

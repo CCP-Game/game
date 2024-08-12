@@ -6,12 +6,12 @@ class Enemy{
     
     int getHealth();
     char** getAttackScreen();
-    Point getPos();
+    Pos getPos();
     int getDifficulty();
     
     private:
 
-    Point position;
+    Pos Position;
     char skin;
     int difficulty;
     int health;

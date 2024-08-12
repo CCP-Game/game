@@ -1,9 +1,12 @@
-#ifndef POINT_H
-#define POINT_H
-class Point{
+#ifndef Pos_H
+#define Pos_H
+class Pos{
     public:
-    Point(int x,int y);
-    Point();
+    Pos(int x,int y);
+    int getX() const;
+    int getY() const;
+    Pos getPos();
+    Pos();
     int getX();
     int getY();
     void setXY(int x, int y);

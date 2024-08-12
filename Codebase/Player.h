@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "Room.h"
-#include "Point.h"
+#include "Pos.h"
 #include <vector>
 
 class Player{
@@ -11,17 +11,17 @@ class Player{
     Player();
     int getHealth();
     char getSkin();
-    Point getPos();
+    Pos getPos();
     Room getCurrentRoom();
 
-    const Point &getPos() const;
+    const Pos &getPos() const;
 
     void setPosition(int x, int y);
 
 private:
     
     int health;
-    Point currentLocation;
+    Pos currentLocation;
     Room currentRoom;
     char skin;
     //to be changed

@@ -25,9 +25,9 @@ class Room{
     int id;
     int depth;
     char **grid;
-    //Ignore these warnings. The Point class will be included in the Cavern class.
-    Point nextDoorPos;
-    Point prevDoorPos;
+    //Ignore these warnings. The Pos class will be included in the Cavern class.
+    Pos nextDoorPos;
+    Pos prevDoorPos;
     Room *nextRoom;
     Room *prevRoom;
     std::vector<Enemy> enemies;

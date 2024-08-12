@@ -3,7 +3,7 @@
 #include <ctime>
 #include <conio.h>
 #include <windows.h>
-#include "Point.cpp"
+#include "Pos.cpp"
 #include "Room.h"
 #include "Room.cpp"
 #include "Player.h"
@@ -67,7 +67,7 @@ void displayRoom(Room& room) {
 }
 
 void updatePlayerPosition(Room& room, Player& player, int newX, int newY) {
-    Point& currentPos = player.getPos();
+    Pos& currentPos = player.getPos();
     room.setCharAt(currentPos.getX(), currentPos.getY(), ' ');
     player.setPosition(newX, newY);
     room.setCharAt(newX, newY, player.getSkin());
@@ -99,7 +99,7 @@ int main() {
         input = _getch();
         if (input == 'q' || input == 'Q') break;
 
-        Point& currentPos = player.getPos();
+        Pos& currentPos = player.getPos();
         int newX = currentPos.getX();
         int newY = currentPos.getY();
 
@@ -119,7 +119,7 @@ int main() {
                 currentRoom = Room(currentRoom.getLevel() + 1, currentRoom.getLevel() + 1, WIDTH, HEIGHT);
                 initializeRoom(currentRoom);
                 
-                // Place player on the opposite side of the new room
+                // Place player on the opPosite side of the new room
                 if (newX == 0) newX = WIDTH - 2;
                 else if (newX == WIDTH - 1) newX = 1;
                 else if (newY == 0) newY = HEIGHT - 2;
