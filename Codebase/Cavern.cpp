@@ -31,6 +31,7 @@ void hideCursor()
 
 void initializeRoom(Room &room)
 {
+    room.setColour(4);
     // Create walls
     for (int x = 0; x < WIDTH; x++)
     {
@@ -66,6 +67,7 @@ void displayRoom(Room &room)
 {
     system("cls");
     // Redraw the entire room
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), room.getColour());
     setCursorPosition(0, 0);
     for (int y = 0; y < HEIGHT; y++)
     {
@@ -115,62 +117,63 @@ int main()
     int score = 0;
     char input;
     while (true)
+{
+    setCursorPosition(0, HEIGHT + 1);
+    std::cout << "Score: " << score << " | Move (WASD) or Q to quit: ";
+
+    input = _getch();
+    if (input == 'q' || input == 'Q')
+        break;
+
+    const Pos &currentPos = player.getPos();
+    int newX = currentPos.getX();
+    int newY = currentPos.getY();
+
+    switch (input)
     {
-        setCursorPosition(0, HEIGHT + 1);
-        std::cout << "Score: " << score << " | Move (WASD) or Q to quit: ";
-
-        input = _getch();
-        if (input == 'q' || input == 'Q')
-            break;
-
-        const Pos &currentPos = player.getPos();
-        int newX = currentPos.getX();
-        int newY = currentPos.getY();
-
-        switch (input)
-        {
-        case 'w':
-            newY--;
-            break;
-        case 's':
-            newY++;
-            break;
-        case 'a':
-            newX--;
-            break;
-        case 'd':
-            newX++;
-            break;
-        }
-
-        char nextChar = currentRoom.getCharAt(newX, newY);
-        if (nextChar != '#')
-        {
-            if (nextChar == 'C')
-            {
-                score++;
-            }
-            else if (nextChar == 'D')
-            {
-                // Generate a new room
-                currentRoom = Room(currentRoom.getLevel() + 1, currentRoom.getLevel() + 1, WIDTH, HEIGHT);
-                initializeRoom(currentRoom);
-
-                // Place player on the opposite side of the new room
-                if (newX == 0)
-                    newX = WIDTH - 2;
-                else if (newX == WIDTH - 1)
-                    newX = 1;
-                else if (newY == 0)
-                    newY = HEIGHT - 2;
-                else if (newY == HEIGHT - 1)
-                    newY = 1;
-
-                displayRoom(currentRoom);
-            }
-            updatePlayerPosition(currentRoom, player, newX, newY);
-        }
+    case 'w':
+        newY--;
+        break;
+    case 's':
+        newY++;
+        break;
+    case 'a':
+        newX--;
+        break;
+    case 'd':
+        newX++;
+        break;
     }
+
+    char nextChar = currentRoom.getCharAt(newX, newY);
+    if (nextChar != '#')
+    {
+        if (nextChar == 'C')
+        {
+            score++;
+        }
+        else if (nextChar == 'D')
+        {
+            // Generate a new room
+            currentRoom = Room(currentRoom.getLevel() + 1, currentRoom.getLevel() + 1, WIDTH, HEIGHT);
+            initializeRoom(currentRoom);
+
+            // Place player on the opposite side of the new room
+            if (newX == 0)
+                newX = WIDTH - 2;
+            else if (newX == WIDTH - 1)
+                newX = 1;
+            else if (newY == 0)
+                newY = HEIGHT - 2;
+            else if (newY == HEIGHT - 1)
+                newY = 1;
+
+            displayRoom(currentRoom);
+        }
+        updatePlayerPosition(currentRoom, player, newX, newY);
+    }
+}
+
 
     return 0;
 }

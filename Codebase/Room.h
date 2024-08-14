@@ -3,39 +3,39 @@
 #include <vector>
 #include "Enemy.h"
 
+// height and width of the room
 #define WIDTH 22
 #define HEIGHT 12
-class Room{
-    public:
-        Room();
-        Room(int id, int depth, int width, int height);
-        ~Room();
-        // For the final room.
-        char **display();
-        Room *getNextRoom();
-        Room *getPrevRoom();
-        void setNextRoom(Room *nextRoom);
-        void setPrevRoom(Room *prevRoom);
-        int getLevel();
-        void printRoom();
 
-        char getCharAt(int x, int y) const;
-
-        void setCharAt(int x, int y, char c);
-
-    private:
-    //unsure whether we need an ID kept anyway.
+class Room
+{
+private:
     int id;
     int depth;
     char **grid;
-    //Ignore these warnings. The Pos class will be included in the Cavern class.
+    int colour;
     Pos nextDoorPos;
     Pos prevDoorPos;
     Room *nextRoom;
     Room *prevRoom;
     std::vector<Enemy> enemies;
+
+public:
+    Room();
+    Room(int id, int depth, int width, int height);
+    ~Room();
+    // For the final room.
+    char **display();
+    Room *getNextRoom();
+    Room *getPrevRoom();
+    void setNextRoom(Room *nextRoom);
+    void setPrevRoom(Room *prevRoom);
+    int getLevel();
+    void printRoom();
+    char getCharAt(int x, int y) const;
+    void setCharAt(int x, int y, char c);
+    void setColour(int colour);
+    int getColour();
 };
 
 #endif
-
-

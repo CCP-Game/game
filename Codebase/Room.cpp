@@ -80,3 +80,13 @@ void Room::setCharAt(int x, int y, char c) {
         grid[y][x] = c;
     }
 }
+
+// Getter for Colour
+int Room::getColour() {
+    return colour;
+}
+
+// Setter for Colour
+void Room::setColour(int colour) {
+    this->colour = colour;
+}
