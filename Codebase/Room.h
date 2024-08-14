@@ -2,6 +2,9 @@
 #define ROOM_H
 #include <vector>
 #include "Enemy.h"
+
+#define WIDTH 22
+#define HEIGHT 12
 class Room{
     public:
         Room();

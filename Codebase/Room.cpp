@@ -2,10 +2,6 @@
 #include "Pos.h"
 #include <iostream>
 
-// width and height of the room
-#define WIDTH 80
-#define HEIGHT 24
-
 // Default constructor
 Room::Room() : Room(0, 0, WIDTH, HEIGHT) {
 }

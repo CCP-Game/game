@@ -38,3 +38,4 @@ const Pos& Player::getPos() const {
 void Player::setPosition(int x, int y) {
     currentLocation = Pos(x, y);
 }
+

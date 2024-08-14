@@ -11,11 +11,9 @@ class Player{
     Player();
     int getHealth();
     char getSkin();
-    Pos getPos();
+    // Pos getPos();
     Room getCurrentRoom();
-
-    const Pos &getPos() const;
-
+    const Pos& getPos() const;
     void setPosition(int x, int y);
 
 private:
