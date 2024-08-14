@@ -1,8 +1,10 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
-#include <conio.h>
 #include <windows.h>
+
+#pragma comment(lib, "User32.lib")
+
 #include "Pos.h"
 #include "Pos.cpp"
 #include "Room.h"
@@ -29,9 +31,13 @@ void hideCursor()
     SetConsoleCursorInfo(consoleHandle, &cursorInfo);
 }
 
+void resetConsoleAttributes()
+{
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7); // Reset to default color
+}
+
 void initializeRoom(Room &room)
 {
-    room.setColour(4);
     // Create walls
     for (int x = 0; x < WIDTH; x++)
     {
@@ -65,9 +71,8 @@ void initializeRoom(Room &room)
 
 void displayRoom(Room &room)
 {
-    system("cls");
-    // Redraw the entire room
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), room.getColour());
+    system("cls");            // Clear the console
+    resetConsoleAttributes(); // Reset to default console attributes
     setCursorPosition(0, 0);
     for (int y = 0; y < HEIGHT; y++)
     {
@@ -77,6 +82,11 @@ void displayRoom(Room &room)
         }
         std::cout << '\n';
     }
+}
+
+bool isKeyPressed(int key)
+{
+    return (GetAsyncKeyState(key) & 0x8000) != 0;
 }
 
 void updatePlayerPosition(Room &room, Player &player, int newX, int newY)
@@ -115,65 +125,70 @@ int main()
     hideCursor();
 
     int score = 0;
-    char input;
-    while (true)
-{
-    setCursorPosition(0, HEIGHT + 1);
-    std::cout << "Score: " << score << " | Move (WASD) or Q to quit: ";
+    bool gameRunning = true;
+    DWORD lastMoveTime = GetTickCount();
+    const DWORD moveDelay = 100; // Adjust this value to change movement speed (lower = faster)
 
-    input = _getch();
-    if (input == 'q' || input == 'Q')
-        break;
-
-    const Pos &currentPos = player.getPos();
-    int newX = currentPos.getX();
-    int newY = currentPos.getY();
-
-    switch (input)
+    while (gameRunning)
     {
-    case 'w':
-        newY--;
-        break;
-    case 's':
-        newY++;
-        break;
-    case 'a':
-        newX--;
-        break;
-    case 'd':
-        newX++;
-        break;
-    }
-
-    char nextChar = currentRoom.getCharAt(newX, newY);
-    if (nextChar != '#')
-    {
-        if (nextChar == 'C')
+        DWORD currentTime = GetTickCount();
+        if (currentTime - lastMoveTime >= moveDelay)
         {
-            score++;
+            const Pos &currentPos = player.getPos();
+            int newX = currentPos.getX();
+            int newY = currentPos.getY();
+
+            if (isKeyPressed('W')) newY--;
+            if (isKeyPressed('S')) newY++;
+            if (isKeyPressed('A')) newX--;
+            if (isKeyPressed('D')) newX++;
+
+            char nextChar = currentRoom.getCharAt(newX, newY);
+            if (nextChar != '#')
+            {
+                if (nextChar == 'C')
+                {
+                    score++;
+                }
+                else if (nextChar == 'D')
+                {
+                    // Generate a new room
+                    currentRoom = Room(currentRoom.getLevel() + 1, currentRoom.getLevel() + 1, WIDTH, HEIGHT);
+                    initializeRoom(currentRoom);
+
+                    // Place player on the opposite side of the new room
+                    if (newX == 0)
+                        newX = WIDTH - 2;
+                    else if (newX == WIDTH - 1)
+                        newX = 1;
+                    else if (newY == 0)
+                        newY = HEIGHT - 2;
+                    else if (newY == HEIGHT - 1)
+                        newY = 1;
+
+                    // Update player position in the new room
+                    player.setPosition(newX, newY);
+                    currentRoom.setCharAt(newX, newY, player.getSkin());
+
+                    displayRoom(currentRoom);
+                }
+                updatePlayerPosition(currentRoom, player, newX, newY);
+            }
+
+            lastMoveTime = currentTime;
         }
-        else if (nextChar == 'D')
+
+        // Display score and check for quit
+        setCursorPosition(0, HEIGHT + 1);
+        std::cout << "Score: " << score << " | Press Q to quit";
+
+        if (isKeyPressed('Q'))
         {
-            // Generate a new room
-            currentRoom = Room(currentRoom.getLevel() + 1, currentRoom.getLevel() + 1, WIDTH, HEIGHT);
-            initializeRoom(currentRoom);
-
-            // Place player on the opposite side of the new room
-            if (newX == 0)
-                newX = WIDTH - 2;
-            else if (newX == WIDTH - 1)
-                newX = 1;
-            else if (newY == 0)
-                newY = HEIGHT - 2;
-            else if (newY == HEIGHT - 1)
-                newY = 1;
-
-            displayRoom(currentRoom);
+            gameRunning = false;
         }
-        updatePlayerPosition(currentRoom, player, newX, newY);
-    }
-}
 
+        Sleep(10); // Small delay to prevent excessive CPU usage
+    }
 
     return 0;
 }

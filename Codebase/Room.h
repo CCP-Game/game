@@ -13,6 +13,8 @@ private:
     int id;
     int depth;
     char **grid;
+    int width;
+    int height;
     int colour;
     Pos nextDoorPos;
     Pos prevDoorPos;
@@ -24,7 +26,8 @@ public:
     Room();
     Room(int id, int depth, int width, int height);
     ~Room();
-    // For the final room.
+    Room(const Room& other); // Copy constructor
+    Room& operator=(const Room& other); // Assignment operator
     char **display();
     Room *getNextRoom();
     Room *getPrevRoom();
