@@ -84,15 +84,15 @@ void updatePlayerPosition(Room &room, Player &player, int newX, int newY)
     // Clear the old player position in the room matrix
     room.setCharAt(currentPos.getX(), currentPos.getY(), ' ');
 
+    // Clear the old player position on the screen
+    setCursorPosition(currentPos.getX(), currentPos.getY());
+    std::cout << ' ';
+
     // Update the player's position
     player.setPosition(newX, newY);
 
     // Set the new player position in the room matrix
     room.setCharAt(newX, newY, player.getSkin());
-
-    // Clear the old player position on the screen
-    setCursorPosition(currentPos.getX(), currentPos.getY());
-    std::cout << ' ';
 
     // Draw the new player position on the screen
     setCursorPosition(newX, newY);
@@ -169,7 +169,6 @@ int main()
                 displayRoom(currentRoom);
             }
             updatePlayerPosition(currentRoom, player, newX, newY);
-            displayRoom(currentRoom); // Refresh room to remove any trails
         }
     }
 
