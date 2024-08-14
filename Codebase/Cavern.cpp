@@ -65,6 +65,8 @@ void initializeRoom(Room &room)
 void displayRoom(Room &room)
 {
     system("cls");
+    // Redraw the entire room
+    setCursorPosition(0, 0);
     for (int y = 0; y < HEIGHT; y++)
     {
         for (int x = 0; x < WIDTH; x++)
@@ -78,12 +80,21 @@ void displayRoom(Room &room)
 void updatePlayerPosition(Room &room, Player &player, int newX, int newY)
 {
     const Pos &currentPos = player.getPos();
+
+    // Clear the old player position in the room matrix
     room.setCharAt(currentPos.getX(), currentPos.getY(), ' ');
+
+    // Update the player's position
     player.setPosition(newX, newY);
+
+    // Set the new player position in the room matrix
     room.setCharAt(newX, newY, player.getSkin());
 
+    // Clear the old player position on the screen
     setCursorPosition(currentPos.getX(), currentPos.getY());
     std::cout << ' ';
+
+    // Draw the new player position on the screen
     setCursorPosition(newX, newY);
     std::cout << player.getSkin();
 }
@@ -145,7 +156,7 @@ int main()
                 currentRoom = Room(currentRoom.getLevel() + 1, currentRoom.getLevel() + 1, WIDTH, HEIGHT);
                 initializeRoom(currentRoom);
 
-                // Place player on the opPosite side of the new room
+                // Place player on the opposite side of the new room
                 if (newX == 0)
                     newX = WIDTH - 2;
                 else if (newX == WIDTH - 1)
@@ -158,6 +169,7 @@ int main()
                 displayRoom(currentRoom);
             }
             updatePlayerPosition(currentRoom, player, newX, newY);
+            displayRoom(currentRoom); // Refresh room to remove any trails
         }
     }
 
