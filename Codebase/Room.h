@@ -4,7 +4,7 @@
 #include "Enemy.h"
 
 // height and width of the room
-#define WIDTH 22
+#define WIDTH 30
 #define HEIGHT 12
 
 class Room
