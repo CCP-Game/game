@@ -2,12 +2,32 @@
 #include "Pos.h"
 #include <iostream>
 
-// Default constructor
+/**
+ * 
+ * 
+ */
 Room::Room() : Room(0, 0, WIDTH, HEIGHT)
 {
 }
-
-// Constructor
+/**
+ * 
+ * 
+ */
+// Destructor
+Room::~Room()
+{
+    // Free allocated memory for grid
+    for (int i = 0; i < height; ++i)
+    {
+        delete[] grid[i];
+    }
+    delete[] grid;
+}
+/**
+ * 
+ * 
+ * 
+ */
 Room::Room(int id, int depth, int width, int height)
     : id(id), depth(depth), width(width), height(height)
 {
@@ -21,23 +41,14 @@ Room::Room(int id, int depth, int width, int height)
             grid[i][j] = ' ';
         }
     }
-
     // Initialize Posers
     nextRoom = nullptr;
     prevRoom = nullptr;
 }
-
-// Destructor
-Room::~Room()
-{
-    // Free allocated memory for grid
-    for (int i = 0; i < height; ++i)
-    {
-        delete[] grid[i];
-    }
-    delete[] grid;
-}
-
+/**
+ * 
+ * 
+ */
 Room::Room(const Room &other)
     : id(other.id), depth(other.depth), width(other.width), height(other.height)
 {
@@ -56,6 +67,13 @@ Room::Room(const Room &other)
     prevRoom = other.prevRoom;
 }
 
+
+/**
+ * Room::operator= 
+ * This method overrides the operator =, copying all contents of the "other" room into this one.
+ * @param - Takes the address of the Room we want to copy contents from
+ * @return
+ */
 Room& Room::operator=(const Room& other) {
     if (this != &other) {
         // Delete old grid
@@ -83,18 +101,54 @@ Room& Room::operator=(const Room& other) {
     }
     return *this;
 }
+/**
+ * initalizeRoom
+ * Method w
+ * 
+ */
+void Room::initializeRoom(int NUM_COINS)
+{
+    // Create walls
+    for (int x = 0; x < WIDTH; x++)
+    {
+        setCharAt(x, 0, '#');
+        setCharAt(x, HEIGHT - 1, '#');
+    }
+    for (int y = 0; y < HEIGHT; y++)
+    {
+        setCharAt(0, y, '#');
+        setCharAt(WIDTH - 1, y, '#');
+    }
 
-char **Room::display()
+    // Scatter coi
+    for (int i = 0; i < NUM_COINS; i++)
+    {
+        int coinX, coinY;
+        do
+        {
+            coinX = rand() % (WIDTH - 2) + 1;
+            coinY = rand() % (HEIGHT - 2) + 1;
+        } while (getCharAt(coinX, coinY) != ' ');
+        setCharAt(coinX, coinY, 'C');
+    }
+    // Place doors
+    setCharAt(WIDTH / 2, 0, 'D');
+    setCharAt(WIDTH / 2, HEIGHT - 1, 'D');
+    setCharAt(0, HEIGHT / 2, 'D');
+    setCharAt(WIDTH - 1, HEIGHT / 2, 'D');
+}
+
+char **Room::GetDisplay()
 {
     return grid;
 }
 
-Room *Room::getNextRoom()
+Room* Room::getNextRoom()
 {
     return nextRoom;
 }
 
-Room *Room::getPrevRoom()
+Room* Room::getPrevRoom()
 {
     return prevRoom;
 }

@@ -24,11 +24,12 @@ private:
 
 public:
     Room();
-    Room(int id, int depth, int width, int height);
+    Room(int id,int depth, int width, int height);
     ~Room();
     Room(const Room& other); // Copy constructor
     Room& operator=(const Room& other); // Assignment operator
-    char **display();
+    void initializeRoom(int NUM_COINS);
+    char **getDisplay();
     Room *getNextRoom();
     Room *getPrevRoom();
     void setNextRoom(Room *nextRoom);

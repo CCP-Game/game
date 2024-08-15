@@ -2,9 +2,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <windows.h>
-
 #pragma comment(lib, "User32.lib")
-
 #include "Pos.h"
 #include "Pos.cpp"
 #include "Room.h"
@@ -16,7 +14,6 @@
 
 #define WIDTH 30
 #define HEIGHT 12
-#define NUM_COINS 10
 
 void setCursorPosition(int x, int y)
 {
@@ -38,40 +35,8 @@ void resetConsoleAttributes()
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7); // Reset to default color
 }
 
-void initializeRoom(Room &room)
-{
-    // Create walls
-    for (int x = 0; x < WIDTH; x++)
-    {
-        room.setCharAt(x, 0, '#');
-        room.setCharAt(x, HEIGHT - 1, '#');
-    }
-    for (int y = 0; y < HEIGHT; y++)
-    {
-        room.setCharAt(0, y, '#');
-        room.setCharAt(WIDTH - 1, y, '#');
-    }
-
-    // Scatter coins
-    for (int i = 0; i < NUM_COINS; i++)
-    {
-        int coinX, coinY;
-        do
-        {
-            coinX = rand() % (WIDTH - 2) + 1;
-            coinY = rand() % (HEIGHT - 2) + 1;
-        } while (room.getCharAt(coinX, coinY) != ' ');
-        room.setCharAt(coinX, coinY, 'C');
-    }
-
-    // Place doors
-    room.setCharAt(WIDTH / 2, 0, 'D');
-    room.setCharAt(WIDTH / 2, HEIGHT - 1, 'D');
-    room.setCharAt(0, HEIGHT / 2, 'D');
-    room.setCharAt(WIDTH - 1, HEIGHT / 2, 'D');
-}
-
-void displayRoom(Room &room)
+//
+void printToConsole(char** display)
 {
     system("cls");            // Clear the console
     resetConsoleAttributes(); // Reset to default console attributes
@@ -80,7 +45,7 @@ void displayRoom(Room &room)
     {
         for (int x = 0; x < WIDTH; x++)
         {
-            std::cout << room.getCharAt(x, y);
+            std::cout << display[y][x];
         }
         std::cout << '\n';
     }
@@ -116,29 +81,30 @@ void updatePlayerPosition(Room &room, Player &player, int newX, int newY)
 int main()
 {
     srand(static_cast<unsigned>(time(0)));
-
     Room currentRoom(1, 1, WIDTH, HEIGHT);
-    initializeRoom(currentRoom);
+    currentRoom.initializeRoom(10);
+
 
     Player player('P', 7);
+
     player.setPosition(WIDTH / 2, HEIGHT / 2);
     currentRoom.setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
-    displayRoom(currentRoom);
+    printToConsole(currentRoom.getDisplay());
     hideCursor();
-
     int score = 0;
     bool gameRunning = true;
     DWORD lastMoveTime = GetTickCount();
     const DWORD moveDelay = 100; // Adjust this value to change movement speed (lower = faster)
-
+    int newX =0;
+    int newY =0;
     while (gameRunning)
     {
         DWORD currentTime = GetTickCount();
         if (currentTime - lastMoveTime >= moveDelay)
         {
             const Pos &currentPos = player.getPos();
-            int newX = currentPos.getX();
-            int newY = currentPos.getY();
+            newX = currentPos.getX();
+            newY = currentPos.getY();
 
             if (isKeyPressed('W')) newY--;
             if (isKeyPressed('S')) newY++;
@@ -146,8 +112,7 @@ int main()
             if (isKeyPressed('D')) newX++;
 
             char nextChar = currentRoom.getCharAt(newX, newY);
-            if (nextChar != '#')
-            {
+            if (nextChar != '#'){
                 if (nextChar == 'C')
                 {
                     score++;
@@ -156,7 +121,7 @@ int main()
                 {
                     // Generate a new room
                     currentRoom = Room(currentRoom.getLevel() + 1, currentRoom.getLevel() + 1, WIDTH, HEIGHT);
-                    initializeRoom(currentRoom);
+                    currentRoom.initializeRoom(10);
 
                     // Place player on the opposite side of the new room
                     if (newX == 0)
@@ -172,14 +137,12 @@ int main()
                     player.setPosition(newX, newY);
                     currentRoom.setCharAt(newX, newY, player.getSkin());
 
-                    displayRoom(currentRoom);
+                    printToConsole(currentRoom.getDisplay());
                 }
                 updatePlayerPosition(currentRoom, player, newX, newY);
             }
-
             lastMoveTime = currentTime;
         }
-
         // Display score and check for quit
         setCursorPosition(0, HEIGHT + 1);
         std::cout << "Score: " << score << " | Press Q to quit";
