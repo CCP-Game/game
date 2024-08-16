@@ -3,8 +3,8 @@
 #include <iostream>
 
 /**
- * 
- * 
+ * Room (Default Constructor)
+ * - Simply a default constructor
  */
 Room::Room() : Room(0, 0, WIDTH, HEIGHT)
 {
@@ -103,8 +103,8 @@ Room& Room::operator=(const Room& other) {
 }
 /**
  * initalizeRoom
- * Method w
- * 
+ * Method initalizes a Room. Including the walls, doors and a sprinkling of coins
+ * @param NUM_COINS - this is the number of coins you want in this room. 
  */
 void Room::initializeRoom(int NUM_COINS)
 {
@@ -137,12 +137,20 @@ void Room::initializeRoom(int NUM_COINS)
     setCharAt(0, HEIGHT / 2, 'D');
     setCharAt(WIDTH - 1, HEIGHT / 2, 'D');
 }
-
-char **Room::GetDisplay()
+/**
+ * getDisplay
+ * This method returns the current display for a room. Whether it's the room's grid or in combat with an enemy.
+ * @return - A 2D Char array, dictating the stuff to display.
+ */
+char** Room::getDisplay()
 {
     return grid;
 }
-
+/**
+ * getNextRoom
+ * - Method is used to return the next Room, given the simple 1D map design of Alpha-Phase.
+ * @return returns a pointer to the next Room.
+ */
 Room* Room::getNextRoom()
 {
     return nextRoom;

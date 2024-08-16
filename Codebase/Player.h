@@ -18,7 +18,7 @@ class Player{
 
 private:
     
-    int health;
+    int health = 100;
     Pos currentLocation;
     Room currentRoom;
     char skin;
