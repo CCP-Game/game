@@ -133,12 +133,14 @@ void resetColour() {
  * @param roomSize
  * @return the first room in the linked list.
  */
-Room* initalize1DMap(int roomLength){
+Room initalize1DMap(int roomLength){
     Room FirstRoom = Room(1,0,WIDTH,HEIGHT);
     Room SecondRoom = Room(2,1,WIDTH,HEIGHT);
     FirstRoom.initializeRoom(10);
     SecondRoom.initializeRoom(10);
     FirstRoom.setDoor(Pos(WIDTH/2,0),SecondRoom);
+    SecondRoom.setDoor(getDoorsOpposite(Pos(WIDTH/2,0)),FirstRoom);
+    return FirstRoom;
 }
 
 
@@ -184,8 +186,8 @@ int main()
     int newX =0;
     int newY =0;
     srand(static_cast<unsigned>(time(0)));
-    Room currentRoom(1, 1, WIDTH, HEIGHT);
-    currentRoom.initializeRoom(10);
+    Room currentRoom = initalize1DMap(1);
+   
     Player player('P', 7);
     player.setPosition(WIDTH / 2, HEIGHT / 2);
     currentRoom.setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
@@ -210,7 +212,7 @@ int main()
             if(currentRoom.validMove(newX,newY) != false){
                 //Checking whether we're on a door node, if so change rooms.
                 if(currentRoom.isDoorMove(newX,newY)){
-                    //currentRoom = currentRoom.getRoom(newX,newY);
+                    currentRoom = currentRoom.getRoom(newX,newY);
                     Pos newPos = getDoorsOpposite(Pos(newX,newY));
                     updatePlayerPosition(currentRoom,player,newPos.getX(),newPos.getY());
                     //Sort out where to print player.
