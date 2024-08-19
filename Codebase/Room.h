@@ -18,7 +18,7 @@ private:
     int colour;
     Pos playerPos;
     std::vector<Enemy> enemies;
-    std::unordered_map<Pos,Room&,Pos::HashFunction> doorMap;
+    std::unordered_map<Pos,Room*,Pos::HashFunction> doorMap;
 
 public:
     Room();
@@ -30,7 +30,7 @@ public:
     char **getDisplay();
     int getLevel();
     void updatePlayerPos(int x, int y);
-    void setDoor(Pos dPos, Room& room);
+    void setDoor(Pos dPos, Room room);
     char getCharAt(int x, int y) const;
     void setCharAt(int x, int y, char c);
     int getID();

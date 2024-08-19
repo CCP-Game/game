@@ -159,10 +159,10 @@ bool Room::isDoorMove(int newx, int newy){
 /**
  * 
  */
-void Room::setDoor(Pos dPos, Room& room){
+void Room::setDoor(Pos dPos, Room room){
     this->setCharAt(dPos.getX(),dPos.getY(),'D');
     //Inserting this into our map.
-    this->doorMap[dPos]=room;
+    this->doorMap[dPos]=&room;
 }
 /**
  * getDisplay
