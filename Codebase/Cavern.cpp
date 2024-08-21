@@ -14,7 +14,7 @@
 // #include "Enemy.cpp"
 #define WIDTH 30
 #define HEIGHT 12
-#define worldMap = 
+#define worldMap =
 /**
  * setCursorPosition
  * Method sets the cursors position.
@@ -47,7 +47,7 @@ void resetConsoleAttributes()
  * isKeyPressed
  * method checks whether a given key was pressed.
  * @param - the key to be checked
- * @return - Returns true if the key pressed == key param. 
+ * @return - Returns true if the key pressed == key param.
  */
 bool isKeyPressed(int key)
 {
@@ -61,7 +61,7 @@ bool isKeyPressed(int key)
  * @param newX - this is an integer representing the new movement of our player along x-axis
  * @param newy - this is an integer representing the new movement of our player along y-axis
  */
-void updatePlayerPosition(Room* room, Player &player, int newX, int newY)
+void updatePlayerPosition(Room *room, Player &player, int newX, int newY)
 {
     const Pos &currentPos = player.getPos();
     // Clear the old player position in the room matrix
@@ -73,12 +73,11 @@ void updatePlayerPosition(Room* room, Player &player, int newX, int newY)
     player.setPosition(newX, newY);
     // Set the new player position in the room matrix
     room->setCharAt(newX, newY, player.getSkin());
-    //update Rooms player position
-    room->updatePlayerPos(newX,newY);
+    // update Rooms player position
+    room->updatePlayerPos(newX, newY);
     // Draw the new player position on the screen
     setCursorPosition(newX, newY);
     std::cout << player.getSkin();
-    
 }
 /**
  * getDoorsOpposite
@@ -87,17 +86,24 @@ void updatePlayerPosition(Room* room, Player &player, int newX, int newY)
  * @param  oldPos - a Pos of the old door
  * @return newPos - the invrese of the new door
  */
-Pos getDoorsOpposite(Pos oldPos){
-    if(oldPos.getX() ==0){
-        return Pos(WIDTH-2,oldPos.getY());
-    }else if(oldPos.getY() ==0){
-        return Pos(oldPos.getX(),HEIGHT-2);
-    }else if(oldPos.getX() == WIDTH-1){
+Pos getDoorsOpposite(Pos oldPos)
+{
+    if (oldPos.getX() == 0)
+    {
+        return Pos(WIDTH - 2, oldPos.getY());
+    }
+    else if (oldPos.getY() == 0)
+    {
+        return Pos(oldPos.getX(), HEIGHT - 2);
+    }
+    else if (oldPos.getX() == WIDTH - 1)
+    {
         return Pos(oldPos.getX(), 0);
-        //Case where opposite HEIGHT-1
-    }else{
-        return(Pos(WIDTH/2,1));
-    
+        // Case where opposite HEIGHT-1
+    }
+    else
+    {
+        return (Pos(WIDTH / 2, 1));
     }
 }
 /**
@@ -106,12 +112,15 @@ Pos getDoorsOpposite(Pos oldPos){
  * @param int textColor - this is the color we want has to be > 1
  * @param int bgColor - this is the background colour has to be > 1
  */
-void setColour(int textColor, int bgColor = -1) {
+void setColour(int textColor, int bgColor = -1)
+{
     std::cout << "\033[";
-    if (textColor != -1) {
+    if (textColor != -1)
+    {
         std::cout << textColor;
     }
-    if (bgColor != -1) {
+    if (bgColor != -1)
+    {
         std::cout << ";" << bgColor;
     }
     std::cout << "m";
@@ -120,7 +129,8 @@ void setColour(int textColor, int bgColor = -1) {
  * resetColor
  * This method resets the output to it's default Colour
  */
-void resetColour() {
+void resetColour()
+{
     std::cout << "\033[0m";
 }
 /**
@@ -136,21 +146,22 @@ void resetColour() {
  */
 
 // left = Pos(0, HEIGHT/2)
-// right = Pos(WIDTH-1, HEIGHT/2) 
+// right = Pos(WIDTH-1, HEIGHT/2)
 // top = Pos(WIDTH/2, 0)
 // bottom = Pos(WIDTH/2, HEIGHT-1)
 
-Room* initalize1DMap(int roomLength){
-   Room* room1 = new Room(1, 1, WIDTH, HEIGHT);
-    Room* room2 = new Room(2, 1, WIDTH, HEIGHT);
-    Room* room3 = new Room(3, 1, WIDTH, HEIGHT);
-    Room* room4 = new Room(4, 1, WIDTH, HEIGHT);
-    Room* room5 = new Room(5, 1, WIDTH, HEIGHT);
-    Room* room6 = new Room(6, 1, WIDTH, HEIGHT);
-    Room* room7 = new Room(7, 1, WIDTH, HEIGHT);
-    Room* room8 = new Room(8, 1, WIDTH, HEIGHT);
-    Room* room9 = new Room(9, 1, WIDTH, HEIGHT);
-    Room* room10 = new Room(10, 1, WIDTH, HEIGHT);
+Room *initalize1DMap(int roomLength)
+{
+    Room *room1 = new Room(1, 1, WIDTH, HEIGHT);
+    Room *room2 = new Room(2, 1, WIDTH, HEIGHT);
+    Room *room3 = new Room(3, 1, WIDTH, HEIGHT);
+    Room *room4 = new Room(4, 1, WIDTH, HEIGHT);
+    Room *room5 = new Room(5, 1, WIDTH, HEIGHT);
+    Room *room6 = new Room(6, 1, WIDTH, HEIGHT);
+    Room *room7 = new Room(7, 1, WIDTH, HEIGHT);
+    Room *room8 = new Room(8, 1, WIDTH, HEIGHT);
+    Room *room9 = new Room(9, 1, WIDTH, HEIGHT);
+    Room *room10 = new Room(10, 1, WIDTH, HEIGHT);
 
     room1->initializeRoom(5, 'b');
     room2->initializeRoom(5, 'b');
@@ -164,66 +175,70 @@ Room* initalize1DMap(int roomLength){
     room10->initializeRoom(5, 'b');
 
     // Set door positions for each room
-    room1->setDoor(Pos(WIDTH-1, HEIGHT/2), room2);  // Right to Room 2
-    
-    room2->setDoor(Pos(0, HEIGHT/2), room1);        // Left to Room 1
-    room2->setDoor(Pos(WIDTH-1, HEIGHT/2), room3);  // Right to Room 3
+    room1->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room2); // Right to Room 2
 
-    room3->setDoor(Pos(0, HEIGHT/2), room2);        // Left to Room 2
-    room3->setDoor(Pos(WIDTH/2, HEIGHT-1), room4);  // Bottom to Room 4
-    room3->setDoor(Pos(WIDTH/2,0) , room7);         // Top to Room 7
+    room2->setDoor(Pos(0, HEIGHT / 2), room1);         // Left to Room 1
+    room2->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room3); // Right to Room 3
 
-    room4->setDoor(Pos(0, HEIGHT/2), room3);        // Left to Room 3
-    room4->setDoor(Pos(WIDTH/2, HEIGHT-1), room5);  // Bottom to Room 5
+    room3->setDoor(Pos(0, HEIGHT / 2), room2);         // Left to Room 2
+    room3->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room4); // Bottom to Room 4
+    room3->setDoor(Pos(WIDTH / 2, 0), room7);          // Top to Room 7
 
-    room5->setDoor(Pos(WIDTH/2, 0), room4);         // Top to Room 4
-    room5->setDoor(Pos(WIDTH-1, HEIGHT/2), room6);  // Right to Room 6
+    room4->setDoor(Pos(0, HEIGHT / 2), room3);         // Left to Room 3
+    room4->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room5); // Bottom to Room 5
 
-    room6->setDoor(Pos(0, HEIGHT/2), room5);        // Left to Room 5
-    
-    room7->setDoor(Pos(WIDTH/2, HEIGHT-1), room3);  // Bottom to Room 3
-    room7->setDoor(Pos(WIDTH-1, HEIGHT/2), room8);  // Right to Room 8
+    room5->setDoor(Pos(WIDTH / 2, 0), room4);          // Top to Room 4
+    room5->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room6); // Right to Room 6
 
-    room8->setDoor(Pos(0, HEIGHT/2), room7);        // Left to Room 7
-    room8->setDoor(Pos(WIDTH-1, HEIGHT/2), room9);  // Right to Room 9
+    room6->setDoor(Pos(0, HEIGHT / 2), room5); // Left to Room 5
 
-    room9->setDoor(Pos(0, HEIGHT/2), room8);        // Left to Room 8
-    room9->setDoor(Pos(WIDTH/2, HEIGHT-1), room10); // Bottom to Room 10
+    room7->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room3); // Bottom to Room 3
+    room7->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room8); // Right to Room 8
 
-    room10->setDoor(Pos(WIDTH/2,0), room9);       // Top to Room 9
+    room8->setDoor(Pos(0, HEIGHT / 2), room7);         // Left to Room 7
+    room8->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room9); // Right to Room 9
+
+    room9->setDoor(Pos(0, HEIGHT / 2), room8);          // Left to Room 8
+    room9->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room10); // Bottom to Room 10
+
+    room10->setDoor(Pos(WIDTH / 2, 0), room9); // Top to Room 9
     // Room 10 has a staircase to another room
-    room10->setDoor(Pos(WIDTH/2, HEIGHT-2), nullptr); // Stairway to new room 
+    room10->setDoor(Pos(WIDTH / 2, HEIGHT - 2), nullptr); // Stairway to new room
 
-    return room1;  // Game starts in room 1
+    return room1; // Game starts in room 1
 }
 
-
-void printToConsole(char** display)
+void printToConsole(char **display)
 {
     system("cls");            // Clear the console
     resetConsoleAttributes(); // Reset to default console attributes
-    setCursorPosition(0, 0); //Sets the cursor position..
+    setCursorPosition(0, 0);  // Sets the cursor position..
     for (int y = 0; y < HEIGHT; y++)
     {
         for (int x = 0; x < WIDTH; x++)
         {
-            //Adding in colour on the sides
-            if(y==0 || x==0 || y==HEIGHT-1 || x==WIDTH-1){
-                if(display[y][x]=='D'){
-                    setColour(32,1);
-                }else{
+            // Adding in colour on the sides
+            if (y == 0 || x == 0 || y == HEIGHT - 1 || x == WIDTH - 1)
+            {
+                if (display[y][x] == 'D')
+                {
+                    setColour(32, 1);
+                }
+                else
+                {
                     setColour(41);
                     setColour(31);
                 }
-            //Colour on the inside of walls
-            }else if (display[y][x] == 'C'){
+                // Colour on the inside of walls
+            }
+            else if (display[y][x] == 'C')
+            {
                 setColour(33);
             }
             std::cout << display[y][x];
             resetColour();
         }
         std::cout << '\n';
-       
     }
 }
 /**
@@ -237,11 +252,11 @@ int main()
     bool gameRunning = true;
     DWORD lastMoveTime = GetTickCount();
     const DWORD moveDelay = 100; // Adjust this value to change movement speed (lower = faster)
-    int newX =0;
-    int newY =0;
+    int newX = 0;
+    int newY = 0;
     srand(static_cast<unsigned>(time(0)));
-    Room* currentRoom = initalize1DMap(1);
-   
+    Room *currentRoom = initalize1DMap(1);
+
     Player player('P', 7);
     player.setPosition(WIDTH / 2, HEIGHT / 2);
     currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
@@ -256,42 +271,52 @@ int main()
             newX = currentPos.getX();
             newY = currentPos.getY();
 
-            if (isKeyPressed('W')) newY--;
-            if (isKeyPressed('S')) newY++;
-            if (isKeyPressed('A')) newX--;
-            if (isKeyPressed('D')) newX++;
+            if (isKeyPressed('W'))
+                newY--;
+            if (isKeyPressed('S'))
+                newY++;
+            if (isKeyPressed('A'))
+                newX--;
+            if (isKeyPressed('D'))
+                newX++;
 
             char nextChar = currentRoom->getCharAt(newX, newY);
-            //Checking whether is is a valid move
-            if(currentRoom->validMove(newX,newY) != false){
-            
-                //Checking whether we're on a door node, if so change rooms.
-                if(currentRoom->isDoorMove(newX,newY)){
-                    Room* temprom = currentRoom->getRoom(newX,newY);
-                    if(temprom == NULL){
+            // Checking whether is is a valid move
+            if (currentRoom->validMove(newX, newY) != false)
+            {
+
+                // Checking whether we're on a door node, if so change rooms.
+                if (currentRoom->isDoorMove(newX, newY))
+                {
+                    Room *temprom = currentRoom->getRoom(newX, newY);
+                    if (temprom == NULL)
+                    {
                         std::cout << "NULLL";
-                    }else{  
-                        std::cout << "NOT NULLL";
-                         currentRoom = temprom;
                     }
-                   
-                    Pos newPos = getDoorsOpposite(Pos(newX,newY));
-                    updatePlayerPosition(currentRoom,player,newPos.getX(),newPos.getY());
-                    //Sort out where to print player.
+                    else
+                    {
+                        std::cout << "NOT NULLL";
+                        currentRoom = temprom;
+                    }
+
+                    Pos newPos = getDoorsOpposite(Pos(newX, newY));
+                    updatePlayerPosition(currentRoom, player, newPos.getX(), newPos.getY());
+                    // Sort out where to print player.
                     printToConsole(currentRoom->getDisplay());
-                }else{
-                    updatePlayerPosition(currentRoom,player,newX,newY);
                 }
-                
+                else
+                {
+                    updatePlayerPosition(currentRoom, player, newX, newY);
+                }
             }
             lastMoveTime = currentTime;
         }
         // Display score and check for quit
         setCursorPosition(0, HEIGHT + 1);
-        //Logic for colou given health
+        // Logic for colou given health
         std::cout << "Health " << player.getHealth() << "\n";
         std::cout << "Score: " << score << " | Press Q to quit\n";
-        std::cout << "Room: " << currentRoom->getID() <<"\n";
+        std::cout << "Room: " << currentRoom->getID() << "\n";
 
         if (isKeyPressed('Q'))
         {
