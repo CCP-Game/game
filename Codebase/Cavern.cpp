@@ -167,12 +167,11 @@ Room* initalize1DMap(int roomLength){
     room1->setDoor(Pos(WIDTH-1, HEIGHT/2), room2);  // Right to Room 2
     
     room2->setDoor(Pos(0, HEIGHT/2), room1);        // Left to Room 1
-    room2->setDoor(Pos(WIDTH/2, 0), room7);         // Top to Room 7
     room2->setDoor(Pos(WIDTH-1, HEIGHT/2), room3);  // Right to Room 3
 
     room3->setDoor(Pos(0, HEIGHT/2), room2);        // Left to Room 2
-    room3->setDoor(Pos(WIDTH/2, HEIGHT-1), room7);  // Bottom to Room 7
-    room3->setDoor(Pos(WIDTH-1, HEIGHT/2), room4);  // Right to Room 4
+    room3->setDoor(Pos(WIDTH/2, HEIGHT-1), room4);  // Bottom to Room 4
+    room3->setDoor(Pos(WIDTH/2,0) , room7);         // Top to Room 7
 
     room4->setDoor(Pos(0, HEIGHT/2), room3);        // Left to Room 3
     room4->setDoor(Pos(WIDTH/2, HEIGHT-1), room5);  // Bottom to Room 5
@@ -191,9 +190,9 @@ Room* initalize1DMap(int roomLength){
     room9->setDoor(Pos(0, HEIGHT/2), room8);        // Left to Room 8
     room9->setDoor(Pos(WIDTH/2, HEIGHT-1), room10); // Bottom to Room 10
 
-    room10->setDoor(Pos(0, HEIGHT/2), room9);       // Left to Room 9
+    room10->setDoor(Pos(WIDTH/2,0), room9);       // Top to Room 9
     // Room 10 has a staircase to another room
-    room10->setDoor(Pos(WIDTH/2, HEIGHT-1), nullptr); // Stairway to new room (not yet defined)
+    room10->setDoor(Pos(WIDTH/2, HEIGHT-2), nullptr); // Stairway to new room 
 
     return room1;  // Game starts in room 1
 }
