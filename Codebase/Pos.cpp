@@ -1,4 +1,6 @@
 #include "Pos.h"
+#include <cassert>
+#include <iostream>
 
 // default constructor
 Pos::Pos() : x(0), y(0) {}
@@ -35,4 +37,18 @@ void Pos::setX(int x) {
 // Set Y coordinate
 void Pos::setY(int y) {
     this->y = y;
+}
+
+void Pos::unittest(){
+    std::cout << "Pos unittest called!";
+    Pos testPos = Pos(5, 10);
+    assert(testPos.getX() == 5);
+    assert(testPos.getY() == 10);
+    testPos.setX(3);
+    testPos.setY(6);
+    assert(testPos.getX() == 3);
+    assert(testPos.getY() == 6);
+    testPos.setXY(7, 8);
+    assert(testPos.getX() == 7);
+    assert(testPos.getY() == 8);
 }

@@ -28,7 +28,7 @@ public:
     Room(int id,int depth, int width, int height);
     Room(const Room& other); // Copy constructor
     Room& operator=(const Room& other); // Assignment operator
-    void initializeRoom(int NUM_COINS);
+    void initializeRoom(int NUM_COINS, char type);
     char **getDisplay();
     int getLevel();
     void updatePlayerPos(int x, int y);

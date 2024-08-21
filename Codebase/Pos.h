@@ -2,6 +2,7 @@
 #define Pos_H
 class Pos{
     public:
+    static void unittest();
     Pos(int x,int y);
     int getX() const;
     int getY() const;
