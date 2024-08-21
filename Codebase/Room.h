@@ -28,7 +28,7 @@ public:
     ~Room();
     Room(const Room& other); // Copy constructor
     Room& operator=(const Room& other); // Assignment operator
-    void initializeRoom(int NUM_COINS);
+    void initializeRoom(int NUM_COINS, char type);
     char **getDisplay();
     Room *getNextRoom();
     Room *getPrevRoom();

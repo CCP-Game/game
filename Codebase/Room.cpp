@@ -105,22 +105,57 @@ Room& Room::operator=(const Room& other) {
  * initalizeRoom
  * Method initalizes a Room. Including the walls, doors and a sprinkling of coins
  * @param NUM_COINS - this is the number of coins you want in this room. 
+ * @param type - this is the type of room you want to create. 
+ * 'b' = Big Room
+ * 'v' = Vertical Room
+ * 'h' = Horizontal Room
  */
-void Room::initializeRoom(int NUM_COINS)
+void Room::initializeRoom(int NUM_COINS, char type)
 {
-    // Create walls
-    for (int x = 0; x < WIDTH; x++)
+    if (*type == 'b')
     {
-        setCharAt(x, 0, '#');
-        setCharAt(x, HEIGHT - 1, '#');
+        // Create walls
+        for (int x = 0; x < WIDTH; x++)
+        {
+            setCharAt(x, 0, '#');
+            setCharAt(x, HEIGHT - 1, '#');
+        }
+        for (int y = 0; y < HEIGHT; y++)
+        {
+            setCharAt(0, y, '#');
+            setCharAt(WIDTH - 1, y, '#');
+        }
     }
-    for (int y = 0; y < HEIGHT; y++)
+    else if (*type == 'v')
     {
-        setCharAt(0, y, '#');
-        setCharAt(WIDTH - 1, y, '#');
+        // Create narrower vertical walls
+        for (int x = 0; x < WIDTH; x++)
+        {
+            setCharAt(x, 1, '#');
+            setCharAt(x, HEIGHT - 2, '#');
+        }
+        for (int y = 1; y < HEIGHT - 1; y++)
+        {
+            setCharAt(0, y, '#');
+            setCharAt(WIDTH - 1, y, '#');
+        }
+    }
+    else if (*type == 'h')
+    {
+        // Create narrower horizontal walls
+        for (int x = 1; x < WIDTH - 1; x++)
+        {
+            setCharAt(x, 0, '#');
+            setCharAt(x, HEIGHT - 1, '#');
+        }
+        for (int y = 0; y < HEIGHT; y++)
+        {
+            setCharAt(1, y, '#');
+            setCharAt(WIDTH - 2, y, '#');
+        }
     }
 
-    // Scatter coi
+    // Scatter coins
     for (int i = 0; i < NUM_COINS; i++)
     {
         int coinX, coinY;
@@ -131,12 +166,15 @@ void Room::initializeRoom(int NUM_COINS)
         } while (getCharAt(coinX, coinY) != ' ');
         setCharAt(coinX, coinY, 'C');
     }
+
     // Place doors
     setCharAt(WIDTH / 2, 0, 'D');
     setCharAt(WIDTH / 2, HEIGHT - 1, 'D');
     setCharAt(0, HEIGHT / 2, 'D');
     setCharAt(WIDTH - 1, HEIGHT / 2, 'D');
 }
+
+
 /**
  * getDisplay
  * This method returns the current display for a room. Whether it's the room's grid or in combat with an enemy.

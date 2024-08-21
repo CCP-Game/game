@@ -144,7 +144,7 @@ int main()
     int newY =0;
     srand(static_cast<unsigned>(time(0)));
     Room currentRoom(1, 1, WIDTH, HEIGHT);
-    currentRoom.initializeRoom(10);
+    currentRoom.initializeRoom(10, 'b');
     Player player('P', 7);
     player.setPosition(WIDTH / 2, HEIGHT / 2);
     currentRoom.setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
@@ -174,7 +174,7 @@ int main()
                 {
                     // Generate a new room
                     currentRoom = Room(currentRoom.getLevel() + 1, currentRoom.getLevel() + 1, WIDTH, HEIGHT);
-                    currentRoom.initializeRoom(10);
+                    currentRoom.initializeRoom(10, 'b');
 
                     // Place player on the opposite side of the new room
                     if (newX == 0)
