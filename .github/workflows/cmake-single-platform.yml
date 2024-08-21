@@ -34,6 +34,32 @@ jobs:
     - name: Test
       working-directory: ${{github.workspace}}/build
       # Execute tests defined by the CMake configuration.
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C ${{env.BUILD_TYPE}}
+
+    # - name: Install OpenCppCoverage
+    #   run: |
+    #     choco install OpenCppCoverage -y
+    #     echo "C:\\Program Files\\OpenCppCoverage" >> $env:GITHUB_PATH
+
+    # - name: List Files in Release Directory
+    #   run: dir ${{github.workspace}}\build  
+
+    #   #OpenCppCoverage --sources=${{github.workspace}} --export_type=binary:Test.cov -- Test.exe
+    # - name: Run Coverage and Tests
+    #   working-directory: ${{github.workspace}}/build
+    #   run: |
+    #     & "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe" --verbose --export_type=binary:Test.cov --excluded_modules="C:\Windows\System32\*.dll" --cover_children --sources="${{github.workspace}}" -- "${{github.workspace}}\build\Release\Test.exe"
+        
+    # - name: List Files in Release Directory
+    #   run: dir ${{github.workspace}}\build  
+
+    # - name: List Files in Release Directory
+    #   run: dir ${{github.workspace}}\build\Release 
+
+    # - name: Upload coverage to Codecov
+    #   uses: codecov/codecov-action@v2
+    #   with: 
+    #     token: ${{ secrets.CODECOV_TOKEN }}
+    #     files: Test.cov
+    #     fail_ci_if_error: true
 
