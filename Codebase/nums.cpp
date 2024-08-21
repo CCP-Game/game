@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <random>
+#include "nums.h"
 
 const char *ASCII_NUMBERS[] = {
     "  ___  \n"
@@ -110,6 +112,14 @@ const char *ASCII_NUMBERS[] = {
 
 };
 
+int getUserInput()
+{
+    int userAnswer;
+    std::cout << "Enter your answer: ";
+    std::cin >> userAnswer;
+    return userAnswer;
+}
+
 void printNums(const std::string &nums)
 {
     // Prepare a vector to hold each line of the final ASCII art
@@ -183,11 +193,97 @@ void printNums(const std::string &nums)
     }
 }
 
-int main()
-{
-    // std::string input = "+-/*11 + 19 - 3 / 2 * 4";
 
-    std::string input = "=+-/*123=4562343253509876541321";
-    printNums(input);
-    return 0;
+
+int improvedRandom(int min, int max) {
+    static std::random_device rd; 
+    static std::mt19937 gen(rd()); 
+    std::uniform_int_distribution<> dis(min, max);
+    return dis(gen);
 }
+
+std::string generateEquation()
+{
+    int num1 = improvedRandom(1, 100); // Generate first number
+    int num2 = improvedRandom(1, 100); // Generate second number
+    int result = num1 + num2;
+
+    // Return the equation as a string
+    std::string equation = std::to_string(num1) + "+" + std::to_string(num2) + "=";
+    printNums(equation);
+    
+    int answer = getUserInput();
+    if (answer == result) {
+        return "Correct!\n";
+    } else {
+        return "Incorrect!\n";
+    }
+}
+std::string generateSubtractionEquation()
+{
+    int num1 = improvedRandom(1, 100); // Generate first number
+    int num2 = improvedRandom(1 , num1); // Generate second number
+    
+    int result = num1 - num2;
+
+    // Return the equation as a string
+    std::string equation = std::to_string(num1) + "-" + std::to_string(num2) + "=";
+    printNums(equation);
+    
+    int answer = getUserInput();
+    if (answer == result) {
+        return "Correct!\n";
+    } else {
+        return "Incorrect!\n";
+    }
+}
+
+std::string generateMultiplicationEquation()
+{
+    int num1 = improvedRandom(1, 10); // Generate first number
+    int num2 = improvedRandom(1, 15); // Generate second number
+    int result = num1 * num2;
+
+    // Return the equation as a string
+    std::string equation = std::to_string(num1) + "*" + std::to_string(num2) + "=";
+    printNums(equation);
+    
+    int answer = getUserInput();
+    if (answer == result) {
+        return "Correct!\n";
+    } else {
+        return "Incorrect!\n";
+    }
+}
+
+std::string generateDivisionEquation()
+{
+    int num1 = improvedRandom(1, 100); // Generate first number
+    int num2 = improvedRandom(1, 10); // Generate second number
+    
+    while(num1 % num2 != 0){
+
+        
+        num2 ++;
+
+    }
+    int result = num1 / num2;
+
+
+    
+
+    // Return the equation as a string
+    std::string equation = std::to_string(num1) + "/" + std::to_string(num2) + "=";
+    printNums(equation);
+    
+    int answer = getUserInput();
+    if (answer == result) {
+        return "Correct!\n";
+    } else {
+        return "Incorrect!\n";
+    }
+}
+
+
+
+
