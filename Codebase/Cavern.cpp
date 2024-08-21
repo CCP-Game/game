@@ -96,7 +96,7 @@ Pos getDoorsOpposite(Pos oldPos){
         return Pos(oldPos.getX(), 0);
         //Case where opposite HEIGHT-1
     }else{
-        return(Pos(1,oldPos.getY()));
+        return(Pos(WIDTH/2,1));
     
     }
 }
@@ -140,7 +140,7 @@ Room* initalize1DMap(int roomLength){
     FirstRoom->initializeRoom(10);
     SecondRoom->initializeRoom(10);
     FirstRoom->setDoor(Pos(WIDTH/2,0),SecondRoom);
-    SecondRoom->setDoor(Pos(WIDTH/2,0),FirstRoom);
+    SecondRoom->setDoor(Pos(WIDTH/2,HEIGHT-1),FirstRoom);
     return FirstRoom;
 }
 
