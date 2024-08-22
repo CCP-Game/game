@@ -181,10 +181,10 @@ Room *initalize1DMap(int roomLength)
     room2->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room3); // Right to Room 3
 
     room3->setDoor(Pos(0, HEIGHT / 2), room2);         // Left to Room 2
-    room3->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room4); // Bottom to Room 4
     room3->setDoor(Pos(WIDTH / 2, 0), room7);          // Top to Room 7
+    room3->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room4); // Bottom to Room 4
 
-    room4->setDoor(Pos(0, HEIGHT / 2), room3);         // Left to Room 3
+    room4->setDoor(Pos(WIDTH / 2, 0), room3);          // Top to Room 3
     room4->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room5); // Bottom to Room 5
 
     room5->setDoor(Pos(WIDTH / 2, 0), room4);          // Top to Room 4
