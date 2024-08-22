@@ -88,24 +88,38 @@ void updatePlayerPosition(Room *room, Player &player, int newX, int newY)
  */
 Pos getDoorsOpposite(Pos oldPos)
 {
-    if (oldPos.getX() == 0)
+    int x = oldPos.getX();
+    int y = oldPos.getY();
+
+    if (x == 0)
     {
-        return Pos(WIDTH - 2, oldPos.getY());
+        // Door on the left edge, return one step inside on the right edge
+        return Pos(WIDTH - 2, y);
     }
-    else if (oldPos.getY() == 0)
+    else if (y == 0)
     {
-        return Pos(oldPos.getX(), HEIGHT - 2);
+        // Door on the top edge, return one step inside on the bottom edge
+        return Pos(x, HEIGHT - 2);
     }
-    else if (oldPos.getX() == WIDTH - 1)
+    else if (x == WIDTH - 1)
     {
-        return Pos(oldPos.getX(), 0);
-        // Case where opposite HEIGHT-1
+        // Door on the right edge, return one step inside on the left edge
+        return Pos(1, y);
+    }
+    else if (y == HEIGHT - 1)
+    {
+        // Door on the bottom edge, return one step inside on the top edge
+        return Pos(x, 1);
     }
     else
     {
-        return (Pos(WIDTH / 2, 1));
+        // For other cases, you might want to handle unexpected conditions
+        // For example, returning a default or invalid position
+        return Pos(-1, -1); // Indicating an invalid position
     }
 }
+
+
 /**
  * setColor
  * This method uses ANSI escape codes to set the output color to console.
@@ -227,7 +241,7 @@ void printToConsole(char **display)
                 else
                 {
                     setColour(41);
-                    setColour(31);
+                    // setColour(31);
                 }
                 // Colour on the inside of walls
             }
@@ -291,11 +305,11 @@ int main()
                     Room *temprom = currentRoom->getRoom(newX, newY);
                     if (temprom == NULL)
                     {
-                        std::cout << "NULLL";
+                        std::cout << "NULL";
                     }
                     else
                     {
-                        std::cout << "NOT NULLL";
+                        std::cout << "NOT NULL";
                         currentRoom = temprom;
                     }
 

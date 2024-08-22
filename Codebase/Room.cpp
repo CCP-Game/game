@@ -104,6 +104,15 @@ Room& Room::operator=(const Room& other) {
  */
 void Room::initializeRoom(int NUM_COINS, char type)
 {
+    // Clear the room first
+    for (int y = 0; y < HEIGHT; y++)
+    {
+        for (int x = 0; x < WIDTH; x++)
+        {
+            setCharAt(x, y, ' ');
+        }
+    }
+
     // Create walls
     if (type == 'b') // Big Room
     {
@@ -120,12 +129,19 @@ void Room::initializeRoom(int NUM_COINS, char type)
     }
     else if (type == 'h') // Horizontal Hallway
     {
-        int hallwayY = HEIGHT / 2; // Center the hallway vertically
+        int hallwayHeight = 5; // Set the height of the hallway
+        int centerY = HEIGHT / 2; // Find the center of the room vertically
+        int startY = centerY - hallwayHeight / 2; // Start 2 units above the center
+
+        // Create top and bottom walls
         for (int x = 0; x < WIDTH; x++)
         {
-            setCharAt(x, hallwayY, '#');
+            setCharAt(x, startY, '#');
+            setCharAt(x, startY + hallwayHeight - 1, '#');
         }
-        for (int y = hallwayY - 1; y <= hallwayY + 1; y++)
+
+        // Create end walls
+        for (int y = startY + 1; y < startY + hallwayHeight - 1; y++)
         {
             setCharAt(0, y, '#');
             setCharAt(WIDTH - 1, y, '#');
@@ -133,12 +149,19 @@ void Room::initializeRoom(int NUM_COINS, char type)
     }
     else if (type == 'v') // Vertical Hallway
     {
-        int hallwayX = WIDTH / 2; // Center the hallway horizontally
+        int hallwayWidth = 5; // Set the width of the hallway
+        int centerX = WIDTH / 2; // Find the center of the room horizontally
+        int startX = centerX - hallwayWidth / 2; // Start 2 units left of the center
+
+        // Create left and right walls
         for (int y = 0; y < HEIGHT; y++)
         {
-            setCharAt(hallwayX, y, '#');
+            setCharAt(startX, y, '#');
+            setCharAt(startX + hallwayWidth - 1, y, '#');
         }
-        for (int x = hallwayX - 1; x <= hallwayX + 1; x++)
+
+        // Create end walls
+        for (int x = startX + 1; x < startX + hallwayWidth - 1; x++)
         {
             setCharAt(x, 0, '#');
             setCharAt(x, HEIGHT - 1, '#');
@@ -157,8 +180,8 @@ void Room::initializeRoom(int NUM_COINS, char type)
         int coinX, coinY;
         do
         {
-            coinX = rand() % (WIDTH - 2) + 1;
-            coinY = rand() % (HEIGHT - 2) + 1;
+            coinX = rand() % WIDTH;
+            coinY = rand() % HEIGHT;
         } while (getCharAt(coinX, coinY) != ' ');
         setCharAt(coinX, coinY, 'C');
     }
