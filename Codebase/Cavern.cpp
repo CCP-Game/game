@@ -177,6 +177,8 @@ Room *initalize1DMap(int roomLength)
     Room *room9 = new Room(9, 1, WIDTH, HEIGHT);
     Room *room10 = new Room(10, 1, WIDTH, HEIGHT);
 
+    Enemy e1 = Enemy('+', 1);
+
     room1->initializeRoom(5, 'b');
     room2->initializeRoom(5, 'h');
     room3->initializeRoom(5, 'b');
@@ -190,6 +192,7 @@ Room *initalize1DMap(int roomLength)
 
     // Set door positions for each room
     room1->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room2); // Right to Room 2
+    room1->setEnemy(Pos(WIDTH / 2, HEIGHT / 2), e1);    // Enemy in the middle of the room
 
     room2->setDoor(Pos(0, HEIGHT / 2), room1);         // Left to Room 1
     room2->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room3); // Right to Room 3
@@ -197,6 +200,8 @@ Room *initalize1DMap(int roomLength)
     room3->setDoor(Pos(0, HEIGHT / 2), room2);         // Left to Room 2
     room3->setDoor(Pos(WIDTH / 2, 0), room7);          // Top to Room 7
     room3->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room4); // Bottom to Room 4
+
+    room3->setEnemy(Pos(WIDTH / 2, HEIGHT / 2), e1);    // Enemy in the middle of the room
 
     room4->setDoor(Pos(WIDTH / 2, 0), room3);          // Top to Room 3
     room4->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room5); // Bottom to Room 5

@@ -292,3 +292,8 @@ void Room::setCharAt(int x, int y, char c)
 int Room::getID(){
     return this->id;
 }
+
+void Room::setEnemy(Pos p, Enemy e, Room* room){
+    
+    
+}

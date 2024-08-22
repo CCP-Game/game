@@ -39,7 +39,7 @@ public:
     int getID();
     bool validMove(int newX, int newY);
     bool isDoorMove(int newX, int newY);
-    bool isHallway(int x, int y) const;
+    void setEnemy(Pos p, Enemy e, Room* room);
  
 };
 
