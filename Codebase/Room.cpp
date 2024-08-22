@@ -97,57 +97,22 @@ Room& Room::operator=(const Room& other) {
  * initalizeRoom
  * Method initalizes a Room. Including the walls, doors and a sprinkling of coins
  * @param NUM_COINS - this is the number of coins you want in this room. 
- * @param type - this is the type of room you want to create. 
- * 'b' = Big Room
- * 'v' = Vertical Room
- * 'h' = Horizontal Room
  */
 void Room::initializeRoom(int NUM_COINS, char type)
 {
-    if (type == 'b')
+    // Create walls
+    for (int x = 0; x < WIDTH; x++)
     {
-        // Create walls
-        for (int x = 0; x < WIDTH; x++)
-        {
-            setCharAt(x, 0, '#');
-            setCharAt(x, HEIGHT - 1, '#');
-        }
-        for (int y = 0; y < HEIGHT; y++)
-        {
-            setCharAt(0, y, '#');
-            setCharAt(WIDTH - 1, y, '#');
-        }
+        setCharAt(x, 0, '#');
+        setCharAt(x, HEIGHT - 1, '#');
     }
-    else if (type == 'v')
+    for (int y = 0; y < HEIGHT; y++)
     {
-        // Create narrower vertical walls
-        for (int x = 0; x < WIDTH; x++)
-        {
-            setCharAt(x, 1, '#');
-            setCharAt(x, HEIGHT - 2, '#');
-        }
-        for (int y = 1; y < HEIGHT - 1; y++)
-        {
-            setCharAt(0, y, '#');
-            setCharAt(WIDTH - 1, y, '#');
-        }
-    }
-    else if (type == 'h')
-    {
-        // Create narrower horizontal walls
-        for (int x = 1; x < WIDTH - 1; x++)
-        {
-            setCharAt(x, 0, '#');
-            setCharAt(x, HEIGHT - 1, '#');
-        }
-        for (int y = 0; y < HEIGHT; y++)
-        {
-            setCharAt(1, y, '#');
-            setCharAt(WIDTH - 2, y, '#');
-        }
+        setCharAt(0, y, '#');
+        setCharAt(WIDTH - 1, y, '#');
     }
 
-    // Scatter coins
+    // Scatter coi
     for (int i = 0; i < NUM_COINS; i++)
     {
         int coinX, coinY;
@@ -158,12 +123,61 @@ void Room::initializeRoom(int NUM_COINS, char type)
         } while (getCharAt(coinX, coinY) != ' ');
         setCharAt(coinX, coinY, 'C');
     }
-    // Place doors
-    setCharAt(WIDTH / 2, 0, 'D');
-    setCharAt(WIDTH / 2, HEIGHT - 1, 'D');
-    setCharAt(0, HEIGHT / 2, 'D');
-    setCharAt(WIDTH - 1, HEIGHT / 2, 'D');
+
 }
+/**
+ * updatePlayerPos
+ * This method updates the Rooms view of the player position
+ * @param x - the x coord
+ * @param y - the y coord
+ */
+void Room::updatePlayerPos(int x, int y){
+    playerPos.setXY(x,y);
+}
+/**
+ * validMove
+ * This method checks whether a move is valid or not within this room.
+ * @param newx - x -coord
+ * @param newy - y - coord
+ * @return a true or false whether this move will be registered.
+ */
+bool Room::validMove(int newx, int newy){
+    if(this->getCharAt(newx,newy) !='#'){
+        return true;
+    }
+    return false;
+}
+/**
+ * 
+ */
+bool Room::isDoorMove(int newx, int newy){
+    if(this->getCharAt(newx,newy)=='D'){
+        return true;
+    }
+    return false;
+}
+/**
+ * 
+ */
+void Room::setDoor(Pos dPos, Room* room){
+    this->setCharAt(dPos.getX(),dPos.getY(),'D');
+    //Inserting this into our arrays
+    this->doorPos.push_back(dPos);
+    this->doorRooms.push_back(room);
+}
+
+Room* Room::getRoom(int x, int y) const {
+        for (size_t i = 0; i < doorPos.size(); ++i) {
+            if (doorPos[i].getX() == x && doorPos[i].getY() == y) {
+                return doorRooms[i];
+            }
+        }
+        return nullptr; // Return nullptr if not found
+    }
+/**
+ * 
+ */
+
 /**
  * getDisplay
  * This method returns the current display for a room. Whether it's the room's grid or in combat with an enemy.
