@@ -3,6 +3,7 @@
 #include <ctime>
 #include <windows.h>
 #pragma comment(lib, "User32.lib")
+#include <conio.h>  // For _kbhit() and _getch()
 
 #include "Pos.h"
 #include "Room.h"
@@ -13,8 +14,8 @@
 #include "Player.cpp"
 #include "Enemy.cpp"
 
-#define WIDTH 30
-#define HEIGHT 12
+#define WIDTH 25
+#define HEIGHT 13
 #define worldMap =
 /**
  * setCursorPosition
@@ -177,7 +178,8 @@ Room *initalize1DMap(int roomLength)
     Room *room9 = new Room(9, 1, WIDTH, HEIGHT);
     Room *room10 = new Room(10, 1, WIDTH, HEIGHT);
 
-    Enemy e1 = Enemy('E', 1);
+    Enemy e1 = Enemy('+', 20);
+    Enemy e2 = Enemy('+', 50);
 
     room1->initializeRoom(5, 'b');
     room2->initializeRoom(5, 'h');
@@ -192,10 +194,11 @@ Room *initalize1DMap(int roomLength)
 
     // Set door positions for each room
     room1->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room2); // Right to Room 2
-    // room1->setEnemy(Pos(5, 10), e1);                    // Enemy to the side of the room
+    room1->setEnemy(Pos(3, 5), e1);                    // Enemy to the side of the room
 
     room2->setDoor(Pos(0, HEIGHT / 2), room1);         // Left to Room 1
     room2->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room3); // Right to Room 3
+    room2->setEnemy(Pos(7, HEIGHT / 2), e2);                    // Enemy to the side of the room
 
     room3->setDoor(Pos(0, HEIGHT / 2), room2);         // Left to Room 2
     room3->setDoor(Pos(WIDTH / 2, 0), room7);          // Top to Room 7
@@ -271,15 +274,111 @@ boolean touchingEnemy(Room *room, Player player)
     return false;
 }
 
-/**
- * main
- * This is the running part of Cavern. Where the game loop is kept.
- */
+void clearInputBuffer() {
+    while (_kbhit()) {
+        _getch();  // Read any characters left in the input buffer
+    }
+}
+
+int generateMathProblem()
+{
+    int num1 = rand() % 10 + 1;
+    int num2 = rand() % 10 + 1;
+    int operation = rand() % 3; // 0 = addition, 1 = subtraction, 2 = multiplication
+
+    switch (operation)
+    {
+    case 0:
+        std::cout << num1 << " + " << num2 << " = ?\n";
+        return num1 + num2;
+    case 1:
+        std::cout << num1 << " - " << num2 << " = ?\n";
+        return num1 - num2;
+    case 2:
+        std::cout << num1 << " * " << num2 << " = ?\n";
+        return num1 * num2;
+    default:
+        return 0;
+    }
+}
+
+bool fightEnemy(Player &player, Enemy &enemy)
+{
+    system("cls");
+    clearInputBuffer();
+    std::cout << "You are in combat with an enemy!\n";
+    
+    int enemyHealth = enemy.getHealth();
+    
+    while (enemyHealth > 0 && player.getHealth() > 0)
+    {
+        std::cout << "Player Health: " << player.getHealth() << " | Enemy Health: " << enemyHealth << "\n";
+        std::cout << "Enter your answer or type 'run' to attempt escape: ";
+        int correctAnswer = generateMathProblem();
+        std::string userInput;
+        std::cin >> userInput;
+
+        if (userInput == "run")
+        {
+            if (rand() % 2 == 0)  // 50% chance to escape
+            {
+                std::cout << "You successfully escaped!\n";
+                Sleep(2000);
+                return true;
+            }
+            else
+            {
+                std::cout << "Escape failed! The enemy attacks you for 3 damage.\n";
+                player.setHealth(player.getHealth() - 3);
+            }
+        }
+        else
+        {
+            int userAnswer;
+            try {
+                userAnswer = std::stoi(userInput);
+            } catch (const std::invalid_argument&) {
+                std::cout << "Invalid input. The enemy attacks you for 3 damage.\n";
+                player.setHealth(player.getHealth() - 3);
+                Sleep(2000);
+                continue;
+            }
+
+            if (userAnswer == correctAnswer)
+            {
+                std::cout << "Correct! You dealt 10 damage to the enemy!\n";
+                enemyHealth -= 10;
+            }
+            else
+            {
+                std::cout << "Incorrect! You have taken 5 damage!\n";
+                player.setHealth(player.getHealth() - 5);
+            }
+        }
+
+        Sleep(1500);  // Pause for 2 seconds between rounds
+        system("cls");  // Clear the screen for the next round
+    }
+
+    if (player.getHealth() <= 0)
+    {
+        std::cout << "You have been defeated!\n";
+        Sleep(2000);
+        return false;
+    }
+    else
+    {
+        std::cout << "You have defeated the enemy!\n";
+        Sleep(2000);
+        return true;
+    }
+}
+
 int main()
 {
-
     int score = 0;
     bool gameRunning = true;
+
     DWORD lastMoveTime = GetTickCount();
     const DWORD moveDelay = 100; // Adjust this value to change movement speed (lower = faster)
     int newX = 0;
@@ -287,11 +386,12 @@ int main()
     srand(static_cast<unsigned>(time(0)));
     Room *currentRoom = initalize1DMap(1);
 
-    Player player('P', 7);
+    Player player('P', 100);  // Increased initial health to 100
     player.setPosition(WIDTH / 2, HEIGHT / 2);
     currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
     printToConsole(currentRoom->getDisplay());
     hideCursor();
+
     while (gameRunning)
     {
         DWORD currentTime = GetTickCount();
@@ -311,61 +411,62 @@ int main()
                 newX++;
 
             char nextChar = currentRoom->getCharAt(newX, newY);
-            // Checking whether is is a valid move
-            if (currentRoom->validMove(newX, newY) != false)
-            {
 
-                // If on a door, change rooms
+            if (currentRoom->validMove(newX, newY))
+            {
                 if (currentRoom->isDoorMove(newX, newY))
                 {
-                    Room *temprom = currentRoom->getRoom(newX, newY);
-                    if (temprom == NULL)
-                    {
-                        std::cout << "NULL";
-                    }
-                    else
-                    {
-                        std::cout << "NOT NULL";
-                        currentRoom = temprom;
-                    }
+                    Room *tempRoom = currentRoom->getRoom(newX, newY);
+                    if (tempRoom)
+                        currentRoom = tempRoom;
 
                     Pos newPos = getDoorsOpposite(Pos(newX, newY));
                     updatePlayerPosition(currentRoom, player, newPos.getX(), newPos.getY());
-                    // Sort out where to print player.
                     printToConsole(currentRoom->getDisplay());
                 }
-                // If on a coin, increase score and remove coin
                 else if (nextChar == 'C')
                 {
                     score += 10;
                     currentRoom->setCharAt(newX, newY, ' ');
                     updatePlayerPosition(currentRoom, player, newX, newY);
                 }
-                // If on an enemy, decrease health
-                else if (nextChar == '+' || nextChar == 'E')
+                else if (touchingEnemy(currentRoom, player))
                 {
-                    score -= 10;
-                    player.setHealth(player.getHealth() - 10);
-                    currentRoom->setCharAt(newX, newY, ' ');
+                    Enemy *enemy = &currentRoom->getEnemyAt(newX, newY);
+                    if (enemy)
+                    {
+                        bool playerWon = fightEnemy(player, *enemy);
+                        if (playerWon)
+                        {
+                            currentRoom->removeEnemyAt(newX, newY);
+                            score += 50;
+                            updatePlayerPosition(currentRoom, player, newX, newY);
+                        }
+                        else
+                        {
+                            gameRunning = false;
+                        }
+                    }
+                    printToConsole(currentRoom->getDisplay());
+                }
+                else
+                {
                     updatePlayerPosition(currentRoom, player, newX, newY);
                 }
             }
             lastMoveTime = currentTime;
         }
-        // Display score and check for quit
+
         setCursorPosition(0, HEIGHT + 1);
-        // Logic for colou given health
         std::cout << "Health " << player.getHealth() << "\n";
         std::cout << "Score: " << score << " | Press Q to quit\n";
         std::cout << "Room: " << currentRoom->getID() << "\n";
-        std::cout << "Enemies: " << currentRoom->enemiesToString() << "\n";
 
         if (isKeyPressed('Q'))
-        {
             gameRunning = false;
-        }
         Sleep(10); // Small delay to prevent excessive CPU usage
     }
 
+    std::cout << "Game Over! Final Score: " << score << "\n";
     return 0;
 }

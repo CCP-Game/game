@@ -252,7 +252,26 @@ void Room::setEnemy(Pos p, Enemy e){
     this->enemies.push_back(e);
 
     // Set the enemy in the grid
-    
+}
+
+// getEnemyAt
+Enemy Room::getEnemyAt(int x, int y){
+    for (size_t i = 0; i < enemies.size(); ++i) {
+        if (enemies[i].getX() == x && enemies[i].getY() == y) {
+            return enemies[i];
+        }
+    }
+    return Enemy(' ',0);
+}
+
+// removeEnemyAt
+void Room::removeEnemyAt(int x, int y){
+    for (size_t i = 0; i < enemies.size(); ++i) {
+        if (enemies[i].getX() == x && enemies[i].getY() == y) {
+            enemies.erase(enemies.begin() + i);
+            break;
+        }
+    }
 }
 
 Room* Room::getRoom(int x, int y) const {

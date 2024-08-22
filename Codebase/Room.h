@@ -5,8 +5,8 @@
 #include "Enemy.h"
 #include <string>
 // height and width of the room
-#define WIDTH 30
-#define HEIGHT 12
+#define WIDTH 25
+#define HEIGHT 13
 
 
 class Room
@@ -45,6 +45,10 @@ public:
     std::vector<Enemy> getEnemies();
     // enemiesToString
     std::string enemiesToString();
+    // getEnemyAt
+    Enemy getEnemyAt(int x, int y);
+    // removeEnemyAt
+    void removeEnemyAt(int x, int y);
  
 };
 
