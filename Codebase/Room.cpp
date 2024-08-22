@@ -335,3 +335,21 @@ std::string Room::enemiesToString(){
     }
     return result;
 }
+
+// setEnemyAt
+void Room::setEnemyAt(int x, int y, Enemy e){
+    for (size_t i = 0; i < enemies.size(); ++i) {
+        if (enemies[i].getX() == x && enemies[i].getY() == y) {
+            enemies[i] = e;
+            break;
+        }
+    }
+}
+
+void Room::setPlayerPos(Pos p){
+    this->playerPos = p;
+}
+
+Pos Room::getPlayerPos(){
+    return this->playerPos;
+}

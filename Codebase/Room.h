@@ -49,6 +49,9 @@ public:
     Enemy getEnemyAt(int x, int y);
     // removeEnemyAt
     void removeEnemyAt(int x, int y);
+    void setEnemyAt(int x, int y, Enemy e);
+    void setPlayerPos(Pos p);
+    Pos getPlayerPos();
  
 };
 

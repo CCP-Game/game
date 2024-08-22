@@ -3,7 +3,7 @@
 #include <ctime>
 #include <windows.h>
 #pragma comment(lib, "User32.lib")
-#include <conio.h>  // For _kbhit() and _getch()
+#include <conio.h> // For _kbhit() and _getch()
 
 #include "Pos.h"
 #include "Room.h"
@@ -198,7 +198,7 @@ Room *initalize1DMap(int roomLength)
 
     room2->setDoor(Pos(0, HEIGHT / 2), room1);         // Left to Room 1
     room2->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room3); // Right to Room 3
-    room2->setEnemy(Pos(7, HEIGHT / 2), e2);                    // Enemy to the side of the room
+    room2->setEnemy(Pos(7, HEIGHT / 2), e2);           // Enemy to the side of the room
 
     room3->setDoor(Pos(0, HEIGHT / 2), room2);         // Left to Room 2
     room3->setDoor(Pos(WIDTH / 2, 0), room7);          // Top to Room 7
@@ -274,9 +274,11 @@ boolean touchingEnemy(Room *room, Player player)
     return false;
 }
 
-void clearInputBuffer() {
-    while (_kbhit()) {
-        _getch();  // Read any characters left in the input buffer
+void clearInputBuffer()
+{
+    while (_kbhit())
+    {
+        _getch(); // Read any characters left in the input buffer
     }
 }
 
@@ -307,9 +309,9 @@ bool fightEnemy(Player &player, Enemy &enemy)
     system("cls");
     clearInputBuffer();
     std::cout << "You are in combat with an enemy!\n";
-    
+
     int enemyHealth = enemy.getHealth();
-    
+
     while (enemyHealth > 0 && player.getHealth() > 0)
     {
         std::cout << "Player Health: " << player.getHealth() << " | Enemy Health: " << enemyHealth << "\n";
@@ -320,7 +322,7 @@ bool fightEnemy(Player &player, Enemy &enemy)
 
         if (userInput == "run")
         {
-            if (rand() % 2 == 0)  // 50% chance to escape
+            if (rand() % 2 == 0) // 50% chance to escape
             {
                 std::cout << "You successfully escaped!\n";
                 Sleep(2000);
@@ -335,9 +337,12 @@ bool fightEnemy(Player &player, Enemy &enemy)
         else
         {
             int userAnswer;
-            try {
+            try
+            {
                 userAnswer = std::stoi(userInput);
-            } catch (const std::invalid_argument&) {
+            }
+            catch (const std::invalid_argument &)
+            {
                 std::cout << "Invalid input. The enemy attacks you for 3 damage.\n";
                 player.setHealth(player.getHealth() - 3);
                 Sleep(2000);
@@ -356,8 +361,8 @@ bool fightEnemy(Player &player, Enemy &enemy)
             }
         }
 
-        Sleep(1500);  // Pause for 2 seconds between rounds
-        system("cls");  // Clear the screen for the next round
+        Sleep(1500);   // Pause for 2 seconds between rounds
+        system("cls"); // Clear the screen for the next round
     }
 
     if (player.getHealth() <= 0)
@@ -374,19 +379,76 @@ bool fightEnemy(Player &player, Enemy &enemy)
     }
 }
 
+
+void updateEnemyPosition(Room *room, Enemy &enemy, int newX, int newY)
+{
+    const Pos &currentPos = enemy.getPos();
+    // Clear the old enemy position in the room matrix
+    room->setCharAt(currentPos.getX(), currentPos.getY(), ' ');
+    // Clear the old enemy position on the screen
+    setCursorPosition(currentPos.getX(), currentPos.getY());
+    std::cout << ' ';
+    room->removeEnemyAt(currentPos.getX(), currentPos.getY());
+    // Update the enemy's position
+    enemy.setX(newX);
+    enemy.setY(newY);
+    // Set the new enemy position in the room matrix
+    room->setCharAt(newX, newY, enemy.getSkin());
+    room->setEnemyAt(newX, newY, enemy);
+    // Draw the new enemy position on the screen
+    setCursorPosition(newX, newY);
+    std::cout << enemy.getSkin();
+}
+
+void moveEnemies(Room *room)
+{
+    for (auto &enemy : room->getEnemies())
+    {
+        const Pos &currentPos = enemy.getPos();
+        int newX = currentPos.getX();
+        int newY = currentPos.getY();
+
+        // Move towards the player
+        int playerX = room->getPlayerPos().getX();
+        int playerY = room->getPlayerPos().getY();
+
+        // set the direction to move based on the player's position
+        if (playerX < newX)
+            newX--;
+        else if (playerX > newX)
+            newX++;
+        else if (playerY < newY)
+            newY--;
+        else if (playerY > newY)
+            newY++;
+
+        // Ensure the move is valid
+        if (room->validMove(newX, newY))
+        {
+            updateEnemyPosition(room, enemy, newX, newY);
+        }
+    }
+}
+
+
+
+
 int main()
 {
     int score = 0;
     bool gameRunning = true;
 
     DWORD lastMoveTime = GetTickCount();
-    const DWORD moveDelay = 100; // Adjust this value to change movement speed (lower = faster)
+    DWORD lastEnemyMoveTime = GetTickCount();
+
+    const DWORD enemyMoveDelay = 500; // Adjust this value to change enemy movement speed (lower = faster)
+    const DWORD moveDelay = 100;      // Adjust this value to change movement speed (lower = faster)
     int newX = 0;
     int newY = 0;
     srand(static_cast<unsigned>(time(0)));
     Room *currentRoom = initalize1DMap(1);
 
-    Player player('P', 100);  // Increased initial health to 100
+    Player player('P', 100); // Increased initial health to 100
     player.setPosition(WIDTH / 2, HEIGHT / 2);
     currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
     printToConsole(currentRoom->getDisplay());
@@ -454,7 +516,16 @@ int main()
                     updatePlayerPosition(currentRoom, player, newX, newY);
                 }
             }
+
+            if (currentTime - lastEnemyMoveTime >= enemyMoveDelay)
+            {
+                moveEnemies(currentRoom);
+                lastEnemyMoveTime = currentTime;
+            }
+
             lastMoveTime = currentTime;
+
+            // move enemies in this room
         }
 
         setCursorPosition(0, HEIGHT + 1);
