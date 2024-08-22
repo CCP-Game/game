@@ -240,8 +240,10 @@ void printToConsole(char **display)
                 }
                 else
                 {
-                    setColour(41);
+                    // setColour(41);
                     // setColour(31);
+                    // set color to blue
+                    setColour(34);
                 }
                 // Colour on the inside of walls
             }

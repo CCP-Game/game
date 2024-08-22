@@ -149,7 +149,7 @@ void Room::initializeRoom(int NUM_COINS, char type)
     }
     else if (type == 'v') // Vertical Hallway
     {
-        int hallwayWidth = 5; // Set the width of the hallway
+        int hallwayWidth = 9; // Set the width of the hallway
         int centerX = WIDTH / 2; // Find the center of the room horizontally
         int startX = centerX - hallwayWidth / 2; // Start 2 units left of the center
 
