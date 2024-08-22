@@ -164,15 +164,15 @@ Room *initalize1DMap(int roomLength)
     Room *room10 = new Room(10, 1, WIDTH, HEIGHT);
 
     room1->initializeRoom(5, 'b');
-    room2->initializeRoom(5, 'b');
+    room2->initializeRoom(5, 'h');
     room3->initializeRoom(5, 'b');
-    room4->initializeRoom(5, 'b');
+    room4->initializeRoom(5, 'v');
     room5->initializeRoom(5, 'b');
-    room6->initializeRoom(5, 'b');
+    room6->initializeRoom(5, 'h');
     room7->initializeRoom(5, 'b');
-    room8->initializeRoom(5, 'b');
+    room8->initializeRoom(5, 'h');
     room9->initializeRoom(5, 'b');
-    room10->initializeRoom(5, 'b');
+    room10->initializeRoom(5, 'v');
 
     // Set door positions for each room
     room1->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room2); // Right to Room 2
