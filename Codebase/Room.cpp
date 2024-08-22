@@ -113,6 +113,8 @@ void Room::initializeRoom(int NUM_COINS, char type)
         }
     }
 
+    int minX, maxX, minY, maxY;
+
     // Create walls
     if (type == 'b') // Big Room
     {
@@ -126,6 +128,10 @@ void Room::initializeRoom(int NUM_COINS, char type)
             setCharAt(0, y, '#');
             setCharAt(WIDTH - 1, y, '#');
         }
+        minX = 1;
+        maxX = WIDTH - 2;
+        minY = 1;
+        maxY = HEIGHT - 2;
     }
     else if (type == 'h') // Horizontal Hallway
     {
@@ -146,6 +152,11 @@ void Room::initializeRoom(int NUM_COINS, char type)
             setCharAt(0, y, '#');
             setCharAt(WIDTH - 1, y, '#');
         }
+        
+        minX = 1;
+        maxX = WIDTH - 2;
+        minY = startY + 1;
+        maxY = startY + hallwayHeight - 2;
     }
     else if (type == 'v') // Vertical Hallway
     {
@@ -166,6 +177,11 @@ void Room::initializeRoom(int NUM_COINS, char type)
             setCharAt(x, 0, '#');
             setCharAt(x, HEIGHT - 1, '#');
         }
+
+        minX = startX + 1;
+        maxX = startX + hallwayWidth - 2;
+        minY = 1;
+        maxY = HEIGHT - 2;
     }
     else
     {
@@ -180,12 +196,13 @@ void Room::initializeRoom(int NUM_COINS, char type)
         int coinX, coinY;
         do
         {
-            coinX = rand() % WIDTH;
-            coinY = rand() % HEIGHT;
+            coinX = rand() % (maxX - minX + 1) + minX;
+            coinY = rand() % (maxY - minY + 1) + minY;
         } while (getCharAt(coinX, coinY) != ' ');
         setCharAt(coinX, coinY, 'C');
     }
 }
+
 
 /**
  * updatePlayerPos
