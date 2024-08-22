@@ -3,9 +3,11 @@
 #include <unordered_map>
 #include <vector>
 #include "Enemy.h"
+#include <string>
 // height and width of the room
 #define WIDTH 30
 #define HEIGHT 12
+
 
 class Room
 {
@@ -37,9 +39,12 @@ public:
     char getCharAt(int x, int y) const;
     void setCharAt(int x, int y, char c);
     int getID();
+    void setEnemy(Pos p, Enemy e);
     bool validMove(int newX, int newY);
     bool isDoorMove(int newX, int newY);
-    void setEnemy(Pos p, Enemy e, Room* room);
+    std::vector<Enemy> getEnemies();
+    // enemiesToString
+    std::string enemiesToString();
  
 };
 

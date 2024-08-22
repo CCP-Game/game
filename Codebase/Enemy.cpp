@@ -1,17 +1,14 @@
 #include "Enemy.h"
-#include "Pos.h"
-#include "Pos.cpp"
 
-// Constructor
-Enemy::Enemy(Pos pos, char skin, int difficulty) : Position(pos), skin(skin), difficulty(difficulty)
-{
+
+// Constructor with Pos, skin, and difficulty
+Enemy::Enemy(Pos pos, char skin, int difficulty) : Position(pos), skin(skin), difficulty(difficulty) {
     health = 100; // Example default value
 }
 
-// construct just skin and difficulty
-Enemy::Enemy(char skin, int difficulty) : skin(skin), difficulty(difficulty)
-{
-    health = 100; // Example default value
+// Constructor with skin and health
+Enemy::Enemy(char skin, int health) : skin(skin), health(health) {
+    // Other initialization
 }
 
 // Getters
@@ -63,3 +60,4 @@ void Enemy::setSkin(char skin) {
 void Enemy::setDifficulty(int difficulty) {
     this->difficulty = difficulty;
 }
+

@@ -39,3 +39,7 @@ void Player::setPosition(int x, int y) {
     currentLocation = Pos(x, y);
 }
 
+// Set the player's health
+void Player::setHealth(int health) {
+    this->health = health;
+}

@@ -1,6 +1,7 @@
 #include "Room.h"
 #include "Pos.h"
 #include <iostream>
+#include <string>
 
 /**
  * Room (Default Constructor)
@@ -245,6 +246,15 @@ void Room::setDoor(Pos dPos, Room* room){
     this->doorRooms.push_back(room);
 }
 
+void Room::setEnemy(Pos p, Enemy e){
+    this->setCharAt(p.getX(),p.getY(),e.getSkin());
+    e.setPos(p);
+    this->enemies.push_back(e);
+
+    // Set the enemy in the grid
+    
+}
+
 Room* Room::getRoom(int x, int y) const {
         for (size_t i = 0; i < doorPos.size(); ++i) {
             if (doorPos[i].getX() == x && doorPos[i].getY() == y) {
@@ -293,7 +303,16 @@ int Room::getID(){
     return this->id;
 }
 
-void Room::setEnemy(Pos p, Enemy e, Room* room){
-    
-    
+// get enemies
+std::vector<Enemy> Room::getEnemies(){
+    return this->enemies;
+}
+
+// enemiesToString
+std::string Room::enemiesToString(){
+    std::string result = "";
+    for (size_t i = 0; i < enemies.size(); ++i) {
+        result += "Enemy " + std::to_string(i) + ": " + "Skin: " + enemies[i].getSkin() + " Pos: " + std::to_string(enemies[i].getX()) + "," + std::to_string(enemies[i].getY()) + "\n";
+    }
+    return result;
 }

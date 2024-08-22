@@ -1,9 +1,10 @@
 #ifndef Pos_H
 #define Pos_H
-class Pos{
-    public:
+class Pos
+{
+public:
     static void unittest();
-    Pos(int x,int y);
+    Pos(int x, int y);
     int getX() const;
     int getY() const;
     Pos getPos();
@@ -12,14 +13,17 @@ class Pos{
     void setX(int x);
     void setY(int y);
 
-      // Equality operator
-    bool operator==(const Pos& other) const {
+    // Equality operator
+    bool operator==(const Pos &other) const
+    {
         return this->getX() == other.getX() && this->getY() == other.getY();
     }
 
     // Hash function (see step 2)
-    struct HashFunction {
-        std::size_t operator()(const Pos& p) const {
+    struct HashFunction
+    {
+        std::size_t operator()(const Pos &p) const
+        {
             // Compute individual hash values for x and y and combine them
             std::size_t h1 = std::hash<int>{}(p.getX());
             std::size_t h2 = std::hash<int>{}(p.getY());
@@ -27,13 +31,8 @@ class Pos{
         }
     };
 
-    private:
+private:
     int x;
     int y;
 };
-
-
-
-
-
-#endif 
+#endif

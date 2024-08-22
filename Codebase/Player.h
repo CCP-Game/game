@@ -15,6 +15,7 @@ class Player{
     Room getCurrentRoom();
     const Pos& getPos() const;
     void setPosition(int x, int y);
+    void setHealth(int health);
 
 private:
     

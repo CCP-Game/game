@@ -1,23 +1,29 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
-class Enemy{
-    public:
-    
+#include "Pos.h"
+
+class Enemy {
+private:
+    Pos Position;
+    char skin;
+    int health;
+    int difficulty;
+
+public:
+    // Constructors
     Enemy(Pos pos, char skin, int difficulty);
+    Enemy(char skin, int health);
 
-    Enemy(char skin, int difficulty);
-
-    // getters
+    // Getters
     int getHealth();
-    char** getAttackScreen();
     Pos getPos();
     int getX();
     int getY();
     char getSkin();
     int getDifficulty();
 
-    // setters
+    // Setters
     void setHealth(int health);
     void setPos(Pos pos);
     void setX(int x);
@@ -25,11 +31,7 @@ class Enemy{
     void setSkin(char skin);
     void setDifficulty(int difficulty);
 
-    
-    private:
-    Pos Position;
-    char skin;
-    int difficulty;
-    int health;
+
 };
-#endif
+
+#endif // ENEMY_H

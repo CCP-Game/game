@@ -3,15 +3,16 @@
 #include <ctime>
 #include <windows.h>
 #pragma comment(lib, "User32.lib")
-#include "Pos.h"
-#include "Pos.cpp"
-#include "Room.h"
-#include "Room.cpp"
-#include "Player.h"
-#include "Player.cpp"
 
-// #include "Enemy.h"
-// #include "Enemy.cpp"
+#include "Pos.h"
+#include "Room.h"
+#include "Player.h"
+#include "Enemy.h"
+#include "Pos.cpp"
+#include "Room.cpp"
+#include "Player.cpp"
+#include "Enemy.cpp"
+
 #define WIDTH 30
 #define HEIGHT 12
 #define worldMap =
@@ -119,7 +120,6 @@ Pos getDoorsOpposite(Pos oldPos)
     }
 }
 
-
 /**
  * setColor
  * This method uses ANSI escape codes to set the output color to console.
@@ -177,7 +177,7 @@ Room *initalize1DMap(int roomLength)
     Room *room9 = new Room(9, 1, WIDTH, HEIGHT);
     Room *room10 = new Room(10, 1, WIDTH, HEIGHT);
 
-    Enemy e1 = Enemy('+', 1);
+    Enemy e1 = Enemy('E', 1);
 
     room1->initializeRoom(5, 'b');
     room2->initializeRoom(5, 'h');
@@ -192,7 +192,7 @@ Room *initalize1DMap(int roomLength)
 
     // Set door positions for each room
     room1->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room2); // Right to Room 2
-    room1->setEnemy(Pos(WIDTH / 2, HEIGHT / 2), e1);    // Enemy in the middle of the room
+    // room1->setEnemy(Pos(5, 10), e1);                    // Enemy to the side of the room
 
     room2->setDoor(Pos(0, HEIGHT / 2), room1);         // Left to Room 1
     room2->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room3); // Right to Room 3
@@ -201,7 +201,7 @@ Room *initalize1DMap(int roomLength)
     room3->setDoor(Pos(WIDTH / 2, 0), room7);          // Top to Room 7
     room3->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room4); // Bottom to Room 4
 
-    room3->setEnemy(Pos(WIDTH / 2, HEIGHT / 2), e1);    // Enemy in the middle of the room
+    // room3->setEnemy(Pos(WIDTH / 2, HEIGHT / 2), e1);    // Enemy in the middle of the room
 
     room4->setDoor(Pos(WIDTH / 2, 0), room3);          // Top to Room 3
     room4->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room5); // Bottom to Room 5
@@ -236,32 +236,41 @@ void printToConsole(char **display)
     {
         for (int x = 0; x < WIDTH; x++)
         {
-            // Adding in colour on the sides
-            if (y == 0 || x == 0 || y == HEIGHT - 1 || x == WIDTH - 1)
+            setColour(31);
+
+            if (display[y][x] == 'D')
             {
-                if (display[y][x] == 'D')
-                {
-                    setColour(32, 1);
-                }
-                else
-                {
-                    // setColour(41);
-                    // setColour(31);
-                    // set color to blue
-                    setColour(34);
-                }
-                // Colour on the inside of walls
+                setColour(32, 1);
             }
-            else if (display[y][x] == 'C')
+            if (display[y][x] == '#')
+            {
+                setColour(34);
+            }
+            if (display[y][x] == 'C')
             {
                 setColour(33);
             }
+
             std::cout << display[y][x];
             resetColour();
         }
         std::cout << '\n';
     }
 }
+
+boolean touchingEnemy(Room *room, Player player)
+{
+    Pos playerPos = player.getPos();
+    for (size_t i = 0; i < room->getEnemies().size(); i++)
+    {
+        if (room->getEnemies()[i].getX() == playerPos.getX() && room->getEnemies()[i].getY() == playerPos.getY())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 /**
  * main
  * This is the running part of Cavern. Where the game loop is kept.
@@ -306,7 +315,7 @@ int main()
             if (currentRoom->validMove(newX, newY) != false)
             {
 
-                // Checking whether we're on a door node, if so change rooms.
+                // If on a door, change rooms
                 if (currentRoom->isDoorMove(newX, newY))
                 {
                     Room *temprom = currentRoom->getRoom(newX, newY);
@@ -325,8 +334,19 @@ int main()
                     // Sort out where to print player.
                     printToConsole(currentRoom->getDisplay());
                 }
-                else
+                // If on a coin, increase score and remove coin
+                else if (nextChar == 'C')
                 {
+                    score += 10;
+                    currentRoom->setCharAt(newX, newY, ' ');
+                    updatePlayerPosition(currentRoom, player, newX, newY);
+                }
+                // If on an enemy, decrease health
+                else if (nextChar == '+' || nextChar == 'E')
+                {
+                    score -= 10;
+                    player.setHealth(player.getHealth() - 10);
+                    currentRoom->setCharAt(newX, newY, ' ');
                     updatePlayerPosition(currentRoom, player, newX, newY);
                 }
             }
@@ -338,6 +358,7 @@ int main()
         std::cout << "Health " << player.getHealth() << "\n";
         std::cout << "Score: " << score << " | Press Q to quit\n";
         std::cout << "Room: " << currentRoom->getID() << "\n";
+        std::cout << "Enemies: " << currentRoom->enemiesToString() << "\n";
 
         if (isKeyPressed('Q'))
         {
