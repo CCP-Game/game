@@ -94,25 +94,64 @@ Room& Room::operator=(const Room& other) {
     return *this;
 }
 /**
- * initalizeRoom
- * Method initalizes a Room. Including the walls, doors and a sprinkling of coins
- * @param NUM_COINS - this is the number of coins you want in this room. 
+ * initializeRoom
+ * Method initializes a Room, including the walls, doors, and a sprinkling of coins.
+ * @param NUM_COINS - this is the number of coins you want in this room.
+ * @param type - this is the type of room you want to create.
+ * 'b' = Big Room
+ * 'v' = Vertical Hallway
+ * 'h' = Horizontal Hallway
  */
 void Room::initializeRoom(int NUM_COINS, char type)
 {
     // Create walls
-    for (int x = 0; x < WIDTH; x++)
+    if (type == 'b') // Big Room
     {
-        setCharAt(x, 0, '#');
-        setCharAt(x, HEIGHT - 1, '#');
+        for (int x = 0; x < WIDTH; x++)
+        {
+            setCharAt(x, 0, '#');
+            setCharAt(x, HEIGHT - 1, '#');
+        }
+        for (int y = 0; y < HEIGHT; y++)
+        {
+            setCharAt(0, y, '#');
+            setCharAt(WIDTH - 1, y, '#');
+        }
     }
-    for (int y = 0; y < HEIGHT; y++)
+    else if (type == 'h') // Horizontal Hallway
     {
-        setCharAt(0, y, '#');
-        setCharAt(WIDTH - 1, y, '#');
+        int hallwayY = HEIGHT / 2; // Center the hallway vertically
+        for (int x = 0; x < WIDTH; x++)
+        {
+            setCharAt(x, hallwayY, '#');
+        }
+        for (int y = hallwayY - 1; y <= hallwayY + 1; y++)
+        {
+            setCharAt(0, y, '#');
+            setCharAt(WIDTH - 1, y, '#');
+        }
+    }
+    else if (type == 'v') // Vertical Hallway
+    {
+        int hallwayX = WIDTH / 2; // Center the hallway horizontally
+        for (int y = 0; y < HEIGHT; y++)
+        {
+            setCharAt(hallwayX, y, '#');
+        }
+        for (int x = hallwayX - 1; x <= hallwayX + 1; x++)
+        {
+            setCharAt(x, 0, '#');
+            setCharAt(x, HEIGHT - 1, '#');
+        }
+    }
+    else
+    {
+        // Handle invalid room type if necessary
+        std::cerr << "Invalid room type!" << std::endl;
+        return;
     }
 
-    // Scatter coi
+    // Scatter coins
     for (int i = 0; i < NUM_COINS; i++)
     {
         int coinX, coinY;
@@ -123,8 +162,8 @@ void Room::initializeRoom(int NUM_COINS, char type)
         } while (getCharAt(coinX, coinY) != ' ');
         setCharAt(coinX, coinY, 'C');
     }
-
 }
+
 /**
  * updatePlayerPos
  * This method updates the Rooms view of the player position
