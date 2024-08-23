@@ -519,7 +519,7 @@ int main()
 
             if (currentTime - lastEnemyMoveTime >= enemyMoveDelay)
             {
-                moveEnemies(currentRoom);
+                // moveEnemies(currentRoom);
                 lastEnemyMoveTime = currentTime;
             }
 
