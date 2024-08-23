@@ -253,13 +253,14 @@ void printToConsole(char **display)
 
             if (display[y][x] == 'D')
             {
+                std::cout << "\033[1m";
                 setFGColour(130);
-                
+               
             }
             if (display[y][x] == '#')
             {
                 setFGColour(65);
-                setBGColour(238);
+                setBGColour(236);
             }
             if (display[y][x] == 'C')
             {
@@ -316,13 +317,13 @@ int generateMathProblem()
     }
 }
 
-bool fightEnemy(Player &player, Enemy &enemy)
+bool fightEnemy(Player &player, Enemy *enemy)
 {
     system("cls");
     clearInputBuffer();
     std::cout << "You are in combat with an enemy!\n";
 
-    int enemyHealth = enemy.getHealth();
+    int enemyHealth = enemy->getHealth();
 
     while (enemyHealth > 0 && player.getHealth() > 0)
     {
@@ -508,7 +509,7 @@ int main()
                     Enemy *enemy = currentRoom->getEnemyAt(newX, newY);
                     if (enemy)
                     {
-                        bool playerWon = fightEnemy(player, *enemy);
+                        bool playerWon = fightEnemy(player, enemy);
                         if (playerWon)
                         {
                             currentRoom->removeEnemyAt(newX, newY);

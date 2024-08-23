@@ -261,10 +261,9 @@ Enemy* Room::getEnemyAt(int x, int y){
             return enemies[i];
         }
     }
-    Enemy* nonexistent = new Enemy(' ',0);
-    return nonexistent;
+    return NULL;
 }
-
+//sdw
 // removeEnemyAt
 void Room::removeEnemyAt(int x, int y){
     for (size_t i = 0; i < enemies.size(); ++i) {
