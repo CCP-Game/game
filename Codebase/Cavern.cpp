@@ -4,7 +4,6 @@
 #include <windows.h>
 #pragma comment(lib, "User32.lib")
 #include <conio.h> // For _kbhit() and _getch()
-
 #include "Pos.h"
 #include "Room.h"
 #include "Player.h"
@@ -120,24 +119,34 @@ Pos getDoorsOpposite(Pos oldPos)
         return Pos(-1, -1); // Indicating an invalid position
     }
 }
-
 /**
- * setColor
- * This method uses ANSI escape codes to set the output color to console.
+ * setFGColor
+ * This method uses ANSI escape codes to set the output color to console for the foreground.
  * @param int textColor - this is the color we want has to be > 1
- * @param int bgColor - this is the background colour has to be > 1
  */
-void setColour(int textColor, int bgColor = -1)
+void setFGColour(int textColour = 255)
 {
-    std::cout << "\033[";
-    if (textColor != -1)
+    std::cout << "\x1b[38;5;";
+    if (textColour != -1)
     {
-        std::cout << textColor;
+        std::cout << textColour;
     }
-    if (bgColor != -1)
+   
+    std::cout << "m";
+}
+/**
+* setBGColour
+* This method, using ASNI escape codes, sets the Background Colour in the console
+* @param int bgColour
+*/
+void setBGColour(int textColour = 255)
+{
+    std::cout << "\x1b[48;5;";
+    if (textColour != -1)
     {
-        std::cout << ";" << bgColor;
+        std::cout << textColour;
     }
+   
     std::cout << "m";
 }
 /**
@@ -154,7 +163,7 @@ void resetColour()
  * @param display - the inputted 2d char array.
  */
 /**
- * initalize1DMap
+ * initalizeTutorialMap
  * Method implements a simple "linked-list-style" 1D map of rooms. Returning the first room.
  * @param roomSize
  * @return the first room in the linked list.
@@ -165,7 +174,7 @@ void resetColour()
 // top = Pos(WIDTH/2, 0)
 // bottom = Pos(WIDTH/2, HEIGHT-1)
 
-Room *initalize1DMap(int roomLength)
+Room *initalizeTutorialMap(int roomLength)
 {
     Room *room1 = new Room(1, 1, WIDTH, HEIGHT);
     Room *room2 = new Room(2, 1, WIDTH, HEIGHT);
@@ -180,7 +189,7 @@ Room *initalize1DMap(int roomLength)
 
     Enemy* e1 = new Enemy('+', 20);
     Enemy* e2 = new Enemy('+', 50);
-
+    //Initalise the rooms grid
     room1->initializeRoom(5, 'b');
     room2->initializeRoom(5, 'h');
     room3->initializeRoom(5, 'b');
@@ -191,7 +200,8 @@ Room *initalize1DMap(int roomLength)
     room8->initializeRoom(5, 'h');
     room9->initializeRoom(5, 'b');
     room10->initializeRoom(5, 'v');
-
+    //Add Information to each room.
+    room1->setRoomINFO("USE W A S D to move!\nThe \"D\" refers to a Door! ");
     // Set door positions for each room
     room1->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room2); // Right to Room 2
     room1->setEnemy(Pos(3, 5), e1);                    // Enemy to the side of the room
@@ -239,19 +249,21 @@ void printToConsole(char **display)
     {
         for (int x = 0; x < WIDTH; x++)
         {
-            setColour(31);
+            setFGColour(124);
 
             if (display[y][x] == 'D')
             {
-                setColour(32, 1);
+                setFGColour(130);
+                
             }
             if (display[y][x] == '#')
             {
-                setColour(34);
+                setFGColour(65);
+                setBGColour(238);
             }
             if (display[y][x] == 'C')
             {
-                setColour(33);
+                setFGColour(226);
             }
 
             std::cout << display[y][x];
@@ -430,9 +442,6 @@ void moveEnemies(Room *room)
     }
 }
 
-
-
-
 int main()
 {
     int score = 0;
@@ -446,7 +455,7 @@ int main()
     int newX = 0;
     int newY = 0;
     srand(static_cast<unsigned>(time(0)));
-    Room *currentRoom = initalize1DMap(1);
+    Room *currentRoom = initalizeTutorialMap(1);
 
     Player player('P', 100); // Increased initial health to 100
     player.setPosition(WIDTH / 2, HEIGHT / 2);
@@ -478,7 +487,9 @@ int main()
             {
                 if (currentRoom->isDoorMove(newX, newY))
                 {
+                    currentRoom->removePlayer();
                     Room *tempRoom = currentRoom->getRoom(newX, newY);
+                    
                     if (tempRoom)
                         currentRoom = tempRoom;
 
@@ -524,11 +535,14 @@ int main()
             }
 
             lastMoveTime = currentTime;
-
+            
             // move enemies in this room
         }
 
         setCursorPosition(0, HEIGHT + 1);
+        if(currentRoom->getRoomINFO().empty()== false){
+            std::cout << currentRoom->getRoomINFO()<<"\n\n";
+        }
         std::cout << "Health " << player.getHealth() << "\n";
         std::cout << "Score: " << score << " | Press Q to quit\n";
         std::cout << "Room: " << currentRoom->getID() << "\n";

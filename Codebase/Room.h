@@ -18,6 +18,7 @@ private:
     int width;
     int height;
     int colour;
+    std::string roomINFO;
     Pos playerPos;
     std::vector<Enemy*> enemies;
     std::vector<Pos> doorPos;
@@ -43,16 +44,15 @@ public:
     bool validMove(int newX, int newY);
     bool isDoorMove(int newX, int newY);
     std::vector<Enemy*> getEnemies();
-    // enemiesToString
     std::string enemiesToString();
-    // getEnemyAt
     Enemy* getEnemyAt(int x, int y);
-    // removeEnemyAt
     void removeEnemyAt(int x, int y);
     void setEnemyAt(int x, int y, Enemy* e);
     void setPlayerPos(Pos p);
     Pos getPlayerPos();
- 
+    void removePlayer();
+    std::string getRoomINFO();
+    void setRoomINFO(std::string info);
 };
 
 #endif

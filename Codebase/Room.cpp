@@ -293,6 +293,43 @@ char** Room::getDisplay()
     return grid;
 }
 
+// get enemies
+std::vector<Enemy*> Room::getEnemies(){
+    return this->enemies;
+}
+
+// enemiesToString
+std::string Room::enemiesToString(){
+    std::string result = "";
+    for (size_t i = 0; i < enemies.size(); ++i) {
+        result += "Enemy " + std::to_string(i) + ": " + "Skin: " + enemies[i]->getSkin() + " Pos: " + std::to_string(enemies[i]->getX()) + "," + std::to_string(enemies[i]->getY()) + "\n";
+    }
+    return result;
+}
+
+// setEnemyAt
+void Room::setEnemyAt(int x, int y, Enemy* e){
+    for (size_t i = 0; i < enemies.size(); ++i) {
+        if (enemies[i]->getX() == x && enemies[i]->getY() == y) {
+            enemies[i] = e;
+            break;
+        }
+    }
+}
+/**
+ * removePlayer
+ * methodRemoves the player from the char array once out of the current room.
+*/
+void Room::removePlayer(){
+    for(int i =0; i < HEIGHT; i++){
+        for(int j =0; j < WIDTH; j++){
+            if(grid[i][j] == 'P'){
+                this->setCharAt(j,i,' ');
+            }
+        }
+    }
+}
+
 int Room::getLevel()
 {
     return depth;
@@ -319,34 +356,18 @@ int Room::getID(){
     return this->id;
 }
 
-// get enemies
-std::vector<Enemy*> Room::getEnemies(){
-    return this->enemies;
-}
-
-// enemiesToString
-std::string Room::enemiesToString(){
-    std::string result = "";
-    for (size_t i = 0; i < enemies.size(); ++i) {
-        result += "Enemy " + std::to_string(i) + ": " + "Skin: " + enemies[i]->getSkin() + " Pos: " + std::to_string(enemies[i]->getX()) + "," + std::to_string(enemies[i]->getY()) + "\n";
-    }
-    return result;
-}
-
-// setEnemyAt
-void Room::setEnemyAt(int x, int y, Enemy* e){
-    for (size_t i = 0; i < enemies.size(); ++i) {
-        if (enemies[i]->getX() == x && enemies[i]->getY() == y) {
-            enemies[i] = e;
-            break;
-        }
-    }
-}
-
 void Room::setPlayerPos(Pos p){
     this->playerPos = p;
 }
 
 Pos Room::getPlayerPos(){
     return this->playerPos;
+}
+
+std::string Room::getRoomINFO(){
+    return this->roomINFO;
+}
+
+void Room::setRoomINFO(std::string info){
+    this->roomINFO = info;
 }
