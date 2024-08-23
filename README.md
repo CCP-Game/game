@@ -26,6 +26,8 @@
 ```
 ### What is Cavern?
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e96fb6c022054e26bab3195ad511bd6e)](https://app.codacy.com/gh/CCP-Game/game?utm_source=github.com&utm_medium=referral&utm_content=CCP-Game/game&utm_campaign=Badge_Grade)
+
 Cavern is a command-line based adventure game. Designed & created for a capstone project within COSC345.
 
 ### Compiling:
