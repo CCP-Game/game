@@ -16,9 +16,9 @@ void printNums(const std::string &nums);
 int improvedRandom(int min, int max);
 
 // Functions to generate equations and validate answers
-std::string generateEquation();
-std::string generateSubtractionEquation();
-std::string generateMultiplicationEquation();
-std::string generateDivisionEquation();
+bool generateEquation();
+bool generateSubtractionEquation();
+bool generateMultiplicationEquation();
+bool generateDivisionEquation();
 
 #endif // NUMS_H
