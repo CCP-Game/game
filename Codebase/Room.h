@@ -19,7 +19,7 @@ private:
     int height;
     int colour;
     Pos playerPos;
-    std::vector<Enemy> enemies;
+    std::vector<Enemy*> enemies;
     std::vector<Pos> doorPos;
     std::vector<Room*> doorRooms;
     //std::unordered_map<Pos,Room,Pos::HashFunction> doorMap;
@@ -39,17 +39,17 @@ public:
     char getCharAt(int x, int y) const;
     void setCharAt(int x, int y, char c);
     int getID();
-    void setEnemy(Pos p, Enemy e);
+    void setEnemy(Pos p, Enemy* e);
     bool validMove(int newX, int newY);
     bool isDoorMove(int newX, int newY);
-    std::vector<Enemy> getEnemies();
+    std::vector<Enemy*> getEnemies();
     // enemiesToString
     std::string enemiesToString();
     // getEnemyAt
-    Enemy getEnemyAt(int x, int y);
+    Enemy* getEnemyAt(int x, int y);
     // removeEnemyAt
     void removeEnemyAt(int x, int y);
-    void setEnemyAt(int x, int y, Enemy e);
+    void setEnemyAt(int x, int y, Enemy* e);
     void setPlayerPos(Pos p);
     Pos getPlayerPos();
  

@@ -178,8 +178,8 @@ Room *initalize1DMap(int roomLength)
     Room *room9 = new Room(9, 1, WIDTH, HEIGHT);
     Room *room10 = new Room(10, 1, WIDTH, HEIGHT);
 
-    Enemy e1 = Enemy('+', 20);
-    Enemy e2 = Enemy('+', 50);
+    Enemy* e1 = new Enemy('+', 20);
+    Enemy* e2 = new Enemy('+', 50);
 
     room1->initializeRoom(5, 'b');
     room2->initializeRoom(5, 'h');
@@ -266,7 +266,7 @@ boolean touchingEnemy(Room *room, Player player)
     Pos playerPos = player.getPos();
     for (size_t i = 0; i < room->getEnemies().size(); i++)
     {
-        if (room->getEnemies()[i].getX() == playerPos.getX() && room->getEnemies()[i].getY() == playerPos.getY())
+        if (room->getEnemies()[i]->getX() == playerPos.getX() && room->getEnemies()[i]->getY() == playerPos.getY())
         {
             return true;
         }
@@ -380,9 +380,9 @@ bool fightEnemy(Player &player, Enemy &enemy)
 }
 
 
-void updateEnemyPosition(Room *room, Enemy &enemy, int newX, int newY)
+void updateEnemyPosition(Room *room, Enemy* enemy, int newX, int newY)
 {
-    const Pos &currentPos = enemy.getPos();
+    const Pos &currentPos = enemy->getPos();
     // Clear the old enemy position in the room matrix
     room->setCharAt(currentPos.getX(), currentPos.getY(), ' ');
     // Clear the old enemy position on the screen
@@ -390,21 +390,21 @@ void updateEnemyPosition(Room *room, Enemy &enemy, int newX, int newY)
     std::cout << ' ';
     room->removeEnemyAt(currentPos.getX(), currentPos.getY());
     // Update the enemy's position
-    enemy.setX(newX);
-    enemy.setY(newY);
+    enemy->setX(newX);
+    enemy->setY(newY);
     // Set the new enemy position in the room matrix
-    room->setCharAt(newX, newY, enemy.getSkin());
+    room->setCharAt(newX, newY, enemy->getSkin());
     room->setEnemyAt(newX, newY, enemy);
     // Draw the new enemy position on the screen
     setCursorPosition(newX, newY);
-    std::cout << enemy.getSkin();
+    std::cout << enemy->getSkin();
 }
 
 void moveEnemies(Room *room)
 {
     for (auto &enemy : room->getEnemies())
     {
-        const Pos &currentPos = enemy.getPos();
+        const Pos &currentPos = enemy->getPos();
         int newX = currentPos.getX();
         int newY = currentPos.getY();
 
@@ -494,7 +494,7 @@ int main()
                 }
                 else if (touchingEnemy(currentRoom, player))
                 {
-                    Enemy *enemy = &currentRoom->getEnemyAt(newX, newY);
+                    Enemy *enemy = currentRoom->getEnemyAt(newX, newY);
                     if (enemy)
                     {
                         bool playerWon = fightEnemy(player, *enemy);
