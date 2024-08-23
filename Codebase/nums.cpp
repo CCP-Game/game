@@ -193,97 +193,66 @@ void printNums(const std::string &nums)
     }
 }
 
-
-
-int improvedRandom(int min, int max) {
-    static std::random_device rd; 
-    static std::mt19937 gen(rd()); 
+int improvedRandom(int min, int max)
+{
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(min, max);
     return dis(gen);
 }
 
-std::string generateEquation()
+bool generateEquation()
 {
     int num1 = improvedRandom(1, 100); // Generate first number
     int num2 = improvedRandom(1, 100); // Generate second number
     int result = num1 + num2;
 
-    // Return the equation as a string
+    // Print the equation
     std::string equation = std::to_string(num1) + "+" + std::to_string(num2) + "=";
     printNums(equation);
-    
+
     int answer = getUserInput();
-    if (answer == result) {
-        return "Correct!\n";
-    } else {
-        return "Incorrect!\n";
-    }
+    return answer == result;
 }
-std::string generateSubtractionEquation()
+
+bool generateSubtractionEquation()
 {
-    int num1 = improvedRandom(1, 100); // Generate first number
-    int num2 = improvedRandom(1 , num1); // Generate second number
-    
+    int num1 = improvedRandom(1, 100);  // Generate first number
+    int num2 = improvedRandom(1, num1); // Generate second number
     int result = num1 - num2;
 
-    // Return the equation as a string
+    // Print the equation
     std::string equation = std::to_string(num1) + "-" + std::to_string(num2) + "=";
     printNums(equation);
-    
+
     int answer = getUserInput();
-    if (answer == result) {
-        return "Correct!\n";
-    } else {
-        return "Incorrect!\n";
-    }
+    return answer == result;
 }
 
-std::string generateMultiplicationEquation()
+bool generateMultiplicationEquation()
 {
     int num1 = improvedRandom(1, 10); // Generate first number
     int num2 = improvedRandom(1, 15); // Generate second number
     int result = num1 * num2;
 
-    // Return the equation as a string
+    // Print the equation
     std::string equation = std::to_string(num1) + "*" + std::to_string(num2) + "=";
     printNums(equation);
-    
+
     int answer = getUserInput();
-    if (answer == result) {
-        return "Correct!\n";
-    } else {
-        return "Incorrect!\n";
-    }
+    return answer == result;
 }
 
-std::string generateDivisionEquation()
+bool generateDivisionEquation()
 {
-    int num1 = improvedRandom(1, 100); // Generate first number
-    int num2 = improvedRandom(1, 10); // Generate second number
-    
-    while(num1 % num2 != 0){
-
-        
-        num2 ++;
-
-    }
+    int num2 = improvedRandom(1, 10);        // Generate divisor
+    int num1 = num2 * improvedRandom(1, 10); // Generate dividend as a multiple of num2
     int result = num1 / num2;
 
-
-    
-
-    // Return the equation as a string
+    // Print the equation
     std::string equation = std::to_string(num1) + "/" + std::to_string(num2) + "=";
     printNums(equation);
-    
+
     int answer = getUserInput();
-    if (answer == result) {
-        return "Correct!\n";
-    } else {
-        return "Incorrect!\n";
-    }
+    return answer == result;
 }
-
-
-
-
