@@ -2,6 +2,7 @@
 #include <cstdlib>  // For system("cls")
 #include <ctime>    // For delay function
 #include "nums.h"
+#include "animation.h"
 
 // Function to clear the screen
 void clearScreen() {
@@ -50,7 +51,7 @@ void displayScene(int playerPosition, int enemyPosition, char enemyHead) {
 }
 
 // Function to animate the player moving towards the skeleton
-void animateEncounter(char enemyHead) {
+bool animateEncounter(char enemyHead) {
     int playerPosition = 0;   // Start position of the player
     int enemyPosition = 20;   // Fixed position of the skeleton, closer to the player
 
@@ -65,44 +66,34 @@ void animateEncounter(char enemyHead) {
     clearScreen();
     displayScene(playerPosition, enemyPosition, enemyHead);
     std::string enemyName;
+    bool outcome = false;
 
 
     if (enemyHead == '+') {
         enemyName = "Additor";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
-        std::cout << generateEquation();
+        outcome = generateEquation();
 
         
     } else if (enemyHead == '-') {
         enemyName = "Subraktor";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
-        std::cout << generateSubtractionEquation();
+        outcome = generateSubtractionEquation();
     } else if (enemyHead == '/') {
         
         enemyName = "Divisor";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
-        std::cout << generateDivisionEquation();
+        outcome = generateDivisionEquation();
     } else if (enemyHead == '*') {
 
         enemyName = "Multiplikator";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
-        std::cout << generateMultiplicationEquation();
+        outcome = generateMultiplicationEquation();
     } else {
         enemyName = "Unknown";
     }
-    
-    
 
+    return outcome;
     
 }
 
-int main() {
-    char battleType = '*';  // Example: set the battle type to '*'
-    
-    animateEncounter(battleType);  // Play the encounter animation with the chosen battle type
-
-    // Display the encounter message with the enemy name
-    
-
-    return 0;
-}

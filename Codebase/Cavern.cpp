@@ -13,6 +13,10 @@
 #include "Room.cpp"
 #include "Player.cpp"
 #include "Enemy.cpp"
+#include "nums.h"
+#include "nums.cpp"
+
+
 
 #define WIDTH 25
 #define HEIGHT 13
@@ -55,6 +59,103 @@ bool isKeyPressed(int key)
 {
     return (GetAsyncKeyState(key) & 0x8000) != 0;
 }
+
+// Function to clear the screen
+void clearScreen() {
+    std::system("cls");  // On Unix/Linux/OSX use "clear" instead of "cls"
+}
+
+// Function to create a delay
+void delay(int milliseconds) {
+    clock_t start_time = clock();
+    while (clock() < start_time + milliseconds);
+}
+
+// Function to display the player and skeleton on the same line
+void displayScene(int playerPosition, int enemyPosition, char enemyHead) {
+    // Print player head
+    for (int i = 0; i < playerPosition; ++i) std::cout << ' ';
+    std::cout << "  O  ";
+    
+    // Print spaces between the player and the skeleton
+    for (int i = playerPosition + 5; i < enemyPosition; ++i) std::cout << ' ';
+    
+    // Skeleton head
+    std::cout << "  " << enemyHead << "  " << std::endl;
+
+    // Print player arms/torso
+    for (int i = 0; i < playerPosition; ++i) std::cout << ' ';
+    std::cout << " /|\\ ";
+    
+    // Print spaces between player arms and skeleton arms
+    for (int i = playerPosition + 5; i < enemyPosition; ++i) std::cout << ' ';
+    
+    // Skeleton arms/torso
+    std::cout << " /|\\ " << std::endl;
+
+    // Print player legs
+    for (int i = 0; i < playerPosition; ++i) std::cout << ' ';
+    std::cout << " / \\ ";
+    
+    // Print spaces between player legs and skeleton legs
+    for (int i = playerPosition + 5; i < enemyPosition; ++i) std::cout << ' ';
+    
+    // Skeleton legs
+    std::cout << " / \\ " << std::endl;
+
+    
+}
+
+// Function to animate the player moving towards the skeleton
+bool animateEncounter(char enemyHead) {
+    int playerPosition = 0;   // Start position of the player
+    int enemyPosition = 20;   // Fixed position of the skeleton, closer to the player
+
+    while (playerPosition < enemyPosition - 7) { // 7 is the total width of the player character
+        clearScreen();
+        displayScene(playerPosition, enemyPosition, enemyHead);
+        delay(200);  // Adjust speed here
+        playerPosition++;
+    }
+    
+    // Final encounter, when the player is face-to-face with the skeleton
+    clearScreen();
+    displayScene(playerPosition, enemyPosition, enemyHead);
+    std::string enemyName;
+    bool outcome = false;
+
+
+    if (enemyHead == '+') {
+        enemyName = "Additor";
+        std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
+        outcome = generateEquation();
+
+        
+    } else if (enemyHead == '-') {
+        enemyName = "Subraktor";
+        std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
+        outcome = generateSubtractionEquation();
+    } else if (enemyHead == '/') {
+        
+        enemyName = "Divisor";
+        std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
+        outcome = generateDivisionEquation();
+    } else if (enemyHead == '*') {
+
+        enemyName = "Multiplikator";
+        std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
+        outcome = generateMultiplicationEquation();
+    } else {
+        enemyName = "Additor";
+        std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
+        outcome = generateEquation();
+    }
+
+    return outcome;
+    
+}
+
+
 /**
  * updatePlayerPosition
  * Method takes the current room, player and new x,y coords updating the players position in Room.
@@ -308,75 +409,27 @@ bool fightEnemy(Player &player, Enemy &enemy)
 {
     system("cls");
     clearInputBuffer();
-    std::cout << "You are in combat with an enemy!\n";
 
+    int startHealth = player.getHealth();
     int enemyHealth = enemy.getHealth();
 
-    while (enemyHealth > 0 && player.getHealth() > 0)
-    {
-        std::cout << "Player Health: " << player.getHealth() << " | Enemy Health: " << enemyHealth << "\n";
-        std::cout << "Enter your answer or type 'run' to attempt escape: ";
-        int correctAnswer = generateMathProblem();
-        std::string userInput;
-        std::cin >> userInput;
+    // Run the encounter animation and get the outcome (true = player wins, false = player loses)
+    bool outcome = animateEncounter(enemy.getSkin());
 
-        if (userInput == "run")
-        {
-            if (rand() % 2 == 0) // 50% chance to escape
-            {
-                std::cout << "You successfully escaped!\n";
-                Sleep(2000);
-                return true;
-            }
-            else
-            {
-                std::cout << "Escape failed! The enemy attacks you for 3 damage.\n";
-                player.setHealth(player.getHealth() - 3);
-            }
-        }
-        else
-        {
-            int userAnswer;
-            try
-            {
-                userAnswer = std::stoi(userInput);
-            }
-            catch (const std::invalid_argument &)
-            {
-                std::cout << "Invalid input. The enemy attacks you for 3 damage.\n";
-                player.setHealth(player.getHealth() - 3);
-                Sleep(2000);
-                continue;
-            }
-
-            if (userAnswer == correctAnswer)
-            {
-                std::cout << "Correct! You dealt 10 damage to the enemy!\n";
-                enemyHealth -= 10;
-            }
-            else
-            {
-                std::cout << "Incorrect! You have taken 5 damage!\n";
-                player.setHealth(player.getHealth() - 5);
-            }
-        }
-
-        Sleep(1500);   // Pause for 2 seconds between rounds
-        system("cls"); // Clear the screen for the next round
-    }
-
-    if (player.getHealth() <= 0)
-    {
-        std::cout << "You have been defeated!\n";
-        Sleep(2000);
-        return false;
-    }
-    else
-    {
+    // If the player wins, the enemy's health is set to zero (defeated)
+    if (outcome == true) {
+        enemyHealth = 0;
         std::cout << "You have defeated the enemy!\n";
-        Sleep(2000);
-        return true;
+    } else {
+        // If the player loses, decrease player's health
+        player.setHealth(startHealth - 10);
+        std::cout << "You have been defeated!\n";
     }
+
+    Sleep(2000);
+
+    // Return true if the player is still alive (health > 0), otherwise false
+    return player.getHealth() > 0;
 }
 
 
@@ -519,7 +572,7 @@ int main()
 
             if (currentTime - lastEnemyMoveTime >= enemyMoveDelay)
             {
-                moveEnemies(currentRoom);
+                //moveEnemies(currentRoom);
                 lastEnemyMoveTime = currentTime;
             }
 
