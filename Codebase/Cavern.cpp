@@ -123,20 +123,38 @@ void animateEncounter(char enemyHead) {
 
 }
 
-void displayHealthBar(int health) {
+void displayHealthBars(int playerHealth, int skeletonHealth, std::string enemyName) {
     const int maxHealth = 100; // Assuming health is out of 100
-    int barLength = 20; // Length of the health bar
-    int healthBar = (health * barLength) / maxHealth;
+    int barLength = 10; // Length of the health bar
 
+
+    int playerHealthBar = (playerHealth * barLength) / maxHealth;
+    int skeletonHealthBar = (skeletonHealth * barLength) / maxHealth;
+
+    std::cout << "Player:   ";
     std::cout << "[";
     for (int i = 0; i < barLength; i++) {
-        if (i < healthBar) {
+        if (i < playerHealthBar) {
             std::cout << "=";
         } else {
             std::cout << " ";
         }
     }
-    std::cout << "] " << health << "/" << maxHealth << std::endl;
+    std::cout << "] " << playerHealth << "/" << maxHealth;
+
+    std::cout << " " << enemyName << ": " << std::endl; ;
+
+    
+    
+    std::cout << "[";
+    for (int i = 0; i < barLength; i++) {
+        if (i < skeletonHealthBar) {
+            std::cout << "=";
+        } else {
+            std::cout << " ";
+        }
+    }
+    std::cout << "] " << skeletonHealth << "/" << maxHealth << std::endl;
 }
 
 // Function to animate the player moving towards the skeleton
@@ -179,14 +197,20 @@ bool battleScreen(char enemyHead, Enemy &enemy, Player &Player) {
         encounterType = 1;
         
     }
+    
 
     int playerHealth = Player.getHealth();
     int enemyHealth = enemy.getHealth();
     bool outcome = false;
+    clearScreen();
 
 
     while(playerHealth > 0 && enemyHealth > 0){
-        clearScreen();
+
+        displayScene(12, 40, enemyHead);
+
+        displayHealthBars(playerHealth, enemyHealth, enemyName);
+        
 
         if (encounterType == 1) {
             outcome = generateEquation();
@@ -196,17 +220,21 @@ bool battleScreen(char enemyHead, Enemy &enemy, Player &Player) {
         } else if (encounterType == 3) {
             outcome = generateDivisionEquation();
         } else if (encounterType == 4) {
-            displayHealthBar(playerHealth);
+            
             outcome = generateMultiplicationEquation();
+            
         }
 
         if(outcome){
             enemyHealth -= 10;
+            std::cout << "Effective attack" << std::endl;
         } else {
             playerHealth -= 10;
+            std::cout << "Couldnt block incoming attack" << std::endl;
 
         }
-        displayHealthBar(playerHealth);
+        clearScreen();
+        
         
         
     }
