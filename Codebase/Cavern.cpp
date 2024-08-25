@@ -103,13 +103,12 @@ void displayScene(int playerPosition, int enemyPosition, char enemyHead) {
     // Skeleton legs
     std::cout << " / \\ " << std::endl;
 
-    
 }
 
-// Function to animate the player moving towards the skeleton
-bool animateEncounter(char enemyHead) {
+void animateEncounter(char enemyHead) {
     int playerPosition = 0;   // Start position of the player
     int enemyPosition = 20;   // Fixed position of the skeleton, closer to the player
+
 
     while (playerPosition < enemyPosition - 7) { // 7 is the total width of the player character
         clearScreen();
@@ -121,35 +120,104 @@ bool animateEncounter(char enemyHead) {
     // Final encounter, when the player is face-to-face with the skeleton
     clearScreen();
     displayScene(playerPosition, enemyPosition, enemyHead);
+
+}
+
+void displayHealthBar(int health) {
+    const int maxHealth = 100; // Assuming health is out of 100
+    int barLength = 20; // Length of the health bar
+    int healthBar = (health * barLength) / maxHealth;
+
+    std::cout << "[";
+    for (int i = 0; i < barLength; i++) {
+        if (i < healthBar) {
+            std::cout << "=";
+        } else {
+            std::cout << " ";
+        }
+    }
+    std::cout << "] " << health << "/" << maxHealth << std::endl;
+}
+
+// Function to animate the player moving towards the skeleton
+bool battleScreen(char enemyHead, Enemy &enemy, Player &Player) {
+
+    animateEncounter(enemyHead);
     std::string enemyName;
-    bool outcome = false;
-
-
+    
+    int encounterType = 0;
+    
     if (enemyHead == '+') {
         enemyName = "Additor";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
-        outcome = generateEquation();
+        encounterType = 1;
+        
 
         
     } else if (enemyHead == '-') {
         enemyName = "Subraktor";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
-        outcome = generateSubtractionEquation();
+        encounterType = 2;
+        
+
     } else if (enemyHead == '/') {
         
         enemyName = "Divisor";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
-        outcome = generateDivisionEquation();
+        encounterType = 3;
+        
     } else if (enemyHead == '*') {
 
         enemyName = "Multiplikator";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
-        outcome = generateMultiplicationEquation();
+        encounterType = 4;
+        
+
     } else {
         enemyName = "Additor";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
-        outcome = generateEquation();
+        encounterType = 1;
+        
     }
+
+    int playerHealth = Player.getHealth();
+    int enemyHealth = enemy.getHealth();
+    bool outcome = false;
+
+
+    while(playerHealth > 0 && enemyHealth > 0){
+        clearScreen();
+
+        if (encounterType == 1) {
+            outcome = generateEquation();
+            
+        } else if (encounterType == 2) {
+            outcome = generateSubtractionEquation();
+        } else if (encounterType == 3) {
+            outcome = generateDivisionEquation();
+        } else if (encounterType == 4) {
+            displayHealthBar(playerHealth);
+            outcome = generateMultiplicationEquation();
+        }
+
+        if(outcome){
+            enemyHealth -= 10;
+        } else {
+            playerHealth -= 10;
+
+        }
+        displayHealthBar(playerHealth);
+        
+        
+    }
+    
+    if(playerHealth <= 0){
+        std::cout << "You have been defeated by " << enemyName << "." << std::endl;
+    } else {
+        std::cout << "You have defeated " << enemyName << "." << std::endl;
+
+    }
+
 
     return outcome;
     
@@ -279,8 +347,8 @@ Room *initalize1DMap(int roomLength)
     Room *room9 = new Room(9, 1, WIDTH, HEIGHT);
     Room *room10 = new Room(10, 1, WIDTH, HEIGHT);
 
-    Enemy e1 = Enemy('+', 20);
-    Enemy e2 = Enemy('+', 50);
+    Enemy e1 = Enemy('*', 20);
+    Enemy e2 = Enemy('/', 50);
 
     room1->initializeRoom(5, 'b');
     room2->initializeRoom(5, 'h');
@@ -414,17 +482,17 @@ bool fightEnemy(Player &player, Enemy &enemy)
     int enemyHealth = enemy.getHealth();
 
     // Run the encounter animation and get the outcome (true = player wins, false = player loses)
-    bool outcome = animateEncounter(enemy.getSkin());
+    bool outcome = battleScreen(enemy.getSkin(), enemy, player);
 
     // If the player wins, the enemy's health is set to zero (defeated)
-    if (outcome == true) {
-        enemyHealth = 0;
-        std::cout << "You have defeated the enemy!\n";
-    } else {
-        // If the player loses, decrease player's health
-        player.setHealth(startHealth - 10);
-        std::cout << "You have been defeated!\n";
-    }
+    // if (outcome == true) {
+    //     enemyHealth = 0;
+    //     std::cout << "You have defeated the enemy!\n";
+    // } else {
+    //     // If the player loses, decrease player's health
+    //     player.setHealth(startHealth - 10);
+    //     std::cout << "You have been defeated!\n";
+    // }
 
     Sleep(2000);
 

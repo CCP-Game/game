@@ -51,7 +51,7 @@ void displayScene(int playerPosition, int enemyPosition, char enemyHead) {
 }
 
 // Function to animate the player moving towards the skeleton
-bool animateEncounter(char enemyHead) {
+bool battleScreen(char enemyHead) {
     int playerPosition = 0;   // Start position of the player
     int enemyPosition = 20;   // Fixed position of the skeleton, closer to the player
 
