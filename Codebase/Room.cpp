@@ -2,6 +2,7 @@
 #include "Pos.h"
 #include <iostream>
 #include <string>
+#include <cassert>
 
 /**
  * Room (Default Constructor)
@@ -352,4 +353,21 @@ void Room::setPlayerPos(Pos p){
 
 Pos Room::getPlayerPos(){
     return this->playerPos;
+}
+
+void Room::unittest(){
+    std::cout << "Pos unittest called!";
+    Room testRoom = Room(2, 1, 15, 20);
+    assert(testRoom.getID() == 2);
+    assert(testRoom.getLevel() == 1);
+
+    // assert(testPos.getX() == 5);
+    // assert(testPos.getY() == 10);
+    // testPos.setX(3);
+    // testPos.setY(6);
+    // assert(testPos.getX() == 3);
+    // assert(testPos.getY() == 6);
+    // testPos.setXY(7, 8);
+    // assert(testPos.getX() == 7);
+    // assert(testPos.getY() == 8);
 }
