@@ -12,6 +12,7 @@
 #include "Room.cpp"
 #include "Player.cpp"
 #include "Enemy.cpp"
+#include "nums.h"
 
 #define WIDTH 25
 #define HEIGHT 13
