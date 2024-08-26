@@ -71,7 +71,13 @@ void delay(int milliseconds) {
     while (clock() < start_time + milliseconds);
 }
 
-// Function to display the player and skeleton on the same line
+/**
+ * displayScene
+ * prints the enemy and player on screen
+ * @param playerPosition - psoition to print the player
+ * @param enemyPosition - position to print the enemy
+ * @param enemyHead - the enemy'skin
+ */
 void displayScene(int playerPosition, int enemyPosition, char enemyHead) {
     // Print player head
     for (int i = 0; i < playerPosition; ++i) std::cout << ' ';
@@ -105,6 +111,12 @@ void displayScene(int playerPosition, int enemyPosition, char enemyHead) {
 
 }
 
+
+/**
+ * animateEncounter
+ * does first encounter animation
+ * @param enemyHead - the enemy'skin
+ */
 void animateEncounter(char enemyHead) {
     int playerPosition = 0;   // Start position of the player
     int enemyPosition = 20;   // Fixed position of the skeleton, closer to the player
@@ -123,10 +135,18 @@ void animateEncounter(char enemyHead) {
 
 }
 
+/**
+ * displayHealthBars
+ * displays enemy and player health bars in battle
+ * @param playerHealth - the playes current health
+ * @param playerMaxHealth- player max health
+ * @param playerHealth - the playes current health
+ * @param playerMaxHealth- player max health
+ */
 void displayHealthBars(int playerHealth, int playerMaxHealth, int enemyHealth, int enemyMaxHealth, std::string enemyName) {
     const int barLength = 10;  // Length of the health bar
 
-    int playerHealthBar = (playerHealth * barLength) / playerMaxHealth;
+    int playerHealthBar = 100;
     int enemyHealthBar = (enemyHealth * barLength) / enemyMaxHealth;
 
     // Player Health Bar
@@ -138,7 +158,7 @@ void displayHealthBars(int playerHealth, int playerMaxHealth, int enemyHealth, i
             std::cout << " ";
         }
     }
-    std::cout << "] " << playerHealth << "/" << playerMaxHealth;
+    std::cout << "] " << playerHealth << "/" << 100;
 
     // Enemy Health Bar on the same line
     std::cout << "   " << enemyName << ": [";
@@ -152,8 +172,14 @@ void displayHealthBars(int playerHealth, int playerMaxHealth, int enemyHealth, i
     std::cout << "] " << enemyHealth << "/" << enemyMaxHealth << std::endl;
 }
 
-// Function to animate the player moving towards the skeleton
-bool battleScreen(char enemyHead, Enemy &enemy, Player &Player) {
+/**
+ * battleScreen
+ * Method player and enemy and simulates a battle
+ * @param &enemy - the enemy ran into
+ * @param &player- the current player of Player class
+ */
+bool battleScreen(Enemy &enemy, Player &Player) {
+    char enemyHead = enemy.getSkin();
 
     animateEncounter(enemyHead);
     std::string enemyName;
@@ -176,7 +202,7 @@ bool battleScreen(char enemyHead, Enemy &enemy, Player &Player) {
     } else if (enemyHead == '/') {
         
         enemyName = "Divisor";
-        std::cout << "\nYou have encountered   " << enemyName << "." << std::endl;
+        std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
         encounterType = 3;
         
     } else if (enemyHead == '*') {
@@ -188,10 +214,12 @@ bool battleScreen(char enemyHead, Enemy &enemy, Player &Player) {
 
     } else {
         enemyName = "Additor";
-        std::cout << "\nYou have encountered   " << enemyName << "." << std::endl;
+        std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
+        
         encounterType = 1;
         
     }
+    delay(1000);
 
     int playerStartHealth = Player.getHealth();
     int enemyStartHealth = enemy.getHealth();
@@ -246,7 +274,7 @@ bool battleScreen(char enemyHead, Enemy &enemy, Player &Player) {
     }
     delay(750);
 
-
+    Player.setHealth(playerHealth);
     return outcome;
     
 }
@@ -506,21 +534,8 @@ bool fightEnemy(Player &player, Enemy &enemy)
     system("cls");
     clearInputBuffer();
 
-    int startHealth = player.getHealth();
-    int enemyHealth = enemy.getHealth();
-
     // Run the encounter animation and get the outcome (true = player wins, false = player loses)
-    bool outcome = battleScreen(enemy.getSkin(), enemy, player);
-
-    // If the player wins, the enemy's health is set to zero (defeated)
-    // if (outcome == true) {
-    //     enemyHealth = 0;
-    //     std::cout << "You have defeated the enemy!\n";
-    // } else {
-    //     // If the player loses, decrease player's health
-    //     player.setHealth(startHealth - 10);
-    //     std::cout << "You have been defeated!\n";
-    // }
+    bool outcome = battleScreen(enemy, player);
 
     Sleep(2000);
 
