@@ -123,16 +123,14 @@ void animateEncounter(char enemyHead) {
 
 }
 
-void displayHealthBars(int playerHealth, int skeletonHealth, std::string enemyName) {
-    const int maxHealth = 100; // Assuming health is out of 100
-    int barLength = 10; // Length of the health bar
+void displayHealthBars(int playerHealth, int playerMaxHealth, int enemyHealth, int enemyMaxHealth, std::string enemyName) {
+    const int barLength = 10;  // Length of the health bar
 
+    int playerHealthBar = (playerHealth * barLength) / playerMaxHealth;
+    int enemyHealthBar = (enemyHealth * barLength) / enemyMaxHealth;
 
-    int playerHealthBar = (playerHealth * barLength) / maxHealth;
-    int skeletonHealthBar = (skeletonHealth * barLength) / maxHealth;
-
-    std::cout << "Player:   ";
-    std::cout << "[";
+    // Player Health Bar
+    std::cout << "Player:   [";
     for (int i = 0; i < barLength; i++) {
         if (i < playerHealthBar) {
             std::cout << "=";
@@ -140,21 +138,18 @@ void displayHealthBars(int playerHealth, int skeletonHealth, std::string enemyNa
             std::cout << " ";
         }
     }
-    std::cout << "] " << playerHealth << "/" << maxHealth;
+    std::cout << "] " << playerHealth << "/" << playerMaxHealth;
 
-    std::cout << " " << enemyName << ": " << std::endl; ;
-
-    
-    
-    std::cout << "[";
+    // Enemy Health Bar on the same line
+    std::cout << "   " << enemyName << ": [";
     for (int i = 0; i < barLength; i++) {
-        if (i < skeletonHealthBar) {
+        if (i < enemyHealthBar) {
             std::cout << "=";
         } else {
             std::cout << " ";
         }
     }
-    std::cout << "] " << skeletonHealth << "/" << maxHealth << std::endl;
+    std::cout << "] " << enemyHealth << "/" << enemyMaxHealth << std::endl;
 }
 
 // Function to animate the player moving towards the skeleton
@@ -180,7 +175,7 @@ bool battleScreen(char enemyHead, Enemy &enemy, Player &Player) {
 
     } else if (enemyHead == '/') {
         
-        enemyName = "Divisor";
+        enemyName = "  Divisor";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
         encounterType = 3;
         
@@ -192,24 +187,27 @@ bool battleScreen(char enemyHead, Enemy &enemy, Player &Player) {
         
 
     } else {
-        enemyName = "Additor";
+        enemyName = "  Additor";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
         encounterType = 1;
         
     }
-    
+
+    int playerStartHealth = Player.getHealth();
+    int enemyStartHealth = enemy.getHealth();
 
     int playerHealth = Player.getHealth();
     int enemyHealth = enemy.getHealth();
+
     bool outcome = false;
     clearScreen();
 
 
     while(playerHealth > 0 && enemyHealth > 0){
 
-        displayScene(12, 40, enemyHead);
+        displayScene(12, 50, enemyHead);
 
-        displayHealthBars(playerHealth, enemyHealth, enemyName);
+        displayHealthBars(playerHealth, playerStartHealth, enemyHealth, enemyStartHealth, enemyName);
         
 
         if (encounterType == 1) {
@@ -233,6 +231,7 @@ bool battleScreen(char enemyHead, Enemy &enemy, Player &Player) {
             std::cout << "Couldnt block incoming attack" << std::endl;
 
         }
+        delay(750);
         clearScreen();
         
         
@@ -245,6 +244,7 @@ bool battleScreen(char enemyHead, Enemy &enemy, Player &Player) {
         std::cout << "You have defeated " << enemyName << "." << std::endl;
 
     }
+    delay(750);
 
 
     return outcome;
@@ -525,7 +525,7 @@ bool fightEnemy(Player &player, Enemy &enemy)
     Sleep(2000);
 
     // Return true if the player is still alive (health > 0), otherwise false
-    return player.getHealth() > 0;
+    return outcome;
 }
 
 
