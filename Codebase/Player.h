@@ -6,7 +6,7 @@
 
 class Player{
     public:
-
+    
     Player(char skin, int colour);
     Player();
     int getHealth();
@@ -16,6 +16,8 @@ class Player{
     const Pos& getPos() const;
     void setPosition(int x, int y);
     void setHealth(int health);
+
+    static void unittest();
 
 private:
     
