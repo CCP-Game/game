@@ -175,8 +175,8 @@ bool battleScreen(char enemyHead, Enemy &enemy, Player &Player) {
 
     } else if (enemyHead == '/') {
         
-        enemyName = "  Divisor";
-        std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
+        enemyName = "Divisor";
+        std::cout << "\nYou have encountered   " << enemyName << "." << std::endl;
         encounterType = 3;
         
     } else if (enemyHead == '*') {
@@ -187,8 +187,8 @@ bool battleScreen(char enemyHead, Enemy &enemy, Player &Player) {
         
 
     } else {
-        enemyName = "  Additor";
-        std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
+        enemyName = "Additor";
+        std::cout << "\nYou have encountered   " << enemyName << "." << std::endl;
         encounterType = 1;
         
     }
