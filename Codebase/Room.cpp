@@ -382,10 +382,10 @@ void Room::unittest(){
     //Room roomDefault = Room();
     //assert(roomDefault.get);
     Room testRoom = Room(2, 1, 15, 20);
-    // assert(testRoom.getID() == 2);
-    // assert(testRoom.getLevel() == 1);
-    // testRoom.setCharAt(5, 4, 'G');
-    // assert(testRoom.getCharAt(5, 4) == 'G');
+    assert(testRoom.getID() == 2);
+    assert(testRoom.getLevel() == 1);
+    testRoom.setCharAt(5, 4, 'G');
+    assert(testRoom.getCharAt(5, 4) == 'G');
     //testRoom.setEnemyAt(3, 3, Enemy('E', 5));
     //testRoom.initializeRoom(10, 'b');
     // testRoom.initializeRoom(5, 'v');
