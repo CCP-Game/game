@@ -379,9 +379,9 @@ void Room::setRoomINFO(std::string info){
 void Room::unittest(){
     //std::cout << "Pos unittest called!";
     
-    Room roomDefault = Room();
+    //Room roomDefault = Room();
     //assert(roomDefault.get);
-    // Room testRoom = Room(2, 1, 15, 20);
+    Room testRoom = Room(2, 1, 15, 20);
     // assert(testRoom.getID() == 2);
     // assert(testRoom.getLevel() == 1);
     // testRoom.setCharAt(5, 4, 'G');
