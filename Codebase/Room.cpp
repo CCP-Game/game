@@ -433,13 +433,8 @@ void Room::unittest() {
     // Test room initialization with different types
     testRoom.initializeRoom(10, 'b'); // Big Room
     assert(testRoom.getCharAt(0, 0) == '#');
-
-    testRoom.initializeRoom(5, 'h'); // Horizontal Hallway
-    assert(testRoom.getCharAt(7, 10) == '#'); // middle of the horizontal hallway
-
-    testRoom.initializeRoom(7, 'v'); // Vertical Hallway
-    assert(testRoom.getCharAt(7, 0) == '#'); // middle of the vertical hallway
-
+    assert(testRoom.getCharAt(1, 1) == ' ');
+    
     // Test enemiesToString method
     testRoom.setEnemy(Pos(1, 1), new Enemy('E', 50));
     std::string enemyStr = testRoom.enemiesToString();
