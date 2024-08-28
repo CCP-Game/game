@@ -16,6 +16,7 @@ class Player{
     const Pos& getPos() const;
     void setPosition(int x, int y);
     void setHealth(int health);
+    static void unittest();
 
 private:
     

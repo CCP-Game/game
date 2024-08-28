@@ -31,6 +31,7 @@ public:
     void setSkin(char skin);
     void setDifficulty(int difficulty);
 
+    static void unittest();
 
 };
 
