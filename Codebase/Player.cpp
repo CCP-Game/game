@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Pos.h"
 #include "Room.h"
+#include <cassert>
 
 // Constructor with parameters
 Player::Player(char skin, int colour) : skin(skin), colour(colour) {
@@ -43,3 +44,16 @@ void Player::setPosition(int x, int y) {
 void Player::setHealth(int health) {
     this->health = health;
 }
+
+void Player::unittest(){
+    Player testDefault = Player();
+    //assert(testDefault.getSkin() == 'P');  
+    
+    Player testPlayer = Player('A', 5);
+    assert(testPlayer.getHealth() == 100);
+    assert(testPlayer.getSkin() == 'A');  
+    //assert(testPlayer.getCurrentRoom() == type(Room));
+    testPlayer.setHealth(50);
+    assert(testPlayer.getHealth() == 50);
+}
+

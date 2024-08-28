@@ -2,6 +2,7 @@
 #include "Pos.h"
 #include <iostream>
 #include <string>
+#include <cassert>
 
 /**
  * Room (Default Constructor)
@@ -369,4 +370,29 @@ std::string Room::getRoomINFO(){
 
 void Room::setRoomINFO(std::string info){
     this->roomINFO = info;
+}
+
+void Room::unittest(){
+    //std::cout << "Pos unittest called!";
+    
+    //Room roomDefault = Room();
+    //assert(roomDefault.get);
+    Room testRoom = Room(2, 1, 15, 20);
+    assert(testRoom.getID() == 2);
+    assert(testRoom.getLevel() == 1);
+    testRoom.setCharAt(5, 4, 'G');
+    assert(testRoom.getCharAt(5, 4) == 'G');
+    //these don't appear to work..
+    //testRoom.setEnemyAt(3, 3, Enemy('E', 5));
+    //testRoom.initializeRoom(10, 'b');
+    // testRoom.initializeRoom(5, 'v');
+    // testRoom.initializeRoom(7, 'h');
+
+    testRoom.setEnemyAt(5, 6, new Enemy('E', 100));
+    assert(testRoom.getCharAt(5, 6) == 'E');
+    //testRoom.getEnemies();
+    std::cout << testRoom.enemiesToString();
+    testRoom.getEnemyAt(5, 6);
+    testRoom.removeEnemyAt(5, 6);
+    testRoom.getDisplay();
 }
