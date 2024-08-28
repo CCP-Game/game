@@ -144,7 +144,7 @@ void animateEncounter(char enemyHead) {
 void displayHealthBars(int playerHealth, int playerMaxHealth, int enemyHealth, int enemyMaxHealth, std::string enemyName) {
     const int barLength = 10;  // Length of the health bar
 
-    int playerHealthBar = 100;
+    int playerHealthBar = (playerHealth * barLength) / playerMaxHealth;
     int enemyHealthBar = (enemyHealth * barLength) / enemyMaxHealth;
 
     // Player Health Bar
@@ -643,6 +643,10 @@ int generateMathProblem()
 // }
 
 bool fightEnemy(Player &player, Enemy *enemy){
+
+    system("cls");
+
+    clearInputBuffer();
 
     bool outcome = battleScreen(*enemy, player);
 
