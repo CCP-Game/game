@@ -136,6 +136,50 @@ void animateEncounter(char enemyHead) {
     displayScene(playerPosition, enemyPosition, enemyHead);
 
 }
+/**
+ * setFGColor
+ * This method uses ANSI escape codes to set the output color to console for the foreground.
+ * @param int textColor - this is the color we want has to be > 1csc
+ */
+/*!
+    @brief 
+    @details 
+    @param 
+*/
+void setFGColour(int textColour = 255)
+{
+    std::cout << "\x1b[38;5;";
+    if (textColour != -1)
+    {
+        std::cout << textColour;
+    }
+
+    std::cout << "m";
+}
+/**
+ * setBGColour
+ * This method, using ASNI escape codes, sets the Background Colour in the console
+ * @param int bgColour
+ * efefef
+ */
+void setBGColour(int textColour = 255)
+{
+    std::cout << "\x1b[48;5;";
+    if (textColour != -1)
+    {
+        std::cout << textColour;
+    }
+
+    std::cout << "m";
+}
+/**
+ * resetColor
+ * This method resets the output to it's default Colour
+ */
+void resetColour()
+{
+    std::cout << "\033[0m";
+}
 /*!
     @brief displays the enemy and player health bars in battle
     @param playerHealth [in] int, The players current health
@@ -344,49 +388,7 @@ Pos getDoorsOpposite(Pos oldPos)
         return Pos(-1, -1); // Indicating an invalid position
     }
 }
-/**
- * setFGColor
- * This method uses ANSI escape codes to set the output color to console for the foreground.
- * @param int textColor - this is the color we want has to be > 1
- */
-/*!
-    @brief 
-    @details 
-    @param 
-*/
-void setFGColour(int textColour = 255)
-{
-    std::cout << "\x1b[38;5;";
-    if (textColour != -1)
-    {
-        std::cout << textColour;
-    }
 
-    std::cout << "m";
-}
-/**
- * setBGColour
- * This method, using ASNI escape codes, sets the Background Colour in the console
- * @param int bgColour
- */
-void setBGColour(int textColour = 255)
-{
-    std::cout << "\x1b[48;5;";
-    if (textColour != -1)
-    {
-        std::cout << textColour;
-    }
-
-    std::cout << "m";
-}
-/**
- * resetColor
- * This method resets the output to it's default Colour
- */
-void resetColour()
-{
-    std::cout << "\033[0m";
-}
 /**
  * printToConsole
  * - This method takes a 2d char array (a display) printing it to the console
