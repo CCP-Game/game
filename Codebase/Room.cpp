@@ -386,8 +386,15 @@ void Room::unittest(){
     assert(testRoom.getLevel() == 1);
     testRoom.setCharAt(5, 4, 'G');
     assert(testRoom.getCharAt(5, 4) == 'G');
+    //these don't appear to work..
     //testRoom.setEnemyAt(3, 3, Enemy('E', 5));
     //testRoom.initializeRoom(10, 'b');
     // testRoom.initializeRoom(5, 'v');
     // testRoom.initializeRoom(7, 'h');
+
+    testRoom.setEnemyAt(5, 6, new Enemy('E', 100));
+    //testRoom.getEnemies();
+    std::cout << testRoom.enemiesToString();
+    testRoom.getDisplay();
+    testRoom.removeEnemyAt(5, 6);
 }
