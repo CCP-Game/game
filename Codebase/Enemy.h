@@ -12,9 +12,10 @@ private:
 
 public:
     // Constructors
+    static void unittest();
     Enemy(Pos pos, char skin, int difficulty);
     Enemy(char skin, int health);
-
+    
     // Getters
     int getHealth();
     Pos getPos();
@@ -31,7 +32,7 @@ public:
     void setSkin(char skin);
     void setDifficulty(int difficulty);
 
-
+    static void unittest();
 };
 
 #endif // ENEMY_H

@@ -6,7 +6,7 @@
 
 class Player{
     public:
-
+    static void unittest();
     Player(char skin, int colour);
     Player();
     int getHealth();

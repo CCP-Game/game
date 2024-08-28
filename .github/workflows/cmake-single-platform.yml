@@ -1,69 +1,6 @@
 # This starter workflow is for a CMake project running on a single platform. There is a different starter workflow if you need cross-platform coverage.
 # See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-multi-platform.yml
-name: CMake on a single platform
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
-
-jobs:
-  build:
-    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
-    # You can convert this to a matrix build if you need cross-platform coverage.
-    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Configure CMake
-      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
-    - name: Build
-      # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-
-    - name: Test
-      working-directory: ${{github.workspace}}/build
-      # Execute tests defined by the CMake configuration.
-      run: ctest -C ${{env.BUILD_TYPE}}
-
-    # - name: Install OpenCppCoverage
-    #   run: |
-    #     choco install OpenCppCoverage -y
-    #     echo "C:\\Program Files\\OpenCppCoverage" >> $env:GITHUB_PATH
-
-    # - name: List Files in Release Directory
-    #   run: dir ${{github.workspace}}\build  
-
-    #   #OpenCppCoverage --sources=${{github.workspace}} --export_type=binary:Test.cov -- Test.exe
-    # - name: Run Coverage and Tests
-    #   working-directory: ${{github.workspace}}/build
-    #   run: |
-    #     & "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe" --verbose --export_type=binary:Test.cov --excluded_modules="C:\Windows\System32\*.dll" --cover_children --sources="${{github.workspace}}" -- "${{github.workspace}}\build\Release\Test.exe"
-        
-    # - name: List Files in Release Directory
-    #   run: dir ${{github.workspace}}\build  
-
-    # - name: List Files in Release Directory
-    #   run: dir ${{github.workspace}}\build\Release 
-
-    # - name: Upload coverage to Codecov
-    #   uses: codecov/codecov-action@v2
-    #   with: 
-    #     token: ${{ secrets.CODECOV_TOKEN }}
-    #     files: Test.cov
-    #     fail_ci_if_error: true
-
-# name: CMakeBuild
+# name: CMake on a single platform
 
 # on:
 #   push:
@@ -72,44 +9,107 @@ jobs:
 #     branches: [ "main" ]
 
 # env:
-#   # Configuration type to build.
-#   BUILD_CONFIGURATION: Debug
-
-# permissions:
-#   contents: read
+#   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+#   BUILD_TYPE: Release
 
 # jobs:
 #   build:
+#     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+#     # You can convert this to a matrix build if you need cross-platform coverage.
+#     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
 #     runs-on: windows-latest
 
 #     steps:
 #     - uses: actions/checkout@v4
 
-#     - name: Set up CMake
-#       uses: lukka/get-cmake@v3.28.1
-
-#     - name: Add MSBuild to PATH
-#       uses: microsoft/setup-msbuild@v1.0.2
-
 #     - name: Configure CMake
-#       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_CONFIGURATION}}
+#       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+#       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+#       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
-#     - name: Build with CMake
-#       run: cmake --build build --config ${{env.BUILD_CONFIGURATION}} --parallel
+#     - name: Build
+#       # Build your program with the given configuration
+#       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-#     - name: Install OpenCppCoverage
-#       run: |
-#         choco install OpenCppCoverage
-#         echo "C:\Program Files\OpenCppCoverage" >> $env:GITHUB_PATH
+#     - name: Test
+#       working-directory: ${{github.workspace}}/build
+#       # Execute tests defined by the CMake configuration.
+#       run: ctest -C ${{env.BUILD_TYPE}}
 
-#     - name: Run Tests and Generate Coverage Report
-#       shell: cmd
-#       run: |
-#         OpenCppCoverage --verbose --modules build\${{env.BUILD_CONFIGURATION}}\* --export_type cobertura:coverage.xml -- "build\Debug\Test.exe"
+#     # - name: Install OpenCppCoverage
+#     #   run: |
+#     #     choco install OpenCppCoverage -y
+#     #     echo "C:\\Program Files\\OpenCppCoverage" >> $env:GITHUB_PATH
 
-#     - name: Upload Coverage Report to Codecov
-#       uses: codecov/codecov-action@v4
-#       with:
-#         fail_ci_if_error: true
-#         files: coverage.xml
-#         token: ${{ secrets.CODECOV_TOKEN }}
+#     # - name: List Files in Release Directory
+#     #   run: dir ${{github.workspace}}\build  
+
+#     #   #OpenCppCoverage --sources=${{github.workspace}} --export_type=binary:Test.cov -- Test.exe
+#     # - name: Run Coverage and Tests
+#     #   working-directory: ${{github.workspace}}/build
+#     #   run: |
+#     #     & "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe" --verbose --export_type=binary:Test.cov --excluded_modules="C:\Windows\System32\*.dll" --cover_children --sources="${{github.workspace}}" -- "${{github.workspace}}\build\Release\Test.exe"
+        
+#     # - name: List Files in Release Directory
+#     #   run: dir ${{github.workspace}}\build  
+
+#     # - name: List Files in Release Directory
+#     #   run: dir ${{github.workspace}}\build\Release 
+
+#     # - name: Upload coverage to Codecov
+#     #   uses: codecov/codecov-action@v2
+#     #   with: 
+#     #     token: ${{ secrets.CODECOV_TOKEN }}
+#     #     files: Test.cov
+#     #     fail_ci_if_error: true
+
+name: CMakeBuild
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  # Configuration type to build.
+  BUILD_CONFIGURATION: Debug
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up CMake
+      uses: lukka/get-cmake@v3.28.1
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Configure CMake
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_CONFIGURATION}}
+
+    - name: Build with CMake
+      run: cmake --build build --config ${{env.BUILD_CONFIGURATION}} --parallel
+
+    - name: Install OpenCppCoverage
+      run: |
+        choco install OpenCppCoverage
+        echo "C:\Program Files\OpenCppCoverage" >> $env:GITHUB_PATH
+
+    - name: Run Tests and Generate Coverage Report
+      shell: cmd
+      run: |
+        OpenCppCoverage --verbose --modules build\${{env.BUILD_CONFIGURATION}}\* --export_type cobertura:coverage.xml -- "build\Debug\Test.exe"
+
+    - name: Upload Coverage Report to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        fail_ci_if_error: true
+        files: coverage.xml
+        token: ${{ secrets.CODECOV_TOKEN }}

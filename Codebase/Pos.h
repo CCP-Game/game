@@ -1,5 +1,12 @@
 #ifndef Pos_H
 #define Pos_H
+
+/*!
+    @file
+    @brief Class to represent the position of another object.
+    @authors CCP
+    @copyright CCP
+*/
 class Pos
 {
 public:

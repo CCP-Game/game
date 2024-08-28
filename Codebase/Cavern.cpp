@@ -4,6 +4,7 @@
 #include <windows.h>
 #pragma comment(lib, "User32.lib")
 #include <conio.h> // For _kbhit() and _getch()
+
 #include "Pos.h"
 #include "Room.h"
 #include "Player.h"
@@ -12,6 +13,10 @@
 #include "Room.cpp"
 #include "Player.cpp"
 #include "Enemy.cpp"
+#include "nums.h"
+#include "nums.cpp"
+
+
 
 #define WIDTH 25
 #define HEIGHT 13
@@ -54,6 +59,227 @@ bool isKeyPressed(int key)
 {
     return (GetAsyncKeyState(key) & 0x8000) != 0;
 }
+
+// Function to clear the screen
+void clearScreen() {
+    std::system("cls");  // On Unix/Linux/OSX use "clear" instead of "cls"
+}
+
+// Function to create a delay
+void delay(int milliseconds) {
+    clock_t start_time = clock();
+    while (clock() < start_time + milliseconds);
+}
+
+/**
+ * displayScene
+ * prints the enemy and player on screen
+ * @param playerPosition - psoition to print the player
+ * @param enemyPosition - position to print the enemy
+ * @param enemyHead - the enemy'skin
+ */
+void displayScene(int playerPosition, int enemyPosition, char enemyHead) {
+    // Print player head
+    for (int i = 0; i < playerPosition; ++i) std::cout << ' ';
+    std::cout << "  O  ";
+    
+    // Print spaces between the player and the skeleton
+    for (int i = playerPosition + 5; i < enemyPosition; ++i) std::cout << ' ';
+    
+    // Skeleton head
+    std::cout << "  " << enemyHead << "  " << std::endl;
+
+    // Print player arms/torso
+    for (int i = 0; i < playerPosition; ++i) std::cout << ' ';
+    std::cout << " /|\\ ";
+    
+    // Print spaces between player arms and skeleton arms
+    for (int i = playerPosition + 5; i < enemyPosition; ++i) std::cout << ' ';
+    
+    // Skeleton arms/torso
+    std::cout << " /|\\ " << std::endl;
+
+    // Print player legs
+    for (int i = 0; i < playerPosition; ++i) std::cout << ' ';
+    std::cout << " / \\ ";
+    
+    // Print spaces between player legs and skeleton legs
+    for (int i = playerPosition + 5; i < enemyPosition; ++i) std::cout << ' ';
+    
+    // Skeleton legs
+    std::cout << " / \\ " << std::endl;
+
+}
+
+
+/**
+ * animateEncounter
+ * does first encounter animation
+ * @param enemyHead - the enemy'skin
+ */
+void animateEncounter(char enemyHead) {
+    int playerPosition = 0;   // Start position of the player
+    int enemyPosition = 20;   // Fixed position of the skeleton, closer to the player
+
+
+    while (playerPosition < enemyPosition - 7) { // 7 is the total width of the player character
+        clearScreen();
+        displayScene(playerPosition, enemyPosition, enemyHead);
+        delay(200);  // Adjust speed here
+        playerPosition++;
+    }
+    
+    // Final encounter, when the player is face-to-face with the skeleton
+    clearScreen();
+    displayScene(playerPosition, enemyPosition, enemyHead);
+
+}
+
+/**
+ * displayHealthBars
+ * displays enemy and player health bars in battle
+ * @param playerHealth - the playes current health
+ * @param playerMaxHealth- player max health
+ * @param playerHealth - the playes current health
+ * @param playerMaxHealth- player max health
+ */
+void displayHealthBars(int playerHealth, int playerMaxHealth, int enemyHealth, int enemyMaxHealth, std::string enemyName) {
+    const int barLength = 10;  // Length of the health bar
+
+    int playerHealthBar = 100;
+    int enemyHealthBar = (enemyHealth * barLength) / enemyMaxHealth;
+
+    // Player Health Bar
+    std::cout << "Player:   [";
+    for (int i = 0; i < barLength; i++) {
+        if (i < playerHealthBar) {
+            std::cout << "=";
+        } else {
+            std::cout << " ";
+        }
+    }
+    std::cout << "] " << playerHealth << "/" << 100;
+
+    // Enemy Health Bar on the same line
+    std::cout << "   " << enemyName << ": [";
+    for (int i = 0; i < barLength; i++) {
+        if (i < enemyHealthBar) {
+            std::cout << "=";
+        } else {
+            std::cout << " ";
+        }
+    }
+    std::cout << "] " << enemyHealth << "/" << enemyMaxHealth << std::endl;
+}
+
+/**
+ * battleScreen
+ * Method player and enemy and simulates a battle
+ * @param &enemy - the enemy ran into
+ * @param &player- the current player of Player class
+ */
+bool battleScreen(Enemy &enemy, Player &Player) {
+    char enemyHead = enemy.getSkin();
+
+    animateEncounter(enemyHead);
+    std::string enemyName;
+    
+    int encounterType = 0;
+    
+    if (enemyHead == '+') {
+        enemyName = "Additor";
+        std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
+        encounterType = 1;
+        
+
+        
+    } else if (enemyHead == '-') {
+        enemyName = "Subraktor";
+        std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
+        encounterType = 2;
+        
+
+    } else if (enemyHead == '/') {
+        
+        enemyName = "Divisor";
+        std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
+        encounterType = 3;
+        
+    } else if (enemyHead == '*') {
+
+        enemyName = "Multiplikator";
+        std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
+        encounterType = 4;
+        
+
+    } else {
+        enemyName = "Additor";
+        std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
+        
+        encounterType = 1;
+        
+    }
+    delay(1000);
+
+    int playerStartHealth = Player.getHealth();
+    int enemyStartHealth = enemy.getHealth();
+
+    int playerHealth = Player.getHealth();
+    int enemyHealth = enemy.getHealth();
+
+    bool outcome = false;
+    clearScreen();
+
+
+    while(playerHealth > 0 && enemyHealth > 0){
+
+        displayScene(12, 50, enemyHead);
+
+        displayHealthBars(playerHealth, playerStartHealth, enemyHealth, enemyStartHealth, enemyName);
+        
+
+        if (encounterType == 1) {
+            outcome = generateEquation();
+            
+        } else if (encounterType == 2) {
+            outcome = generateSubtractionEquation();
+        } else if (encounterType == 3) {
+            outcome = generateDivisionEquation();
+        } else if (encounterType == 4) {
+            
+            outcome = generateMultiplicationEquation();
+            
+        }
+
+        if(outcome){
+            enemyHealth -= 10;
+            std::cout << "Effective attack" << std::endl;
+        } else {
+            playerHealth -= 10;
+            std::cout << "Couldnt block incoming attack" << std::endl;
+
+        }
+        delay(750);
+        clearScreen();
+        
+        
+        
+    }
+    
+    if(playerHealth <= 0){
+        std::cout << "You have been defeated by " << enemyName << "." << std::endl;
+    } else {
+        std::cout << "You have defeated " << enemyName << "." << std::endl;
+
+    }
+    delay(750);
+
+    Player.setHealth(playerHealth);
+    return outcome;
+    
+}
+
+
 /**
  * updatePlayerPosition
  * Method takes the current room, player and new x,y coords updating the players position in Room.
@@ -119,34 +345,24 @@ Pos getDoorsOpposite(Pos oldPos)
         return Pos(-1, -1); // Indicating an invalid position
     }
 }
+
 /**
- * setFGColor
- * This method uses ANSI escape codes to set the output color to console for the foreground.
+ * setColor
+ * This method uses ANSI escape codes to set the output color to console.
  * @param int textColor - this is the color we want has to be > 1
+ * @param int bgColor - this is the background colour has to be > 1
  */
-void setFGColour(int textColour = 255)
+void setColour(int textColor, int bgColor = -1)
 {
-    std::cout << "\x1b[38;5;";
-    if (textColour != -1)
+    std::cout << "\033[";
+    if (textColor != -1)
     {
-        std::cout << textColour;
+        std::cout << textColor;
     }
-   
-    std::cout << "m";
-}
-/**
-* setBGColour
-* This method, using ASNI escape codes, sets the Background Colour in the console
-* @param int bgColour
-*/
-void setBGColour(int textColour = 255)
-{
-    std::cout << "\x1b[48;5;";
-    if (textColour != -1)
+    if (bgColor != -1)
     {
-        std::cout << textColour;
+        std::cout << ";" << bgColor;
     }
-   
     std::cout << "m";
 }
 /**
@@ -163,7 +379,7 @@ void resetColour()
  * @param display - the inputted 2d char array.
  */
 /**
- * initalizeTutorialMap
+ * initalize1DMap
  * Method implements a simple "linked-list-style" 1D map of rooms. Returning the first room.
  * @param roomSize
  * @return the first room in the linked list.
@@ -174,7 +390,7 @@ void resetColour()
 // top = Pos(WIDTH/2, 0)
 // bottom = Pos(WIDTH/2, HEIGHT-1)
 
-Room *initalizeTutorialMap(int roomLength)
+Room *initalize1DMap(int roomLength)
 {
     Room *room1 = new Room(1, 1, WIDTH, HEIGHT);
     Room *room2 = new Room(2, 1, WIDTH, HEIGHT);
@@ -187,9 +403,9 @@ Room *initalizeTutorialMap(int roomLength)
     Room *room9 = new Room(9, 1, WIDTH, HEIGHT);
     Room *room10 = new Room(10, 1, WIDTH, HEIGHT);
 
-    Enemy* e1 = new Enemy('+', 20);
-    Enemy* e2 = new Enemy('+', 50);
-    //Initalise the rooms grid
+    Enemy e1 = Enemy('*', 20);
+    Enemy e2 = Enemy('/', 50);
+
     room1->initializeRoom(5, 'b');
     room2->initializeRoom(5, 'h');
     room3->initializeRoom(5, 'b');
@@ -200,8 +416,7 @@ Room *initalizeTutorialMap(int roomLength)
     room8->initializeRoom(5, 'h');
     room9->initializeRoom(5, 'b');
     room10->initializeRoom(5, 'v');
-    //Add Information to each room.
-    room1->setRoomINFO("USE W A S D to move!\nThe \"D\" refers to a Door! ");
+
     // Set door positions for each room
     room1->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room2); // Right to Room 2
     room1->setEnemy(Pos(3, 5), e1);                    // Enemy to the side of the room
@@ -249,22 +464,19 @@ void printToConsole(char **display)
     {
         for (int x = 0; x < WIDTH; x++)
         {
-            setFGColour(124);
+            setColour(31);
 
             if (display[y][x] == 'D')
             {
-                std::cout << "\033[1m";
-                setFGColour(130);
-               
+                setColour(32, 1);
             }
             if (display[y][x] == '#')
             {
-                setFGColour(65);
-                setBGColour(236);
+                setColour(34);
             }
             if (display[y][x] == 'C')
             {
-                setFGColour(226);
+                setColour(33);
             }
 
             std::cout << display[y][x];
@@ -279,7 +491,7 @@ boolean touchingEnemy(Room *room, Player player)
     Pos playerPos = player.getPos();
     for (size_t i = 0; i < room->getEnemies().size(); i++)
     {
-        if (room->getEnemies()[i]->getX() == playerPos.getX() && room->getEnemies()[i]->getY() == playerPos.getY())
+        if (room->getEnemies()[i].getX() == playerPos.getX() && room->getEnemies()[i].getY() == playerPos.getY())
         {
             return true;
         }
@@ -317,85 +529,24 @@ int generateMathProblem()
     }
 }
 
-bool fightEnemy(Player &player, Enemy *enemy)
+bool fightEnemy(Player &player, Enemy &enemy)
 {
     system("cls");
     clearInputBuffer();
-    std::cout << "You are in combat with an enemy!\n";
 
-    int enemyHealth = enemy->getHealth();
+    // Run the encounter animation and get the outcome (true = player wins, false = player loses)
+    bool outcome = battleScreen(enemy, player);
 
-    while (enemyHealth > 0 && player.getHealth() > 0)
-    {
-        std::cout << "Player Health: " << player.getHealth() << " | Enemy Health: " << enemyHealth << "\n";
-        std::cout << "Enter your answer or type 'run' to attempt escape: ";
-        int correctAnswer = generateMathProblem();
-        std::string userInput;
-        std::cin >> userInput;
+    Sleep(2000);
 
-        if (userInput == "run")
-        {
-            if (rand() % 2 == 0) // 50% chance to escape
-            {
-                std::cout << "You successfully escaped!\n";
-                Sleep(2000);
-                return true;
-            }
-            else
-            {
-                std::cout << "Escape failed! The enemy attacks you for 3 damage.\n";
-                player.setHealth(player.getHealth() - 3);
-            }
-        }
-        else
-        {
-            int userAnswer;
-            try
-            {
-                userAnswer = std::stoi(userInput);
-            }
-            catch (const std::invalid_argument &)
-            {
-                std::cout << "Invalid input. The enemy attacks you for 3 damage.\n";
-                player.setHealth(player.getHealth() - 3);
-                Sleep(2000);
-                continue;
-            }
-
-            if (userAnswer == correctAnswer)
-            {
-                std::cout << "Correct! You dealt 10 damage to the enemy!\n";
-                enemyHealth -= 10;
-            }
-            else
-            {
-                std::cout << "Incorrect! You have taken 5 damage!\n";
-                player.setHealth(player.getHealth() - 5);
-            }
-        }
-
-        Sleep(1500);   // Pause for 2 seconds between rounds
-        system("cls"); // Clear the screen for the next round
-    }
-
-    if (player.getHealth() <= 0)
-    {
-        std::cout << "You have been defeated!\n";
-        Sleep(2000);
-        return false;
-    }
-    else
-    {
-        std::cout << "You have defeated the enemy!\n";
-        Sleep(2000);
-        return true;
-    }
+    // Return true if the player is still alive (health > 0), otherwise false
+    return outcome;
 }
 
 
-void updateEnemyPosition(Room *room, Enemy* enemy, int newX, int newY)
+void updateEnemyPosition(Room *room, Enemy &enemy, int newX, int newY)
 {
-    const Pos &currentPos = enemy->getPos();
+    const Pos &currentPos = enemy.getPos();
     // Clear the old enemy position in the room matrix
     room->setCharAt(currentPos.getX(), currentPos.getY(), ' ');
     // Clear the old enemy position on the screen
@@ -403,21 +554,21 @@ void updateEnemyPosition(Room *room, Enemy* enemy, int newX, int newY)
     std::cout << ' ';
     room->removeEnemyAt(currentPos.getX(), currentPos.getY());
     // Update the enemy's position
-    enemy->setX(newX);
-    enemy->setY(newY);
+    enemy.setX(newX);
+    enemy.setY(newY);
     // Set the new enemy position in the room matrix
-    room->setCharAt(newX, newY, enemy->getSkin());
+    room->setCharAt(newX, newY, enemy.getSkin());
     room->setEnemyAt(newX, newY, enemy);
     // Draw the new enemy position on the screen
     setCursorPosition(newX, newY);
-    std::cout << enemy->getSkin();
+    std::cout << enemy.getSkin();
 }
 
 void moveEnemies(Room *room)
 {
     for (auto &enemy : room->getEnemies())
     {
-        const Pos &currentPos = enemy->getPos();
+        const Pos &currentPos = enemy.getPos();
         int newX = currentPos.getX();
         int newY = currentPos.getY();
 
@@ -443,6 +594,9 @@ void moveEnemies(Room *room)
     }
 }
 
+
+
+
 int main()
 {
     int score = 0;
@@ -456,7 +610,7 @@ int main()
     int newX = 0;
     int newY = 0;
     srand(static_cast<unsigned>(time(0)));
-    Room *currentRoom = initalizeTutorialMap(1);
+    Room *currentRoom = initalize1DMap(1);
 
     Player player('P', 100); // Increased initial health to 100
     player.setPosition(WIDTH / 2, HEIGHT / 2);
@@ -488,9 +642,7 @@ int main()
             {
                 if (currentRoom->isDoorMove(newX, newY))
                 {
-                    currentRoom->removePlayer();
                     Room *tempRoom = currentRoom->getRoom(newX, newY);
-                    
                     if (tempRoom)
                         currentRoom = tempRoom;
 
@@ -506,10 +658,10 @@ int main()
                 }
                 else if (touchingEnemy(currentRoom, player))
                 {
-                    Enemy *enemy = currentRoom->getEnemyAt(newX, newY);
+                    Enemy *enemy = &currentRoom->getEnemyAt(newX, newY);
                     if (enemy)
                     {
-                        bool playerWon = fightEnemy(player, enemy);
+                        bool playerWon = fightEnemy(player, *enemy);
                         if (playerWon)
                         {
                             currentRoom->removeEnemyAt(newX, newY);
@@ -531,19 +683,16 @@ int main()
 
             if (currentTime - lastEnemyMoveTime >= enemyMoveDelay)
             {
-                // moveEnemies(currentRoom);
+                //moveEnemies(currentRoom);
                 lastEnemyMoveTime = currentTime;
             }
 
             lastMoveTime = currentTime;
-            
+
             // move enemies in this room
         }
 
         setCursorPosition(0, HEIGHT + 1);
-        if(currentRoom->getRoomINFO().empty()== false){
-            std::cout << currentRoom->getRoomINFO()<<"\n\n";
-        }
         std::cout << "Health " << player.getHealth() << "\n";
         std::cout << "Score: " << score << " | Press Q to quit\n";
         std::cout << "Room: " << currentRoom->getID() << "\n";

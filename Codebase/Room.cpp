@@ -2,6 +2,7 @@
 #include "Pos.h"
 #include <iostream>
 #include <string>
+#include <cassert>
 
 /**
  * Room (Default Constructor)
@@ -246,28 +247,28 @@ void Room::setDoor(Pos dPos, Room* room){
     this->doorRooms.push_back(room);
 }
 
-void Room::setEnemy(Pos p, Enemy* e){
-    this->setCharAt(p.getX(),p.getY(),e->getSkin());
-    e->setPos(p);
+void Room::setEnemy(Pos p, Enemy e){
+    this->setCharAt(p.getX(),p.getY(),e.getSkin());
+    e.setPos(p);
     this->enemies.push_back(e);
 
     // Set the enemy in the grid
 }
 
 // getEnemyAt
-Enemy* Room::getEnemyAt(int x, int y){
+Enemy Room::getEnemyAt(int x, int y){
     for (size_t i = 0; i < enemies.size(); ++i) {
-        if (enemies[i]->getX() == x && enemies[i]->getY() == y) {
+        if (enemies[i].getX() == x && enemies[i].getY() == y) {
             return enemies[i];
         }
     }
-    return NULL;
+    return Enemy(' ',0);
 }
-//sdw
+
 // removeEnemyAt
 void Room::removeEnemyAt(int x, int y){
     for (size_t i = 0; i < enemies.size(); ++i) {
-        if (enemies[i]->getX() == x && enemies[i]->getY() == y) {
+        if (enemies[i].getX() == x && enemies[i].getY() == y) {
             enemies.erase(enemies.begin() + i);
             break;
         }
@@ -281,7 +282,11 @@ Room* Room::getRoom(int x, int y) const {
             }
         }
         return nullptr; // Return nullptr if not found
-}
+    }
+/**
+ * 
+ */
+
 /**
  * getDisplay
  * This method returns the current display for a room. Whether it's the room's grid or in combat with an enemy.
@@ -290,43 +295,6 @@ Room* Room::getRoom(int x, int y) const {
 char** Room::getDisplay()
 {
     return grid;
-}
-
-// get enemies
-std::vector<Enemy*> Room::getEnemies(){
-    return this->enemies;
-}
-
-// enemiesToString
-std::string Room::enemiesToString(){
-    std::string result = "";
-    for (size_t i = 0; i < enemies.size(); ++i) {
-        result += "Enemy " + std::to_string(i) + ": " + "Skin: " + enemies[i]->getSkin() + " Pos: " + std::to_string(enemies[i]->getX()) + "," + std::to_string(enemies[i]->getY()) + "\n";
-    }
-    return result;
-}
-
-// setEnemyAt
-void Room::setEnemyAt(int x, int y, Enemy* e){
-    for (size_t i = 0; i < enemies.size(); ++i) {
-        if (enemies[i]->getX() == x && enemies[i]->getY() == y) {
-            enemies[i] = e;
-            break;
-        }
-    }
-}
-/**
- * removePlayer
- * methodRemoves the player from the char array once out of the current room.
-*/
-void Room::removePlayer(){
-    for(int i =0; i < HEIGHT; i++){
-        for(int j =0; j < WIDTH; j++){
-            if(grid[i][j] == 'P'){
-                this->setCharAt(j,i,' ');
-            }
-        }
-    }
 }
 
 int Room::getLevel()
@@ -355,6 +323,30 @@ int Room::getID(){
     return this->id;
 }
 
+// get enemies
+std::vector<Enemy> Room::getEnemies(){
+    return this->enemies;
+}
+
+// enemiesToString
+std::string Room::enemiesToString(){
+    std::string result = "";
+    for (size_t i = 0; i < enemies.size(); ++i) {
+        result += "Enemy " + std::to_string(i) + ": " + "Skin: " + enemies[i].getSkin() + " Pos: " + std::to_string(enemies[i].getX()) + "," + std::to_string(enemies[i].getY()) + "\n";
+    }
+    return result;
+}
+
+// setEnemyAt
+void Room::setEnemyAt(int x, int y, Enemy e){
+    for (size_t i = 0; i < enemies.size(); ++i) {
+        if (enemies[i].getX() == x && enemies[i].getY() == y) {
+            enemies[i] = e;
+            break;
+        }
+    }
+}
+
 void Room::setPlayerPos(Pos p){
     this->playerPos = p;
 }
@@ -363,10 +355,19 @@ Pos Room::getPlayerPos(){
     return this->playerPos;
 }
 
-std::string Room::getRoomINFO(){
-    return this->roomINFO;
-}
+void Room::unittest(){
+    std::cout << "Pos unittest called!";
+    Room testRoom = Room(2, 1, 15, 20);
+    assert(testRoom.getID() == 2);
+    assert(testRoom.getLevel() == 1);
 
-void Room::setRoomINFO(std::string info){
-    this->roomINFO = info;
+    // assert(testPos.getX() == 5);
+    // assert(testPos.getY() == 10);
+    // testPos.setX(3);
+    // testPos.setY(6);
+    // assert(testPos.getX() == 3);
+    // assert(testPos.getY() == 6);
+    // testPos.setXY(7, 8);
+    // assert(testPos.getX() == 7);
+    // assert(testPos.getY() == 8);
 }
