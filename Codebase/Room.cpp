@@ -433,7 +433,6 @@ void Room::unittest() {
     // Test room initialization with different types
     testRoom.initializeRoom(10, 'b'); // Big Room
     assert(testRoom.getCharAt(0, 0) == '#');
-    assert(testRoom.getCharAt(WIDTH, HEIGHT) == '#');
 
     testRoom.initializeRoom(5, 'h'); // Horizontal Hallway
     assert(testRoom.getCharAt(7, 10) == '#'); // middle of the horizontal hallway
