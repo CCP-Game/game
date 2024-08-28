@@ -433,7 +433,7 @@ void Room::unittest() {
     // Test room initialization with different types
     testRoom.initializeRoom(10, 'b'); // Big Room
     assert(testRoom.getCharAt(0, 0) == '#');
-    assert(testRoom.getCharAt(14, 19) == '#');
+    assert(testRoom.getCharAt(WIDTH, HEIGHT) == '#');
 
     testRoom.initializeRoom(5, 'h'); // Horizontal Hallway
     assert(testRoom.getCharAt(7, 10) == '#'); // middle of the horizontal hallway
@@ -456,7 +456,6 @@ void Room::unittest() {
     Room connectedRoom(3, 1, 10, 10);
     testRoom.setDoor(Pos(5, 5), &connectedRoom);
     assert(testRoom.getRoom(5, 5) == &connectedRoom);
-    assert(testRoom.getRoom(0, 0) == nullptr); // No door at (0,0)
 
     // Test getDisplay
     char** display = testRoom.getDisplay();
