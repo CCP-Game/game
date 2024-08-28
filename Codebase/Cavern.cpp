@@ -25,7 +25,6 @@
 /*!
     @brief The core methods for this file are the "main" method and initalizeTutorialMap
 */
-
 /*!
     @brief Sets the cursor position
     @details This method takes a x and y position and sets the cursor to be at said position.
@@ -51,36 +50,39 @@ void hideCursor()
     cursorInfo.bVisible = false;
     SetConsoleCursorInfo(consoleHandle, &cursorInfo);
 }
-/**
- * isKeyPressed
- * method checks whether a given key was pressed.
- * @param - the key to be checked
- * @return - Returns true if the key pressed == key param.
- */
+/*!
+    @brief Determines whether a key is pressed.
+    @param key [in] This is the Integer code for the key.
+    @return Returns a true/false whether a key was pressed.
+*/
 bool isKeyPressed(int key)
 {
     return (GetAsyncKeyState(key) & 0x8000) != 0;
 }
-
-
-// Function to clear the screen
+/*!
+    @brief Method clears the console screen.
+    @return void.
+*/
 void clearScreen() {
     std::system("cls");  // On Unix/Linux/OSX use "clear" instead of "cls"
 }
-
-// Function to create a delay
+/*!
+    @brief Method acts as a delay of given miliseconds.
+    @details Method runs a while loop for a given number of miliseconds delaying the code.
+    @param miliseconds [in] this is the int representing the miliseconds we want the delay for.
+    @return void.
+*/
 void delay(int milliseconds) {
     clock_t start_time = clock();
     while (clock() < start_time + milliseconds);
 }
-
-/**
- * displayScene
- * prints the enemy and player on screen
- * @param playerPosition - psoition to print the player
- * @param enemyPosition - position to print the enemy
- * @param enemyHead - the enemy'skin
- */
+/*!
+    @brief This method displays the "encounter" phase of combat an animation when we walk upto an enemy.
+    @param playerPosition [in] this is the position to print the player. 
+    @param enemyPosition [in] this is the position we want to print the enemy
+    @param enemyHead [in] This is the enemies head. Whether it is a + - / or x type of enemy.
+    @return void
+*/
 void displayScene(int playerPosition, int enemyPosition, char enemyHead) {
     // Print player head
     for (int i = 0; i < playerPosition; ++i) std::cout << ' ';
@@ -111,19 +113,16 @@ void displayScene(int playerPosition, int enemyPosition, char enemyHead) {
 
     // Skeleton legs
     std::cout << " / \\ " << std::endl;
-
 }
-
-
-/**
- * animateEncounter
- * does first encounter animation
- * @param enemyHead - the enemy'skin
- */
+/*!
+    @brief This method animates the encounter between an enemy and a player.
+    @details Calling displayScene, We use this to animate the frames as the enemy and player get closer together.
+    @param enemyHead [in] Char, this is the type of enemy displayed as it's head.
+    @return void.
+*/
 void animateEncounter(char enemyHead) {
     int playerPosition = 0;   // Start position of the player
     int enemyPosition = 20;   // Fixed position of the skeleton, closer to the player
-
 
     while (playerPosition < enemyPosition - 7) { // 7 is the total width of the player character
         clearScreen();
@@ -137,23 +136,22 @@ void animateEncounter(char enemyHead) {
     displayScene(playerPosition, enemyPosition, enemyHead);
 
 }
-
-/**
- * displayHealthBars
- * displays enemy and player health bars in battle
- * @param playerHealth - the playes current health
- * @param playerMaxHealth- player max health
- * @param playerHealth - the playes current health
- * @param playerMaxHealth- player max health
- */
+/*!
+    @brief displays the enemy and player health bars in battle
+    @param playerHealth [in] int, The players current health
+    @param playerMaxHealth [in] int, the players max health
+    @param enemyHealth [in] int, the enemies current health
+    @param enemyMaxHealth [in] int, the enemies max health
+    @param enemyName [in] String, this is the enemies name.
+    @return void.
+*/
 void displayHealthBars(int playerHealth, int playerMaxHealth, int enemyHealth, int enemyMaxHealth, std::string enemyName) {
     const int barLength = 10;  // Length of the health bar
-
     int playerHealthBar = (playerHealth * barLength) / playerMaxHealth;
     int enemyHealthBar = (enemyHealth * barLength) / enemyMaxHealth;
-
     // Player Health Bar
     std::cout << "Player:   [";
+    setFGColour(124);
     for (int i = 0; i < barLength; i++) {
         if (i < playerHealthBar) {
             std::cout << "=";
@@ -161,10 +159,11 @@ void displayHealthBars(int playerHealth, int playerMaxHealth, int enemyHealth, i
             std::cout << " ";
         }
     }
+    resetColour();
     std::cout << "] " << playerHealth << "/" << 100;
-
     // Enemy Health Bar on the same line
     std::cout << "   " << enemyName << ": [";
+    setFGColour(124);
     for (int i = 0; i < barLength; i++) {
         if (i < enemyHealthBar) {
             std::cout << "=";
@@ -172,15 +171,15 @@ void displayHealthBars(int playerHealth, int playerMaxHealth, int enemyHealth, i
             std::cout << " ";
         }
     }
+    resetColour();
     std::cout << "] " << enemyHealth << "/" << enemyMaxHealth << std::endl;
 }
-
-/**
- * battleScreen
- * Method player and enemy and simulates a battle
- * @param &enemy - the enemy ran into
- * @param &player- the current player of Player class
- */
+/*!
+    @brief  This is the game-loop for a battle between an enemy and a player.
+    @param enemy [in] Enemy&, this the enemy we're fighting
+    @param Player [in] Player&, this is our player object , containing our health etc.
+    @return returns a boolean t/f whether we won or lost..
+*/
 bool battleScreen(Enemy &enemy, Player &Player) {
     char enemyHead = enemy.getSkin();
 
@@ -214,7 +213,6 @@ bool battleScreen(Enemy &enemy, Player &Player) {
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
         encounterType = 4;
 
-
     } else {
         enemyName = "Additor";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
@@ -237,7 +235,7 @@ bool battleScreen(Enemy &enemy, Player &Player) {
     while(playerHealth > 0 && enemyHealth > 0){
 
         displayScene(12, 50, enemyHead);
-
+        std::cout <<" here";
         displayHealthBars(playerHealth, playerStartHealth, enemyHealth, enemyStartHealth, enemyName);
 
 
@@ -281,15 +279,15 @@ bool battleScreen(Enemy &enemy, Player &Player) {
     return outcome;
 
 }
-
-/**
- * updatePlayerPosition
- * Method takes the current room, player and new x,y coords updating the players position in Room.
- * @param &room - the current room of Room class
- * @param &player- the current player of Player class
- * @param newX - this is an integer representing the new movement of our player along x-axis
- * @param newy - this is an integer representing the new movement of our player along y-axis
- */
+/*!
+    @brief The method updates the players postition within the map.
+    @details taking the current room, player and the new x and y we plant the player within this new position assuming the newx and y are always valid.
+    @param room [in] Room*, the current room.
+    @param player [in] Player& the player object.
+    @param newX [in] int, the new x-coord.
+    @param newY [in] int, the new y-coord.
+    @return void.
+*/
 void updatePlayerPosition(Room *room, Player &player, int newX, int newY)
 {
     const Pos &currentPos = player.getPos();
@@ -308,13 +306,12 @@ void updatePlayerPosition(Room *room, Player &player, int newX, int newY)
     setCursorPosition(newX, newY);
     std::cout << player.getSkin();
 }
-/**
- * getDoorsOpposite
- * This method returns the starting position when traversing between two rooms. Getting the alternate door pos
- * With a simple case assuming all rooms have the same dimensions.
- * @param  oldPos - a Pos of the old door
- * @return newPos - the invrese of the new door
- */
+/*!
+    @brief Method, given the oldposition gets the position you'd expect to be in going through a door to another room.
+    @details Essentially returns a mirror of the position.
+    @param oldPos [in] Pos, the old position before we hit a D
+    @return Pos, returns the Pos (a position class) of the doors mirror position.
+*/
 Pos getDoorsOpposite(Pos oldPos)
 {
     int x = oldPos.getX();
@@ -352,6 +349,11 @@ Pos getDoorsOpposite(Pos oldPos)
  * This method uses ANSI escape codes to set the output color to console for the foreground.
  * @param int textColor - this is the color we want has to be > 1
  */
+/*!
+    @brief 
+    @details 
+    @param 
+*/
 void setFGColour(int textColour = 255)
 {
     std::cout << "\x1b[38;5;";
@@ -727,7 +729,7 @@ int main()
     currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
     printToConsole(currentRoom->getDisplay());
     hideCursor();
-
+    
     while (gameRunning)
     {
         DWORD currentTime = GetTickCount();
@@ -813,14 +815,27 @@ int main()
         }
 
         setCursorPosition(0, HEIGHT + 1);
+        //Displays the players health.
+
         if (currentRoom->getRoomINFO().empty() == false)
         {
             std::cout << currentRoom->getRoomINFO() << "\n\n";
         }
-        std::cout << "Health " << player.getHealth() << "\n";
-        std::cout << "Score: " << score << " | Press Q to quit\n";
+               int playerHealthBar = (player.getHealth()* 10) /100;
+         // Player Health Bar
+        std::cout << "Health: [";
+        setFGColour(124);
+        for (int i = 0; i < 10; i++) {
+            if (i < playerHealthBar) {
+                std::cout << "=";
+            } else {
+                std::cout << " ";
+            }
+        }
+        resetColour();
+        std::cout << "] " << player.getHealth()<< "/" << 100<<"\n";
+        std::cout << "\nScore: " << score << " | Press Q to quit\n";
         std::cout << "Room: " << currentRoom->getID() << "\n";
-
         if (isKeyPressed('Q'))
             gameRunning = false;
         Sleep(10); // Small delay to prevent excessive CPU usage
