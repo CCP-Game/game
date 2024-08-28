@@ -40,6 +40,7 @@ void Pos::setY(int y) {
 }
 
 void Pos::unittest(){
+    std::cout << "Pos unittest called!";
     Pos testPos = Pos(5, 10);
     assert(testPos.getX() == 5);
     assert(testPos.getY() == 10);

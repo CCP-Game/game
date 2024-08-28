@@ -1,6 +1,4 @@
 #include "Enemy.h"
-#include <cassert>
-#include <iostream>
 
 
 // Constructor with Pos, skin, and difficulty
@@ -61,27 +59,5 @@ void Enemy::setSkin(char skin) {
 
 void Enemy::setDifficulty(int difficulty) {
     this->difficulty = difficulty;
-}
-
-void Enemy::unittest(){
-    std::cout << "Pos unittest called!";
-    Enemy enemytest = Enemy('P', 20);
-    assert(enemytest.getSkin() == 'p');
-    assert(enemytest.getHealth() == 20);
-    enemytest.setSkin('A');
-    enemytest.setHealth(5);
-    assert(enemytest.getSkin() == 'A');
-    assert(enemytest.getHealth() == 5);
-    Enemy enemytestExpaned = Enemy(Pos(2,3), 'M', 2);
-    //assert(enemytestExpaned.getPos().equals(Pos(2, 3)));
-    assert(enemytestExpaned.getSkin() == 'M');
-    assert(enemytestExpaned.getHealth() == 100);
-    assert(enemytestExpaned.getDifficulty() == 2);
-    enemytestExpaned.setSkin('B');
-    enemytestExpaned.setHealth(7);
-    enemytestExpaned.setDifficulty(3);
-    assert(enemytestExpaned.getSkin() == 'B');
-    assert(enemytestExpaned.getHealth() == 7);
-    assert(enemytestExpaned.getDifficulty() == 3);
 }
 

@@ -26,7 +26,6 @@ private:
     //std::unordered_map<Pos,Room,Pos::HashFunction> doorMap;
 
 public:
-    static void unittest();
     Room();
     ~Room();
     Room(int id,int depth, int width, int height);

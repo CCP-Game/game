@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.20)
 project(Cavern)
 
 #Add all files that want to be included in the .exe here
-add_executable(Test Codebase/Test.cpp Codebase/Pos.cpp Codebase/Room.cpp Codebase/Enemy.cpp Codebase/Player.cpp)
+add_executable(Test Codebase/Test.cpp Codebase/Pos.cpp)
 
 enable_testing()
 #Add the executables to be run as test here?
