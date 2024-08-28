@@ -14,23 +14,35 @@
 #include "Enemy.cpp"
 #include "nums.cpp"
 #include "nums.h"
-
 #define WIDTH 25
 #define HEIGHT 13
-#define worldMap =
-/**
- * setCursorPosition
- * Method sets the cursors position.
- */
+/*!
+    @file 
+    @brief Cavern is the main class for our game. It contains the game loop and the manner in which we display to the user.
+    @author Sam Budgen, Ben Darlington, Ben Nicholson & Alex Poore.
+    @copyright CCP 2024 
+*/
+/*!
+    @brief The core methods for this file are the "main" method and initalizeTutorialMap
+*/
+
+/*!
+    @brief Sets the cursor position
+    @details This method takes a x and y position and sets the cursor to be at said position.
+    @param x [in] the x-coord
+    @param y [in] the y--coord
+    @return void.
+*/
 void setCursorPosition(int x, int y)
 {
     COORD coord = {static_cast<SHORT>(x), static_cast<SHORT>(y)};
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
-/**
- * hideCursor
- * Method hides the cursor from the user (stops the annoying flickering.)
- */
+/*!
+    @brief Method hides the cursor from the user.
+    @details Method configures the console cursor so it doesn't display.
+    @return void.
+*/
 void hideCursor()
 {
     HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -38,13 +50,6 @@ void hideCursor()
     GetConsoleCursorInfo(consoleHandle, &cursorInfo);
     cursorInfo.bVisible = false;
     SetConsoleCursorInfo(consoleHandle, &cursorInfo);
-}
-/**
- * resetConsoleAttributes
- */
-void resetConsoleAttributes()
-{
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7); // Reset to default color
 }
 /**
  * isKeyPressed
@@ -494,7 +499,6 @@ Room *initalizeTutorialMap(int roomLength)
 void printToConsole(char **display)
 {
     system("cls");            // Clear the console
-    resetConsoleAttributes(); // Reset to default console attributes
     setCursorPosition(0, 0);  // Sets the cursor position..
     for (int y = 0; y < HEIGHT; y++)
     {
