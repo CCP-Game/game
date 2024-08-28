@@ -45,15 +45,28 @@ void Player::setHealth(int health) {
     this->health = health;
 }
 
-void Player::unittest(){
-    Player testDefault = Player();
-    //assert(testDefault.getSkin() == 'P');  
-    
-    Player testPlayer = Player('A', 5);
+void Player::unittest() {
+    // Test default constructor
+    Player testDefault;
+    assert(testDefault.getSkin() == 'P');
+    assert(testDefault.getHealth() == 100);
+    assert(testDefault.getPos().getX() == 0);
+    assert(testDefault.getPos().getY() == 0);
+
+    // Test constructor with parameters
+    Player testPlayer('A', 5);
+    assert(testPlayer.getSkin() == 'A');
     assert(testPlayer.getHealth() == 100);
-    assert(testPlayer.getSkin() == 'A');  
-    //assert(testPlayer.getCurrentRoom() == type(Room));
-    testPlayer.setHealth(50);
-    assert(testPlayer.getHealth() == 50);
+    assert(testPlayer.getPos().getX() == 0);
+    assert(testPlayer.getPos().getY() == 0);
+
+    // Test setHealth and getHealth
+    testPlayer.setHealth(75);
+    assert(testPlayer.getHealth() == 75);
+
+    // Test setPosition and getPos
+    testPlayer.setPosition(3, 4);
+    assert(testPlayer.getPos().getX() == 3);
+    assert(testPlayer.getPos().getY() == 4);
 }
 

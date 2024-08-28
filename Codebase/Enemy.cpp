@@ -63,24 +63,41 @@ void Enemy::setDifficulty(int difficulty) {
     this->difficulty = difficulty;
 }
 
-void Enemy::unittest(){
-    Enemy enemytest = Enemy('P', 20);
-    assert(enemytest.getSkin() == 'P');
-    assert(enemytest.getHealth() == 20);
-    enemytest.setSkin('A');
-    enemytest.setHealth(5);
-    assert(enemytest.getSkin() == 'A');
-    assert(enemytest.getHealth() == 5);
+void Enemy::unittest() {
+    // Test constructor with skin and health
+    Enemy enemyTest('P', 20);
+    assert(enemyTest.getSkin() == 'P');
+    assert(enemyTest.getHealth() == 20);
 
-    Enemy enemytestExpaned = Enemy(Pos(2,3), 'M', 2);
-    //assert(enemytestExpaned.getPos().equals(Pos(2, 3)));
-    assert(enemytestExpaned.getSkin() == 'M');
-    assert(enemytestExpaned.getHealth() == 100);
-    assert(enemytestExpaned.getDifficulty() == 2);
-    enemytestExpaned.setSkin('B');
-    enemytestExpaned.setHealth(7);
-    enemytestExpaned.setDifficulty(3);
-    assert(enemytestExpaned.getSkin() == 'B');
-    assert(enemytestExpaned.getHealth() == 7);
-    assert(enemytestExpaned.getDifficulty() == 3);
+    // Test setters and getters for skin and health
+    enemyTest.setSkin('A');
+    enemyTest.setHealth(5);
+    assert(enemyTest.getSkin() == 'A');
+    assert(enemyTest.getHealth() == 5);
+
+    // Test constructor with Pos, skin, and difficulty
+    Pos pos(2, 3);
+    Enemy enemyTestExpanded(pos, 'M', 2);
+    assert(enemyTestExpanded.getPos().getX() == 2);
+    assert(enemyTestExpanded.getPos().getY() == 3);
+    assert(enemyTestExpanded.getSkin() == 'M');
+    assert(enemyTestExpanded.getHealth() == 100);  // Default health is 100
+    assert(enemyTestExpanded.getDifficulty() == 2);
+
+    // Test setters and getters for Position, difficulty, and skin
+    enemyTestExpanded.setSkin('B');
+    enemyTestExpanded.setHealth(7);
+    enemyTestExpanded.setDifficulty(3);
+    enemyTestExpanded.setPos(Pos(4, 5));
+    assert(enemyTestExpanded.getSkin() == 'B');
+    assert(enemyTestExpanded.getHealth() == 7);
+    assert(enemyTestExpanded.getDifficulty() == 3);
+    assert(enemyTestExpanded.getPos().getX() == 4);
+    assert(enemyTestExpanded.getPos().getY() == 5);
+
+    // Test setting and getting X and Y coordinates
+    enemyTestExpanded.setX(6);
+    enemyTestExpanded.setY(7);
+    assert(enemyTestExpanded.getX() == 6);
+    assert(enemyTestExpanded.getY() == 7);
 }

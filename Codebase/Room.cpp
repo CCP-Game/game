@@ -372,27 +372,93 @@ void Room::setRoomINFO(std::string info){
     this->roomINFO = info;
 }
 
-void Room::unittest(){
-    //std::cout << "Pos unittest called!";
+void Room::unittest() {
+    std::cout << "Room unittest called!" << std::endl;
+
+    // Test default constructor
+    Room roomDefault;
+    assert(roomDefault.getID() == 0);
+    assert(roomDefault.getLevel() == 0);
+    assert(roomDefault.getPlayerPos().getX() == 0 && roomDefault.getPlayerPos().getY() == 0);
+    assert(roomDefault.getCharAt(0, 0) == ' ');
     
-    //Room roomDefault = Room();
-    //assert(roomDefault.get);
-    Room testRoom = Room(2, 1, 15, 20);
+    // Test parameterized constructor
+    Room testRoom(2, 1, 15, 20);
     assert(testRoom.getID() == 2);
     assert(testRoom.getLevel() == 1);
+
+    // Test copy constructor
+    Room copyRoom(testRoom);
+    assert(copyRoom.getID() == 2);
+    assert(copyRoom.getLevel() == 1);
+    assert(copyRoom.getPlayerPos().getX() == 0 && copyRoom.getPlayerPos().getY() == 0);
+
+    // Test operator=
+    Room assignedRoom;
+    assignedRoom = testRoom;
+    assert(assignedRoom.getID() == 2);
+    assert(assignedRoom.getLevel() == 1);
+
+    // Test setting and getting characters in the grid
     testRoom.setCharAt(5, 4, 'G');
     assert(testRoom.getCharAt(5, 4) == 'G');
-    //these don't appear to work..
-    //testRoom.setEnemyAt(3, 3, Enemy('E', 5));
-    //testRoom.initializeRoom(10, 'b');
-    // testRoom.initializeRoom(5, 'v');
-    // testRoom.initializeRoom(7, 'h');
+    testRoom.setCharAt(0, 0, '#');
+    assert(testRoom.getCharAt(0, 0) == '#');
 
-    testRoom.setEnemyAt(5, 6, new Enemy('E', 100));
-    //assert(testRoom.getCharAt(5, 6) == 'E');
-    //testRoom.getEnemies();
-    std::cout << testRoom.enemiesToString();
-    testRoom.getEnemyAt(5, 6);
-    testRoom.removeEnemyAt(5, 6);
-    testRoom.getDisplay();
+    // Test player position updates
+    testRoom.updatePlayerPos(7, 9);
+    assert(testRoom.getPlayerPos().getX() == 7);
+    assert(testRoom.getPlayerPos().getY() == 9);
+
+    // Test validMove method
+    assert(testRoom.validMove(5, 5) == true);
+    assert(testRoom.validMove(0, 0) == false); // '#' is a wall
+
+    // Test isDoorMove method
+    testRoom.setDoor(Pos(2, 2), &testRoom);
+    assert(testRoom.isDoorMove(2, 2) == true);
+    assert(testRoom.isDoorMove(5, 5) == false);
+
+    // Test enemy handling
+    Enemy* enemy = new Enemy('E', 100);
+    testRoom.setEnemy(Pos(3, 3), enemy);
+    assert(testRoom.getEnemyAt(3, 3) == enemy);
+    testRoom.removeEnemyAt(3, 3);
+    assert(testRoom.getEnemyAt(3, 3) == nullptr);
+
+    // Test setting and getting room info
+    testRoom.setRoomINFO("Test Room Info");
+    assert(testRoom.getRoomINFO() == "Test Room Info");
+
+    // Test room initialization with different types
+    testRoom.initializeRoom(10, 'b'); // Big Room
+    assert(testRoom.getCharAt(0, 0) == '#');
+    assert(testRoom.getCharAt(14, 19) == '#');
+
+    testRoom.initializeRoom(5, 'h'); // Horizontal Hallway
+    assert(testRoom.getCharAt(7, 10) == '#'); // middle of the horizontal hallway
+
+    testRoom.initializeRoom(7, 'v'); // Vertical Hallway
+    assert(testRoom.getCharAt(7, 0) == '#'); // middle of the vertical hallway
+
+    // Test enemiesToString method
+    testRoom.setEnemy(Pos(1, 1), new Enemy('E', 50));
+    std::string enemyStr = testRoom.enemiesToString();
+    assert(enemyStr.find("Enemy 0: Skin: E Pos: 1,1") != std::string::npos);
+
+    // Test removePlayer
+    testRoom.updatePlayerPos(2, 2);
+    testRoom.setCharAt(2, 2, 'P');
+    testRoom.removePlayer();
+    assert(testRoom.getCharAt(2, 2) == ' ');
+    
+    // Test getRoom method
+    Room connectedRoom(3, 1, 10, 10);
+    testRoom.setDoor(Pos(5, 5), &connectedRoom);
+    assert(testRoom.getRoom(5, 5) == &connectedRoom);
+    assert(testRoom.getRoom(0, 0) == nullptr); // No door at (0,0)
+
+    // Test getDisplay
+    char** display = testRoom.getDisplay();
+    assert(display != nullptr);
 }
