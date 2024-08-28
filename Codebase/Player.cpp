@@ -2,6 +2,7 @@
 #include "Pos.h"
 #include "Room.h"
 #include <cassert>
+#include <iostream>
 
 // Constructor with parameters
 Player::Player(char skin, int colour) : skin(skin), colour(colour) {
@@ -68,5 +69,7 @@ void Player::unittest() {
     testPlayer.setPosition(3, 4);
     assert(testPlayer.getPos().getX() == 3);
     assert(testPlayer.getPos().getY() == 4);
+
+    std::cout << "All Player tests passed!" << std::endl;
 }
 

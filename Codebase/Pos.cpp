@@ -68,6 +68,6 @@ void Pos::unittest() {
     assert(newPos.getX() == 7);
     assert(newPos.getY() == 8);
 
-    std::cout << "All tests passed!" << std::endl;
+    std::cout << "All Pos tests passed!" << std::endl;
 }
 

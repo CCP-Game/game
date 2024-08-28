@@ -434,7 +434,7 @@ void Room::unittest() {
     testRoom.initializeRoom(10, 'b'); // Big Room
     assert(testRoom.getCharAt(0, 0) == '#');
     assert(testRoom.getCharAt(1, 1) == ' ');
-    
+
     // Test enemiesToString method
     testRoom.setEnemy(Pos(1, 1), new Enemy('E', 50));
     std::string enemyStr = testRoom.enemiesToString();
@@ -454,4 +454,7 @@ void Room::unittest() {
     // Test getDisplay
     char** display = testRoom.getDisplay();
     assert(display != nullptr);
+
+    std::cout << "All Room tests passed!" << std::endl;
+
 }
