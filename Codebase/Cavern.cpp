@@ -131,14 +131,14 @@ void setFGColour(int textColour = 255)
     {
         std::cout << textColour;
     }
-   
+
     std::cout << "m";
 }
 /**
-* setBGColour
-* This method, using ASNI escape codes, sets the Background Colour in the console
-* @param int bgColour
-*/
+ * setBGColour
+ * This method, using ASNI escape codes, sets the Background Colour in the console
+ * @param int bgColour
+ */
 void setBGColour(int textColour = 255)
 {
     std::cout << "\x1b[48;5;";
@@ -146,7 +146,7 @@ void setBGColour(int textColour = 255)
     {
         std::cout << textColour;
     }
-   
+
     std::cout << "m";
 }
 /**
@@ -186,10 +186,19 @@ Room *initalizeTutorialMap(int roomLength)
     Room *room8 = new Room(8, 1, WIDTH, HEIGHT);
     Room *room9 = new Room(9, 1, WIDTH, HEIGHT);
     Room *room10 = new Room(10, 1, WIDTH, HEIGHT);
+    Room *end = new Room(11, 1, WIDTH, HEIGHT);
 
-    Enemy* e1 = new Enemy('+', 20);
-    Enemy* e2 = new Enemy('+', 50);
-    //Initalise the rooms grid
+    Enemy *e1 = new Enemy('+', 20);
+    Enemy *e2 = new Enemy('+', 30);
+    Enemy *e3 = new Enemy('+', 50);
+    Enemy *e4 = new Enemy('*', 20);
+    Enemy *e5 = new Enemy('*', 30);
+    Enemy *e6 = new Enemy('*', 50);
+    Enemy *e7 = new Enemy('/', 20);
+    Enemy *e8 = new Enemy('/', 30);
+    Enemy *e9 = new Enemy('/', 50);
+
+    // Initalise the rooms grid
     room1->initializeRoom(5, 'b');
     room2->initializeRoom(5, 'h');
     room3->initializeRoom(5, 'b');
@@ -200,42 +209,61 @@ Room *initalizeTutorialMap(int roomLength)
     room8->initializeRoom(5, 'h');
     room9->initializeRoom(5, 'b');
     room10->initializeRoom(5, 'v');
-    //Add Information to each room.
+    end->initializeRoom(5, 'b');
+
+    // Add Information to each room.
     room1->setRoomINFO("USE W A S D to move!\nThe \"D\" refers to a Door! ");
     // Set door positions for each room
     room1->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room2); // Right to Room 2
-    room1->setEnemy(Pos(3, 5), e1);                    // Enemy to the side of the room
+                                                       // Enemy to the side of the room
 
     room2->setDoor(Pos(0, HEIGHT / 2), room1);         // Left to Room 1
     room2->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room3); // Right to Room 3
-    room2->setEnemy(Pos(7, HEIGHT / 2), e2);           // Enemy to the side of the room
+    room2->setEnemy(Pos(7, 5), e1);
+    room2->setRoomINFO("Run into enemies to fight them!");
 
     room3->setDoor(Pos(0, HEIGHT / 2), room2);         // Left to Room 2
     room3->setDoor(Pos(WIDTH / 2, 0), room7);          // Top to Room 7
     room3->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room4); // Bottom to Room 4
+    room3->setEnemy(Pos(7, HEIGHT / 2), e2);           // Enemy to the side of the room
+    room3->setEnemy(Pos(9, HEIGHT / 2), e3); 
+    room3->setRoomINFO("Which door to take? So many choices!");
 
     // room3->setEnemy(Pos(WIDTH / 2, HEIGHT / 2), e1);    // Enemy in the middle of the room
 
     room4->setDoor(Pos(WIDTH / 2, 0), room3);          // Top to Room 3
     room4->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room5); // Bottom to Room 5
+    room4->setEnemy(Pos(WIDTH / 2, HEIGHT / 2), e4);   // Enemy in the middle of the room
+    room4->setRoomINFO("Enemies will get harder as you progress!");
 
     room5->setDoor(Pos(WIDTH / 2, 0), room4);          // Top to Room 4
     room5->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room6); // Right to Room 6
+    room5->setEnemy(Pos(WIDTH / 2, HEIGHT / 2), e5);   // Enemy in the middle of the room
+    room5->setRoomINFO("You're doing great!");
 
     room6->setDoor(Pos(0, HEIGHT / 2), room5); // Left to Room 5
+    room6->setRoomINFO("Oops, looks like a dead end!");
 
     room7->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room3); // Bottom to Room 3
     room7->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room8); // Right to Room 8
+    room7->setEnemy(Pos(WIDTH / 2, HEIGHT / 2), e6);   // Enemy in the middle of the room
+    room7->setRoomINFO("Good choice!");
 
     room8->setDoor(Pos(0, HEIGHT / 2), room7);         // Left to Room 7
     room8->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room9); // Right to Room 9
+    room8->setEnemy(Pos(WIDTH / 2, HEIGHT / 2), e7);   // Enemy in the middle of the room
+    room8->setRoomINFO("You're almost there!");
 
     room9->setDoor(Pos(0, HEIGHT / 2), room8);          // Left to Room 8
     room9->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room10); // Bottom to Room 10
+    room9->setEnemy(Pos(WIDTH / 2, 6), e8);    // Enemy in the middle of the room
+    room9->setEnemy(Pos(4, HEIGHT / 2), e9);    // Enemy in the middle of the room
+    room9->setRoomINFO("LOTS OF ENEMIES!");
 
     room10->setDoor(Pos(WIDTH / 2, 0), room9); // Top to Room 9
     // Room 10 has a staircase to another room
-    room10->setDoor(Pos(WIDTH / 2, HEIGHT - 2), nullptr); // Stairway to new room
+    room10->setDoor(Pos(WIDTH / 2, HEIGHT - 2), end); // Stairway to new room
+    room10->setRoomINFO("Congratulations! You've reached the end of the tutorial!");
 
     return room1; // Game starts in room 1
 }
@@ -255,7 +283,6 @@ void printToConsole(char **display)
             {
                 std::cout << "\033[1m";
                 setFGColour(130);
-               
             }
             if (display[y][x] == '#')
             {
@@ -392,8 +419,7 @@ bool fightEnemy(Player &player, Enemy *enemy)
     }
 }
 
-
-void updateEnemyPosition(Room *room, Enemy* enemy, int newX, int newY)
+void updateEnemyPosition(Room *room, Enemy *enemy, int newX, int newY)
 {
     const Pos &currentPos = enemy->getPos();
     // Clear the old enemy position in the room matrix
@@ -490,9 +516,17 @@ int main()
                 {
                     currentRoom->removePlayer();
                     Room *tempRoom = currentRoom->getRoom(newX, newY);
-                    
+
                     if (tempRoom)
                         currentRoom = tempRoom;
+
+                    if (currentRoom->getID() == 11) // End of the tutorial. clear and say congrats
+                    {
+                        system("cls");
+                        std::cout << "Congratulations! You have completed the tutorial!\n";
+                        Sleep(2000);
+                        gameRunning = false;
+                    }
 
                     Pos newPos = getDoorsOpposite(Pos(newX, newY));
                     updatePlayerPosition(currentRoom, player, newPos.getX(), newPos.getY());
@@ -536,13 +570,14 @@ int main()
             }
 
             lastMoveTime = currentTime;
-            
+
             // move enemies in this room
         }
 
         setCursorPosition(0, HEIGHT + 1);
-        if(currentRoom->getRoomINFO().empty()== false){
-            std::cout << currentRoom->getRoomINFO()<<"\n\n";
+        if (currentRoom->getRoomINFO().empty() == false)
+        {
+            std::cout << currentRoom->getRoomINFO() << "\n\n";
         }
         std::cout << "Health " << player.getHealth() << "\n";
         std::cout << "Score: " << score << " | Press Q to quit\n";

@@ -50,6 +50,7 @@ public:
     void setEnemyAt(int x, int y, Enemy* e);
     void setPlayerPos(Pos p);
     Pos getPlayerPos();
+    void unittest();
     void removePlayer();
     std::string getRoomINFO();
     void setRoomINFO(std::string info);
