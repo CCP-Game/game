@@ -76,7 +76,7 @@ env:
   BUILD_CONFIGURATION: Debug
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -113,3 +113,20 @@ jobs:
         fail_ci_if_error: true
         files: coverage.xml
         token: ${{ secrets.CODECOV_TOKEN }}
+
+    - uses: actions/checkout@v2
+
+    - name: Set up Doxygen
+      run: choco install doxygen.install -y
+  
+    - name: Add Doxygen to PATH
+      run: echo "C:\Program Files\doxygen\bin" >> $env:GITHUB_PATH
+
+    - name: Generate Documentation
+      run: doxygen Doxyfile
+  
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./generated-docs/html
