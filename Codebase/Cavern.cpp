@@ -790,7 +790,7 @@ int main()
                     if (currentRoom->getID() == 11) // End of the tutorial. clear and say congrats
                     {
                         system("cls");
-                        std::cout << "Congratulations! You have completed the tutorial!\n";
+                        std::cout << "You Win! You have reached the end of the Tutorial.\n";
                         Sleep(2000);
                         gameRunning = false;
                     }
