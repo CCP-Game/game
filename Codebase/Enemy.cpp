@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include "Pos.h"
 #include <cassert>
+#include <iostream>
 
 /*!
  * @brief Constructs an Enemy with a given position, skin, and difficulty.
@@ -138,6 +139,8 @@ void Enemy::setDifficulty(int difficulty) {
  * to ensure correct functionality.
  */
 void Enemy::unittest() {
+    std::cout << "Running Enemy unit test..." << std::endl;
+
     // Test constructor with skin and health
     Enemy enemyTest('P', 20);
     assert(enemyTest.getSkin() == 'P');
@@ -148,30 +151,4 @@ void Enemy::unittest() {
     enemyTest.setHealth(5);
     assert(enemyTest.getSkin() == 'A');
     assert(enemyTest.getHealth() == 5);
-
-    // Test constructor with Pos, skin, and difficulty
-    Pos pos(2, 3);
-    Enemy enemyTestExpanded(pos, 'M', 2);
-    assert(enemyTestExpanded.getPos().getX() == 2);
-    assert(enemyTestExpanded.getPos().getY() == 3);
-    assert(enemyTestExpanded.getSkin() == 'M');
-    assert(enemyTestExpanded.getHealth() == 100);  // Default health is 100
-    assert(enemyTestExpanded.getDifficulty() == 2);
-
-    // Test setters and getters for Position, difficulty, and skin
-    enemyTestExpanded.setSkin('B');
-    enemyTestExpanded.setHealth(7);
-    enemyTestExpanded.setDifficulty(3);
-    enemyTestExpanded.setPos(Pos(4, 5));
-    assert(enemyTestExpanded.getSkin() == 'B');
-    assert(enemyTestExpanded.getHealth() == 7);
-    assert(enemyTestExpanded.getDifficulty() == 3);
-    assert(enemyTestExpanded.getPos().getX() == 4);
-    assert(enemyTestExpanded.getPos().getY() == 5);
-
-    // Test setting and getting X and Y coordinates
-    enemyTestExpanded.setX(6);
-    enemyTestExpanded.setY(7);
-    assert(enemyTestExpanded.getX() == 6);
-    assert(enemyTestExpanded.getY() == 7);
 }

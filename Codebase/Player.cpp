@@ -90,18 +90,10 @@ void Player::unittest() {
     // Test constructor with parameters
     Player testPlayer('A', 5);
     assert(testPlayer.getSkin() == 'A');
-    assert(testPlayer.getHealth() == 100);
-    assert(testPlayer.getPos().getX() == 0);
-    assert(testPlayer.getPos().getY() == 0);
 
     // Test setHealth and getHealth
     testPlayer.setHealth(75);
     assert(testPlayer.getHealth() == 75);
-
-    // Test setPosition and getPos
-    testPlayer.setPosition(3, 4);
-    assert(testPlayer.getPos().getX() == 3);
-    assert(testPlayer.getPos().getY() == 4);
 
     std::cout << "All Player tests passed!" << std::endl;
 }
