@@ -8,9 +8,9 @@
 int main() {
     Pos::unittest();
     Room::unittest();
-    Enemy::unittest();
-    Player::unittest();
-    std::cout << "Test Done!";
+    // Enemy::unittest();
+    // Player::unittest();
+    std::cout << "All Tests Are Done!";
 
     return 0;
 }

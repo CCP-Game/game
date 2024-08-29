@@ -151,4 +151,6 @@ void Enemy::unittest() {
     enemyTest.setHealth(5);
     assert(enemyTest.getSkin() == 'A');
     assert(enemyTest.getHealth() == 5);
+
+    std::cout << "Enemy unit test passed!" << std::endl;
 }
