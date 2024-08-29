@@ -3,19 +3,26 @@
 #include <iostream>
 #include <string>
 #include <cassert>
-
-/**
- * Room (Default Constructor)
- * - Simple default constructor initalises values to 0.
+/*!
+    @file
+    @brief Room is our "map" class. This is how our "wordl-map" is divided into segments e.g Rooms
+    @author  Sam Budgen, Ben Darlington, Ben Nicholson & Alex Poore.
+    @copyright CCP 2024
+*/
+/*!
+    @brief The core methods for this file are InitalizeRoom.
+*/
+ /*!
+    @brief Default constructor
+    @param WIDTH [in] The width of the room
+    @param HEIGHT [in] The height of the room
  */
 Room::Room() : Room(0, 0, WIDTH, HEIGHT)
 {
 }
-/**
- * ~Room
- * Simple deconstructor for Room. Simply deletes the grid.
- */
-// Destructor
+/*!
+    @brief This is Rooms deconstructor, deallocating the memory assigned to the char**
+*/
 Room::~Room()
 {
     // Free allocated memory for grid
@@ -25,9 +32,13 @@ Room::~Room()
     }
     delete[] grid;
 }
-/**
- * 
- */
+/*!
+    @brief This the main constructor for the  first room in a level.
+    @param id [in] int, this is the rooms ID (useful for procedural generation later on)
+    @param depth [in] int, this is how "deep" our room is how far awy from the 0,0 room
+    @param width [in] int, the width of the room
+    @param height [in] int, the height of the room.
+*/
 Room::Room(int id, int depth, int width, int height)
     : id(id), depth(depth), width(width), height(height)
 {
@@ -44,10 +55,10 @@ Room::Room(int id, int depth, int width, int height)
     // Initialize Posers
     playerPos = Pos(0,0);
 }
-/**
- * 
- * 
- */
+/*!
+    @brief method does a deepcopy of a given Room.
+    @param other [in] Room& the room we wish to copy.
+*/
 Room::Room(const Room &other)
     : id(other.id), depth(other.depth), width(other.width), height(other.height)
 {
@@ -64,11 +75,10 @@ Room::Room(const Room &other)
     // Copy other member
     playerPos = Pos(0,0);
 }
-/**
- * Room::operator= 
- * This method overrides the operator =, copying all contents of the "other" room into this one.
- * @param - Takes the address of the Room we want to copy contents from
- * @return
+ /*!
+    @brief Overriding the equals operator. Creating a deep copy of the room we're a = b to.
+    @param other [in] Room& the room we wanmt to be equal to.
+    @return the address of the deepcopied room.
  */
 Room& Room::operator=(const Room& other) {
     if (this != &other) {
@@ -95,14 +105,11 @@ Room& Room::operator=(const Room& other) {
     }
     return *this;
 }
-/**
- * initializeRoom
- * Method initializes a Room, including the walls, doors, and a sprinkling of coins.
- * @param NUM_COINS - this is the number of coins you want in this room.
- * @param type - this is the type of room you want to create.
- * 'b' = Big Room
- * 'v' = Vertical Hallway
- * 'h' = Horizontal Hallway
+ /*!
+    @brief This method initalizes a room, creating crucial data strcutures.
+    @param NUM_COINS [in] int -  this is the number of coins you want in a room.
+    @param type [in] char - this is the type of room you want to create.  'b' = Big Room 'v' = Vertical Hallway 'h' = Horizontal Hallway
+    @return void
  */
 void Room::initializeRoom(int NUM_COINS, char type)
 {
@@ -204,23 +211,21 @@ void Room::initializeRoom(int NUM_COINS, char type)
         setCharAt(coinX, coinY, 'C');
     }
 }
-
-
-/**
- * updatePlayerPos
- * This method updates the Rooms view of the player position
- * @param x - the x coord
- * @param y - the y coord
+ /*!
+    @brief Method updates the players position in the room.
+    @param x [in] int, new x-coord
+    @param y [in] int, new y-coord
+    @return void
  */
 void Room::updatePlayerPos(int x, int y){
     playerPos.setXY(x,y);
 }
-/**
- * validMove
- * This method checks whether a move is valid or not within this room.
- * @param newx - x -coord
- * @param newy - y - coord
- * @return a true or false whether this move will be registered.
+ /*!
+    @brief Method checks whether a given move via a player is allowed.
+    @details checks whether the new xy coord is on a wall or not.
+    @param newx [in] int, new x-coord
+    @param newy [in] int, new y-coord
+    @return boolean - true or false regardign a valid move or not.
  */
 bool Room::validMove(int newx, int newy){
     if(this->getCharAt(newx,newy) !='#'){
@@ -228,34 +233,49 @@ bool Room::validMove(int newx, int newy){
     }
     return false;
 }
-/**
- * 
- */
+/*!
+    @brief Checks whether our move is on a door.
+    @param newx [in] int, new x-coord
+    @param newy [in] int, new y-coord
+    @return Boolean - true or false whether it is a door move or not.
+*/
 bool Room::isDoorMove(int newx, int newy){
     if(this->getCharAt(newx,newy)=='D'){
         return true;
     }
     return false;
 }
-/**
- * 
- */
+/*! 
+    @brief Method sets a door at a given position
+    @param dPos [in] Pos, the position (xy) of the door.
+    @param room [in] Room* - the pointer this room refers to. 
+    @return void
+*/
 void Room::setDoor(Pos dPos, Room* room){
     this->setCharAt(dPos.getX(),dPos.getY(),'D');
     //Inserting this into our arrays
     this->doorPos.push_back(dPos);
     this->doorRooms.push_back(room);
 }
-
+/*! 
+    @brief This method sets an enemy at a given position within a room
+    @param p [in] Pos - the positon (xy) where an enemy will placed
+    @param e [in] Enemy* the enemy we're placing in the room.
+    @return void
+*/
 void Room::setEnemy(Pos p, Enemy* e){
     this->setCharAt(p.getX(),p.getY(),e->getSkin());
     e->setPos(p);
     this->enemies.push_back(e);
-
     // Set the enemy in the grid
 }
-
-// getEnemyAt
+/*!
+    @brief This method gets the enemy at a given position.
+    @details this method should only be called when we know an enemy is at a given position, this just refers to the correct enemy.
+    @param x [in] int - the x position of the enemy.
+    @param y [in] int - the y position of the enemy.
+    @return Enemy* - a pointer to the enemy.
+*/
 Enemy* Room::getEnemyAt(int x, int y){
     for (size_t i = 0; i < enemies.size(); ++i) {
         if (enemies[i]->getX() == x && enemies[i]->getY() == y) {
@@ -264,8 +284,13 @@ Enemy* Room::getEnemyAt(int x, int y){
     }
     return NULL;
 }
-//sdw
-// removeEnemyAt
+/*!
+    @brief Method removes an enemy at a given x-y coord.
+    @details Method removes an enemy at a given position. We assume this method is called when we know, for sure, an enemy is at that position.
+    @param x [in] int - the x-coord
+    @param y [in] int - the y-coord
+    @return void
+*/
 void Room::removeEnemyAt(int x, int y){
     for (size_t i = 0; i < enemies.size(); ++i) {
         if (enemies[i]->getX() == x && enemies[i]->getY() == y) {
@@ -274,7 +299,13 @@ void Room::removeEnemyAt(int x, int y){
         }
     }
 }
-
+/*!
+    @brief Method finds the Room associated with a given door.
+    @details Since our id's for doors relies on coords. this method should always be called when we know we're at a door.
+    @param x [in] the x-coord
+    @param y [in] the y-coord
+    @return Room* a pointer to the room associated with a given doors pos.
+*/
 Room* Room::getRoom(int x, int y) const {
         for (size_t i = 0; i < doorPos.size(); ++i) {
             if (doorPos[i].getX() == x && doorPos[i].getY() == y) {
@@ -283,22 +314,25 @@ Room* Room::getRoom(int x, int y) const {
         }
         return nullptr; // Return nullptr if not found
 }
-/**
- * getDisplay
- * This method returns the current display for a room. Whether it's the room's grid or in combat with an enemy.
- * @return - A 2D Char array, dictating the stuff to display.
+ /*!
+    @brief get the current display for the room.
+    @return Char** - returns the display for the room to be printed.
  */
 char** Room::getDisplay()
 {
     return grid;
 }
-
-// get enemies
+/*!
+    @brief Returns the array of all enemies.
+    @return std::vector - the array of enemies.
+*/
 std::vector<Enemy*> Room::getEnemies(){
     return this->enemies;
 }
-
-// enemiesToString
+/*!
+    @brief Debug tool to print all the information about our enemies.
+    @return String - information regarding our enemies.
+*/
 std::string Room::enemiesToString(){
     std::string result = "";
     for (size_t i = 0; i < enemies.size(); ++i) {
@@ -306,8 +340,14 @@ std::string Room::enemiesToString(){
     }
     return result;
 }
-
-// setEnemyAt
+/*!
+    @brief Method sets an enemy at a given position.
+    @details Method takes an xy coord and sets an enemy at the fgiven postion. 
+    @param x [in] int - the x-coord
+    @param y [in] int - the y-coord
+    @param e [in] Enemy* - the enemy to be placed.
+    @return void.
+*/
 void Room::setEnemyAt(int x, int y, Enemy* e){
     for (size_t i = 0; i < enemies.size(); ++i) {
         if (enemies[i]->getX() == x && enemies[i]->getY() == y) {
@@ -316,9 +356,9 @@ void Room::setEnemyAt(int x, int y, Enemy* e){
         }
     }
 }
-/**
- * removePlayer
- * methodRemoves the player from the char array once out of the current room.
+/*!
+    @brief The method removes the player from the room when traversing to another room.
+    @return void.
 */
 void Room::removePlayer(){
     for(int i =0; i < HEIGHT; i++){
@@ -329,12 +369,20 @@ void Room::removePlayer(){
         }
     }
 }
-
+/*!
+    @brief gets the depth of the room. (how far away from 0,0)
+    @return int - the depth of the room.
+*/
 int Room::getLevel()
 {
     return depth;
 }
-
+/*!
+    @brief gets the char at a given position
+    @param x [in] int - the x-coord
+    @param y [in] int - the y-coord
+    @return char - the char at the given position.
+*/
 char Room::getCharAt(int x, int y) const
 {
     if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT)
@@ -343,7 +391,13 @@ char Room::getCharAt(int x, int y) const
     }
     return ' ';
 }
-
+/*!
+    @brief Sets a character at a given position in the room.
+    @param x [in] int - the x-coord
+    @param y [in] int - the y-coord
+    @param c [in] char - the character we wish to set.
+    @return void
+*/
 void Room::setCharAt(int x, int y, char c)
 {
     if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT)
@@ -351,27 +405,47 @@ void Room::setCharAt(int x, int y, char c)
         grid[y][x] = c;
     }
 }
-
+/*!
+    @brief gets the ID of a room
+    @return int - the ID of the room
+*/
 int Room::getID(){
     return this->id;
 }
-
+/*!
+    @brief sets the players position in the room.
+    @param p [in] Pos - the position xy we're setting the player at.
+    @return void
+*/
 void Room::setPlayerPos(Pos p){
     this->playerPos = p;
 }
-
+/*!
+    @brief returns the position the player is currently at.
+    @return Pos - the pos the player is currently at within our room.
+*/
 Pos Room::getPlayerPos(){
     return this->playerPos;
 }
-
+/*!
+    @brief gets information about the room. (E.g the message of Use W A S D ..)
+    @return std::string - the information about the room.
+*/
 std::string Room::getRoomINFO(){
     return this->roomINFO;
 }
-
+/*!
+    @brief sets the room information.
+    @param roomInfo [in] String - the room information
+    @return. void
+*/
 void Room::setRoomINFO(std::string info){
     this->roomINFO = info;
 }
-
+/*!
+    @brief this method contains our unit test for our room class.
+    @return void.
+*/
 void Room::unittest() {
     std::cout << "Room unittest called!" << std::endl;
 
