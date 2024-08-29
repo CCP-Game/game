@@ -2,43 +2,83 @@
 #include <cassert>
 #include <iostream>
 
-// default constructor
+/**
+ * @brief Default constructor for Pos.
+ * 
+ * Initializes the position to (0, 0).
+ */
 Pos::Pos() : x(0), y(0) {}
 
-// Constructor
+/**
+ * @brief Constructor for Pos with specified coordinates.
+ * 
+ * @param x The X-coordinate of the position.
+ * @param y The Y-coordinate of the position.
+ */
 Pos::Pos(int x, int y) : x(x), y(y) {}
 
-// Get X coordinate
+/**
+ * @brief Gets the X-coordinate of the position.
+ * 
+ * @return int The X-coordinate.
+ */
 int Pos::getX() const {
     return this->x;
 }
 
-// Get Y coordinate
+/**
+ * @brief Gets the Y-coordinate of the position.
+ * 
+ * @return int The Y-coordinate.
+ */
 int Pos::getY() const {
     return this->y;
 }
 
-// get Pos
+/**
+ * @brief Gets the current position.
+ * 
+ * @return Pos A Pos object representing the current coordinates.
+ */
 Pos Pos::getPos() {
     return Pos(x, y);
-}   
+}
 
-// Set both X and Y coordinates
+/**
+ * @brief Sets both the X and Y coordinates of the position.
+ * 
+ * @param x The new X-coordinate.
+ * @param y The new Y-coordinate.
+ */
 void Pos::setXY(int x, int y) {
     this->x = x;
     this->y = y;
 }
 
-// Set X coordinate
+/**
+ * @brief Sets the X-coordinate of the position.
+ * 
+ * @param x The new X-coordinate.
+ */
 void Pos::setX(int x) {
     this->x = x;
 }
 
-// Set Y coordinate
+/**
+ * @brief Sets the Y-coordinate of the position.
+ * 
+ * @param y The new Y-coordinate.
+ */
 void Pos::setY(int y) {
     this->y = y;
 }
 
+/**
+ * @brief Unit test for the Pos class.
+ * 
+ * This function tests the constructors, getters, and setters of the Pos class
+ * to ensure correct functionality.
+ */
 void Pos::unittest() {
     std::cout << "Pos unittest called!" << std::endl;
 
@@ -70,4 +110,3 @@ void Pos::unittest() {
 
     std::cout << "All Pos tests passed!" << std::endl;
 }
-
