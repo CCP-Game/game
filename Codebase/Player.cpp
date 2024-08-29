@@ -23,7 +23,7 @@ Player::Player(char skin, int colour) : skin(skin), colour(colour) {
 Player::Player() : Player('P', 7) {  // Default skin 'P' and color 7
 }
 
-/**
+/*!
  * @brief Gets the player's current health.
  * 
  * @return int The current health of the player.
