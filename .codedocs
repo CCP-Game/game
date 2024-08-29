@@ -1,0 +1,4 @@
+# .codedocs
+INPUT = src
+OUTPUT_DIRECTORY = generated-docs/html
+GENERATE_HTML = YES

@@ -114,19 +114,19 @@ jobs:
         files: coverage.xml
         token: ${{ secrets.CODECOV_TOKEN }}
 
-    - uses: actions/checkout@v2
+    # - uses: actions/checkout@v2
 
-    - name: Set up Doxygen
-      run: choco install doxygen.install -y
+    # - name: Set up Doxygen
+    #   run: choco install doxygen.install -y
   
-    - name: Add Doxygen to PATH
-      run: echo "C:\Program Files\doxygen\bin" >> $env:GITHUB_PATH
+    # - name: Add Doxygen to PATH
+    #   run: echo "C:\Program Files\doxygen\bin" >> $env:GITHUB_PATH
 
-    - name: Generate Documentation
-      run: doxygen Doxyfile
+    # - name: Generate Documentation
+    #   run: doxygen Doxyfile
   
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./generated-docs/html
+    # - name: Deploy to GitHub Pages
+    #   uses: peaceiris/actions-gh-pages@v3
+    #   with:
+    #     github_token: ${{ secrets.GITHUB_TOKEN }}
+    #     publish_dir: ./generated-docs/html
