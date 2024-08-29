@@ -18,12 +18,12 @@
 #define HEIGHT 13
 /*!
     @file 
-    @brief Cavern is the main class for our game. It contains the game loop and the manner in which we display to the user.
+    @brief Cavern is the main class for our game. It contains the game loop and the manner in which we display our game to the user.
     @author Sam Budgen, Ben Darlington, Ben Nicholson & Alex Poore.
     @copyright CCP 2024 
 */
 /*!
-    @brief The core methods for this file are the "main" method and initalizeTutorialMap
+    @brief The core methods for this file are the "main" method and initalizeTutorialMap they initalize and run the game.
 */
 /*!
     @brief Sets the cursor position
@@ -134,17 +134,12 @@ void animateEncounter(char enemyHead) {
     // Final encounter, when the player is face-to-face with the skeleton
     clearScreen();
     displayScene(playerPosition, enemyPosition, enemyHead);
-
 }
-/**
- * setFGColor
- * This method uses ANSI escape codes to set the output color to console for the foreground.
- * @param int textColor - this is the color we want has to be > 1csc
- */
 /*!
-    @brief 
-    @details 
-    @param 
+    @brief Sets the foreground colour on the console output.
+    @details Using ANSI escape codes we're able to change the output colour to console
+    @param textColour [in] int, This is the text colur upto 255. Default is white 255
+    @return void
 */
 void setFGColour(int textColour = 255)
 {
@@ -156,11 +151,11 @@ void setFGColour(int textColour = 255)
 
     std::cout << "m";
 }
-/**
- * setBGColour
- * This method, using ASNI escape codes, sets the Background Colour in the console
- * @param int bgColour
- * efefef
+ /*!
+    @brief This method sets the Background Colour for text being printed to console
+    @details Utilizing ANSI escape codes we can set the background colour of text.
+    @param textColour [in] int, this is the background colour we have chosen. Default is 255 (white)
+    @return void.
  */
 void setBGColour(int textColour = 255)
 {
@@ -172,9 +167,11 @@ void setBGColour(int textColour = 255)
 
     std::cout << "m";
 }
-/**
- * resetColor
- * This method resets the output to it's default Colour
+/*!
+    @brief 
+    @details
+    @param
+    @return 
  */
 void resetColour()
 {
@@ -388,24 +385,12 @@ Pos getDoorsOpposite(Pos oldPos)
         return Pos(-1, -1); // Indicating an invalid position
     }
 }
-
-/**
- * printToConsole
- * - This method takes a 2d char array (a display) printing it to the console
- * @param display - the inputted 2d char array.
- */
-/**
- * initalizeTutorialMap
- * Method implements a simple "linked-list-style" 1D map of rooms. Returning the first room.
- * @param roomSize
- * @return the first room in the linked list.
- */
-
-// left = Pos(0, HEIGHT/2)
-// right = Pos(WIDTH-1, HEIGHT/2)
-// top = Pos(WIDTH/2, 0)
-// bottom = Pos(WIDTH/2, HEIGHT-1)
-
+/*!
+    @brief This method initalizes are Tutorial map. 
+    @details This method creates all the Rooms, enemies and links them together. Returning a pointer to the first room.
+    @param roomLength [in] int, this is how many rooms we want.
+    @return Room - Returns a pointer to the first room in the map.
+*/
 Room *initalizeTutorialMap(int roomLength)
 {
     Room *room1 = new Room(1, 1, WIDTH, HEIGHT);
@@ -499,7 +484,12 @@ Room *initalizeTutorialMap(int roomLength)
 
     return room1; // Game starts in room 1
 }
-
+/*!
+    @brief This method takes a Room's display and displays it to the console
+    @details This method takes a rooms char** array and displays it to the console.
+    @param display [in] char**, this is the char array to be printed to the console.
+    @return void.
+*/
 void printToConsole(char **display)
 {
     system("cls");            // Clear the console
@@ -531,7 +521,13 @@ void printToConsole(char **display)
         std::cout << '\n';
     }
 }
-
+/*!
+    @brief This method determines whether a player is touching an enemy.
+    @details This method takes the current room and player determining whether a player is close-enought oan enemy to trigger combat.
+    @param room [in] Room*, the current room.
+    @param player [in] Player , the current player.
+    @return boolean, t/f if we are or aren't touching an enemy.
+*/
 boolean touchingEnemy(Room *room, Player player)
 {
     Pos playerPos = player.getPos();
@@ -544,7 +540,10 @@ boolean touchingEnemy(Room *room, Player player)
     }
     return false;
 }
-
+/*!
+    @brief clears the input recieved by our game.
+    @return void.
+*/
 void clearInputBuffer()
 {
     while (_kbhit())
@@ -552,7 +551,11 @@ void clearInputBuffer()
         _getch(); // Read any characters left in the input buffer
     }
 }
-
+/*!
+    @brief This method generates a mathematics problem for our combat.
+    @details generates a random number pair for a mathproblem.
+    @return int, returns the answer to the problem.
+*/
 int generateMathProblem()
 {
     int num1 = rand() % 10 + 1;
@@ -649,7 +652,13 @@ int generateMathProblem()
 //         return true;
 //     }
 // }
-
+/*!
+    @brief Starts the fight enemy seqeunce.
+    @param player [in] Player& - the current player.
+    @param enemy [in] Enemy* the current enemy
+    @return boolean t/f if we won or lost.
+    
+*/
 bool fightEnemy(Player &player, Enemy *enemy){
 
     system("cls");
@@ -660,7 +669,15 @@ bool fightEnemy(Player &player, Enemy *enemy){
 
     return outcome;
 }
+/*!
+    @brief Method updates the enemy position each time it is called.
+    @param room [in] Room* - the current room
+    @param enemy [in] Enemy* - the current enemy
+    @param newX [in] int - enemies new x-coord
+    @param newy [in] int - enemies new y-coord
+    @return void
 
+*/
 void updateEnemyPosition(Room *room, Enemy *enemy, int newX, int newY)
 {
     const Pos &currentPos = enemy->getPos();
@@ -680,7 +697,11 @@ void updateEnemyPosition(Room *room, Enemy *enemy, int newX, int newY)
     setCursorPosition(newX, newY);
     std::cout << enemy->getSkin();
 }
-
+/*!
+    @brief Method updates all enemies position within the room.
+    @param room [in] Room* - the current room.
+    @return void.
+*/
 void moveEnemies(Room *room)
 {
     for (auto &enemy : room->getEnemies())
@@ -710,7 +731,11 @@ void moveEnemies(Room *room)
         }
     }
 }
-
+/*!
+    @brief This "main" runs our game. It is where the game-loop is located 
+    @details Method initalizes our game and runs it.
+    @return int , exit code.
+*/
 int main()
 {
     int score = 0;
