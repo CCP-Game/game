@@ -35,13 +35,6 @@ GENERATE_HTML = YES
 
 EXTRACT_ALL = YES
 
-INPUT += README.md
-EXTRACT_ALL = YES
-GENERATE_LATEX = NO
-GENERATE_HTML = YES
-MARKDOWN_SUPPORT = YES
-EXTERNAL_GROUPS = YES
-EXTERNAL_PAGES = YES
 #---------------------------------------------------------------------------
 # Additional Settings for Codecov
 #---------------------------------------------------------------------------
