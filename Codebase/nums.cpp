@@ -4,6 +4,9 @@
 #include <random>
 #include "nums.h"
 
+/*!
+ * @brief Array of ASCII art representations for digits 0-9 and some symbols.
+ */
 const char *ASCII_NUMBERS[] = {
     "  ___  \n"
     " / _ \\ \n"
@@ -112,6 +115,14 @@ const char *ASCII_NUMBERS[] = {
 
 };
 
+/*!
+ * @brief Prompts the user to enter an integer and returns their input.
+ *
+ * This function displays a prompt to the user asking for an integer input and
+ * then reads and returns the value entered by the user.
+ *
+ * @return The integer input by the user.
+ */
 int getUserInput()
 {
     int userAnswer;
@@ -120,6 +131,15 @@ int getUserInput()
     return userAnswer;
 }
 
+/*!
+ * @brief Prints the given string as ASCII art.
+ *
+ * This function takes a string containing digits and/or symbols and prints
+ * each character in its corresponding ASCII art form. The ASCII art is
+ * represented by an array of strings where each index corresponds to a character.
+ *
+ * @param nums [in] The string containing digits and symbols to be converted to ASCII art.
+ */
 void printNums(const std::string &nums)
 {
     // Prepare a vector to hold each line of the final ASCII art
@@ -193,6 +213,16 @@ void printNums(const std::string &nums)
     }
 }
 
+/*!
+ * @brief Generates a random integer between a given minimum and maximum.
+ *
+ * Uses a Mersenne Twister engine to generate a uniformly distributed random integer.
+ *
+ * @param min [in] The minimum value of the random integer (inclusive).
+ * @param max [in] The maximum value of the random integer (inclusive).
+ *
+ * @return A random integer between min and max.
+ */
 int improvedRandom(int min, int max)
 {
     static std::random_device rd;
@@ -201,6 +231,14 @@ int improvedRandom(int min, int max)
     return dis(gen);
 }
 
+/*!
+ * @brief Generates an addition equation, prints it in ASCII art, and checks if the user's answer is correct.
+ *
+ * Generates two random numbers, calculates their sum, and prints the equation in ASCII art.
+ * Prompts the user to enter the answer and returns whether it is correct.
+ *
+ * @return Returns true if the user's answer is correct, false otherwise.
+ */
 bool generateEquation()
 {
     int num1 = improvedRandom(1, 100); // Generate first number
@@ -215,6 +253,14 @@ bool generateEquation()
     return answer == result;
 }
 
+/*!
+ * @brief Generates a subtraction equation, prints it in ASCII art, and checks if the user's answer is correct.
+ *
+ * Generates two random numbers, calculates their difference, and prints the equation in ASCII art.
+ * Prompts the user to enter the answer and returns whether it is correct.
+ *
+ * @return Returns true if the user's answer is correct, false otherwise.
+ */
 bool generateSubtractionEquation()
 {
     int num1 = improvedRandom(1, 100);  // Generate first number
@@ -229,6 +275,14 @@ bool generateSubtractionEquation()
     return answer == result;
 }
 
+/*!
+ * @brief Generates a multiplication equation, prints it in ASCII art, and checks if the user's answer is correct.
+ *
+ * Generates two random numbers, calculates their product, and prints the equation in ASCII art.
+ * Prompts the user to enter the answer and returns whether it is correct.
+ *
+ * @return Returns true if the user's answer is correct, false otherwise.
+ */
 bool generateMultiplicationEquation()
 {
     int num1 = improvedRandom(1, 10); // Generate first number
@@ -243,6 +297,14 @@ bool generateMultiplicationEquation()
     return answer == result;
 }
 
+/*!
+ * @brief Generates a division equation, prints it in ASCII art, and checks if the user's answer is correct.
+ *
+ * Generates a divisor and a dividend (multiple of the divisor), calculates their quotient, and prints
+ * the equation in ASCII art. Prompts the user to enter the answer and returns whether it is correct.
+ *
+ * @return Returns true if the user's answer is correct, false otherwise.
+ */
 bool generateDivisionEquation()
 {
     int num2 = improvedRandom(1, 10);        // Generate divisor
