@@ -5,7 +5,7 @@
 
 [![Static Badge](https://img.shields.io/badge/Codacy-%23222F29?style=plastic&logo=codacy&logoColor=white&labelColor=grey)](https://app.codacy.com/organizations/gh/CCP-Game/dashboard)
 
-[![Static Badge](https://img.shields.io/badge/Doxygen-%232C4AA8?style=plastic&logo=doxygen&logoColor=white&labelColor=grey)](https://codedocs.xyz/CCP-Game/game/pages.html)
+[![Static Badge](https://img.shields.io/badge/Doxygen-%232C4AA8?style=plastic&logo=doxygen&logoColor=white&labelColor=grey)](https://codedocs.xyz/CCP-Game/game/index.html)
  
  ```
 ⢀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀		
