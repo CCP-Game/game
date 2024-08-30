@@ -1,5 +1,6 @@
 #include "Room.h"
 #include "Pos.h"
+#include "Pos.cpp"
 #include <iostream>
 #include <string>
 #include <cassert>
@@ -453,8 +454,11 @@ void Room::unittest() {
     Room roomDefault;
     assert(roomDefault.getID() == 0);
     assert(roomDefault.getLevel() == 0);
-    //assert(roomDefault.getPlayerPos().getX() == 0 && roomDefault.getPlayerPos().getY() == 0);
-    //assert(roomDefault.getCharAt(0, 0) == ' ');
+
+    // Test player pos
+    roomDefault.setPlayerPos(Pos(5, 5));
+    assert(roomDefault.getPlayerPos().getX() == 5);
+    assert(roomDefault.getPlayerPos().getY() == 5);
     
     // Test parameterized constructor
     Room testRoom(2, 1, 15, 20);
