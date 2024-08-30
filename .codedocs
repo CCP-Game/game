@@ -8,13 +8,16 @@
 DOXYFILE = Doxyfile
 
 # Specify directories and files to include in the documentation.
-INPUT = src/ include/ README.md
+INPUT = README.md Codebase/ 
 
 # Directories where Doxygen should generate the documentation.
 OUTPUT_DIRECTORY = generated-docs/html
 
 # Repositories to link documentation with (if applicable).
-TAGFILES = 
+
+RECURSIVE = YES
+PROJECT_NAME = "Cavern"
+PROJECT_NUMBER = "1.0"
 
 #---------------------------------------------------------------------------
 # Doxygen Configuration
@@ -29,11 +32,9 @@ HTML_EXTRA_FILES = README.md
 # Ensure Doxygen generates HTML output.
 GENERATE_HTML = YES
 
-# Add paths for images, if any.
-IMAGE_PATH =
-
 # Add more directories or files to include in the documentation if needed.
-INPUT += README.md
+
+EXTRACT_ALL = YES
 
 #---------------------------------------------------------------------------
 # Additional Settings for Codecov
