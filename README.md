@@ -40,6 +40,9 @@ Cavern is a command-line based adventure game. Designed & created for a capstone
 ### Compiling:
 g++ -o Cavern Cavern.cpp
 
+### Running 
+./Cavern.exe 
+
 ### Developers:
 - Alex Poore
 - Ben Darlington
@@ -47,10 +50,11 @@ g++ -o Cavern Cavern.cpp
 - Sam Budgen 
 
 ### Documentation 
-Cavern.cpp
-Room.cpp
-Player.cpp
-Enemy.cpp
+- [Main Page](https://codedocs.xyz/CCP-Game/game/index.html)
+- [Cavern.cpp](https://codedocs.xyz/CCP-Game/game/Cavern_8cpp.html)
+- [Room.cpp](https://codedocs.xyz/CCP-Game/game/classRoom.html)
+- [Player.cpp](https://codedocs.xyz/CCP-Game/game/Player_8cpp.html)
+- [Enemy.cpp](https://codedocs.xyz/CCP-Game/game/Enemy_8cpp.html)
 
 
 
