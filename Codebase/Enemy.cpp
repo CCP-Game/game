@@ -142,15 +142,25 @@ void Enemy::unittest() {
     std::cout << "Running Enemy unit test..." << std::endl;
 
     // Test constructor with skin and health
-    Enemy enemyTest('P', 20);
-    assert(enemyTest.getSkin() == 'P');
-    assert(enemyTest.getHealth() == 20);
+    Enemy enemyTest1('P', 20);
+    assert(enemyTest1.getSkin() == 'P');
+    assert(enemyTest1.getHealth() == 20);
 
     // Test setters and getters for skin and health
-    enemyTest.setSkin('A');
-    enemyTest.setHealth(5);
-    assert(enemyTest.getSkin() == 'A');
-    assert(enemyTest.getHealth() == 5);
+    enemyTest1.setSkin('A');
+    enemyTest1.setHealth(50);
+    assert(enemyTest1.getSkin() == 'A');
+    assert(enemyTest1.getHealth() == 50);
+
+    enemyTest1.setX(8);
+    enemyTest1.setY(15);
+    assert(enemyTest1.getX() == 8);
+    assert(enemyTest1.getY() == 15);
+
+    // Test difficulty level setter and getter
+    enemyTest1.setDifficulty(4);
+    assert(enemyTest1.getDifficulty() == 4);
 
     std::cout << "Enemy unit test passed!" << std::endl;
 }
+
