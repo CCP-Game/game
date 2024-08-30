@@ -1,4 +1,43 @@
 # .codedocs
 INPUT = src
 OUTPUT_DIRECTORY = generated-docs/html
+# .codedocs
+DOXYFILE = Doxyfile
+INPUT = Codebase
+OUTPUT_DIRECTORY = generated-docs/html
 GENERATE_HTML = YES
+INPUT += README.md
+
+CodeDocs.xyz Configuration File
+#
+Rename this example to '.codedocs' and put it in the root directory of your
+repository. This file is optional, documentation will still be generated
+without it using sensible defaults.
+#---------------------------------------------------------------------------
+CodeDocs Configuration
+#---------------------------------------------------------------------------
+
+Include the Doxygen configuration from another file.
+DOXYFILE = Doxyfile
+
+Specify external repository to link documentation with.
+TAGLINKS =
+
+Directories and files to include in the documentation.
+INPUT = src/ include/ fonts/ README.md
+
+#---------------------------------------------------------------------------
+Doxygen Configuration
+#---------------------------------------------------------------------------
+
+IMAGE_PATH = 
+
+Doxygen configuration options
+USE_MDFILE_AS_MAINPAGE = README.md
+INPUT += README.md
+
+Optional configurations you might consider:
+Adjusting the layout, styles, or additional settings for Doxygen
+Ensuring badges and other README content are correctly rendered
+Additional settings for badges visibility
+HTML_EXTRA_FILES = README.md

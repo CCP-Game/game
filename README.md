@@ -3,7 +3,7 @@
 
 [![Static Badge](https://img.shields.io/badge/Codecov-%23F01F7A?style=plastic&logo=codecov&logoColor=white&labelColor=grey)](https://app.codecov.io/gh/CCP-Game/game)
 
-[![Static Badge](https://img.shields.io/badge/Codacy-%23222F29?style=plastic&logo=codacy&logoColor=white&labelColor=grey)](https://app.codacy.com/organizations/gh/CCP-Game/dashboard)\
+[![Static Badge](https://img.shields.io/badge/Codacy-%23222F29?style=plastic&logo=codacy&logoColor=white&labelColor=grey)](https://app.codacy.com/organizations/gh/CCP-Game/dashboard)
 
 [![Static Badge](https://img.shields.io/badge/Doxygen-%232C4AA8?style=plastic&logo=doxygen&logoColor=white&labelColor=grey)](link=https%3A%2F%2Fcodedocs.xyz%2FCCP-Game%2Fgame%2Findex.html)
  
