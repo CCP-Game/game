@@ -1,6 +1,5 @@
 #include "Room.h"
 #include "Pos.h"
-#include "Pos.cpp"
 #include <iostream>
 #include <string>
 #include <cassert>
