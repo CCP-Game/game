@@ -58,7 +58,7 @@ PROJECT_NAME           = "Cavern"
 
 PROJECT_NUMBER         = "1.0"
 
-INPUT = Codebase
+INPUT = Codebase/ README.md
 
 FILE_PATTERNS = *.h *.cpp
 
@@ -76,7 +76,7 @@ HAVE_DOT = YES
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          =
+PROJECT_BRIEF          ="j"
 
 # With the PROJECT_LOGO tag one can specify a logo or an icon that is included
 # in the documentation. The maximum height of the logo should not exceed 55
