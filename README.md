@@ -46,7 +46,7 @@ g++ -o Cavern Cavern.cpp
 - Ben Nicholson
 - Sam Budgen 
 
-#Documentation 
+### Documentation 
 Cavern.cpp
 Room.cpp
 Player.cpp
