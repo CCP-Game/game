@@ -15,7 +15,7 @@ OUTPUT_DIRECTORY = generated-docs/html
 # Repositories to link documentation with (if applicable).
 
 RECURSIVE = YES
-PROJECT_NAME = "Cavern"
+PROJECT_NAME = "Cavern game"
 PROJECT_NUMBER = "1.0"
 
 #---------------------------------------------------------------------------
