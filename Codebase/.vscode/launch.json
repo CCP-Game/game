@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "extension-output-ms-vscode.cpptools-#2-C",
-      "program": "extension-output-ms-vscode.cpptools-#2-C/build/Debug/outDebug",
+      "cwd": "c:/Users/Sam Bugden/OneDrive/Documents/GitHub/game/Codebase",
+      "program": "c:/Users/Sam Bugden/OneDrive/Documents/GitHub/game/Codebase/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
