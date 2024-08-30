@@ -1,43 +1,46 @@
 # .codedocs
-INPUT = src
-OUTPUT_DIRECTORY = generated-docs/html
-# .codedocs
-DOXYFILE = Doxyfile
-INPUT = Codebase
-OUTPUT_DIRECTORY = generated-docs/html
-GENERATE_HTML = YES
-INPUT += README.md
 
-CodeDocs.xyz Configuration File
-#
-Rename this example to '.codedocs' and put it in the root directory of your
-repository. This file is optional, documentation will still be generated
-without it using sensible defaults.
 #---------------------------------------------------------------------------
-CodeDocs Configuration
+# CodeDocs Configuration
 #---------------------------------------------------------------------------
 
-Include the Doxygen configuration from another file.
+# Include the Doxygen configuration from another file.
 DOXYFILE = Doxyfile
 
-Specify external repository to link documentation with.
-TAGLINKS =
+# Specify directories and files to include in the documentation.
+INPUT = src/ include/ README.md
 
-Directories and files to include in the documentation.
-INPUT = src/ include/ fonts/ README.md
+# Directories where Doxygen should generate the documentation.
+OUTPUT_DIRECTORY = generated-docs/html
+
+# Repositories to link documentation with (if applicable).
+TAGFILES = 
 
 #---------------------------------------------------------------------------
-Doxygen Configuration
+# Doxygen Configuration
 #---------------------------------------------------------------------------
 
-IMAGE_PATH = 
-
-Doxygen configuration options
+# Use the Markdown file as the main page of the documentation.
 USE_MDFILE_AS_MAINPAGE = README.md
+
+# Additional settings to ensure badges and README content are correctly rendered.
+HTML_EXTRA_FILES = README.md
+
+# Ensure Doxygen generates HTML output.
+GENERATE_HTML = YES
+
+# Add paths for images, if any.
+IMAGE_PATH =
+
+# Add more directories or files to include in the documentation if needed.
 INPUT += README.md
 
-Optional configurations you might consider:
-Adjusting the layout, styles, or additional settings for Doxygen
-Ensuring badges and other README content are correctly rendered
-Additional settings for badges visibility
-HTML_EXTRA_FILES = README.md
+#---------------------------------------------------------------------------
+# Additional Settings for Codecov
+#---------------------------------------------------------------------------
+
+# If using badges or special layout, ensure these are correctly set.
+# This setting is specific to how you want the layout to appear on CodeDocs.
+
+# Optional: Additional settings to customize the output, such as styles or themes.
+# Ensure badges and other README content are correctly rendered.
