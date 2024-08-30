@@ -5,7 +5,6 @@
 #---------------------------------------------------------------------------
 
 # Include the Doxygen configuration from another file.
-DOXYFILE = Doxyfile
 
 # Specify directories and files to include in the documentation.
 INPUT = README.md Codebase/ 
