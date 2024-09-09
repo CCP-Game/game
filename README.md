@@ -1,7 +1,8 @@
  ### Actions
  ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
 
-[![Static Badge](https://img.shields.io/badge/Codecov-%23F01F7A?style=plastic&logo=codecov&logoColor=white&labelColor=grey)](https://app.codecov.io/gh/CCP-Game/game)
+
+[![codecov](https://codecov.io/gh/CCP-Game/game/graph/badge.svg?token=7AAWXY8HWF)](https://codecov.io/gh/CCP-Game/game)
 
 [![Static Badge](https://img.shields.io/badge/Codacy-%23222F29?style=plastic&logo=codacy&logoColor=white&labelColor=grey)](https://app.codacy.com/organizations/gh/CCP-Game/dashboard)
 
