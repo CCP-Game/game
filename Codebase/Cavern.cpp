@@ -245,6 +245,8 @@ bool battleScreen(Enemy &enemy, Player &Player)
     char enemyHead = enemy.getSkin();
 
     animateEncounter(enemyHead);
+    PlaySound(TEXT("encounter.wav"), NULL, SND_FILENAME | SND_ASYNC);
+
     std::string enemyName;
 
     int encounterType = 0;
@@ -321,11 +323,17 @@ bool battleScreen(Enemy &enemy, Player &Player)
         if (outcome)
         {
             enemyHealth -= 10;
+
+            PlaySound(TEXT("good.wav"), NULL, SND_FILENAME | SND_ASYNC);
+
             std::cout << "Effective attack" << std::endl;
         }
         else
         {
             playerHealth -= 10;
+
+            PlaySound(TEXT("encounter.wav"), NULL, SND_FILENAME | SND_ASYNC);
+
             std::cout << "Couldnt block incoming attack" << std::endl;
         }
         delay(750);
@@ -338,11 +346,13 @@ bool battleScreen(Enemy &enemy, Player &Player)
     }
     else
     {
+        PlaySound(TEXT("winfight.wav"), NULL, SND_FILENAME | SND_ASYNC);
         std::cout << "You have defeated " << enemyName << "." << std::endl;
     }
     delay(750);
 
     Player.setHealth(playerHealth);
+
     return outcome;
 }
 /*!
@@ -573,8 +583,8 @@ void scatterEnemies(Room *room)
     int numEnemies = rand() % 3 + 1; // 1 to 3 enemies
     for (int i = 0; i < numEnemies; i++)
     {
-        int xPos = rand() % WIDTH;
-        int yPos = rand() % HEIGHT;
+        int xPos = rand() % (WIDTH - 2) + 1;  // Generate random x position within the inner ring
+        int yPos = rand() % (HEIGHT - 2) + 1; // Generate random y position within the inner ring
         room->setEnemy(Pos(xPos, yPos), enemies[rand() % 9]);
     }
 }
@@ -951,6 +961,15 @@ void moveEnemies(Room *room)
         }
     }
 }
+
+void playFootstep()
+{
+    // choose random step sound format "footstep00"-09.wav
+    // int stepSound = rand() % 10;
+    // std::string stepSoundFile = "footstep0" + std::to_string(stepSound) + ".wav";
+    // PlaySound(TEXT(stepSoundFile.c_str()), NULL, SND_FILENAME | SND_ASYNC);
+}
+
 /*!
     @brief This "main" runs our game. It is where the game-loop is located
     @details Method initalizes our game and runs it.
@@ -992,20 +1011,36 @@ int main()
                 newY = currentPos.getY();
 
                 if (isKeyPressed('W'))
+                {
                     newY--;
+                    playFootstep();
+                }
                 if (isKeyPressed('S'))
+                {
                     newY++;
+                    playFootstep();
+                }
+
                 if (isKeyPressed('A'))
+                {
                     newX--;
+                    playFootstep();
+                }
+
                 if (isKeyPressed('D'))
+                {
                     newX++;
+                    playFootstep();
+                }
 
                 char nextChar = currentRoom->getCharAt(newX, newY);
 
                 if (currentRoom->validMove(newX, newY))
                 {
+
                     if (currentRoom->isDoorMove(newX, newY))
                     {
+                        PlaySound(TEXT("door.wav"), NULL, SND_FILENAME | SND_ASYNC);
                         currentRoom->removePlayer();
                         Room *tempRoom = currentRoom->getRoom(newX, newY);
 
@@ -1029,12 +1064,14 @@ int main()
                     }
                     else if (touchingEnemy(currentRoom, player))
                     {
+                        PlaySound(TEXT("danger.wav"), NULL, SND_FILENAME | SND_ASYNC);
                         Enemy *enemy = currentRoom->getEnemyAt(newX, newY);
                         if (enemy)
                         {
                             bool playerWon = fightEnemy(player, enemy);
                             if (playerWon)
                             {
+                                PlaySound(TEXT("win.wav"), NULL, SND_FILENAME | SND_ASYNC);
                                 currentRoom->removeEnemyAt(newX, newY);
                                 score += 50;
                                 // display the room again
@@ -1043,6 +1080,7 @@ int main()
                             }
                             else
                             {
+                                PlaySound(TEXT("encounter.wav"), NULL, SND_FILENAME | SND_ASYNC);
                                 gameRunning = false;
                             }
                         }
