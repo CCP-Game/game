@@ -551,12 +551,21 @@ struct PositionHash
 Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerring)
 {
     Room *room = new Room(id, 1, WIDTH, HEIGHT);
-    room->initializeRoom(5, 'b');  // Always create big rooms
+    room->initializeRoom(5, 'b'); // Always create big rooms
     // Set room information with id, isMainPath, isFinalRoom, and isRedHerring
-    std::string roomInfo = "ID: " + std::to_string(id) + 
-                           " | IsMainPath: " + std::to_string(isMainPath) + 
-                           " | IsFinalRoom: " + std::to_string(isFinalRoom) + 
-                           " | IsRedHerring: " + std::to_string(isRedHerring);
+    std::string roomInfo;
+    if (isMainPath)
+    {
+        roomInfo += "Main Path ";
+    }
+    if (isFinalRoom)
+    {
+        roomInfo += "Final Room ";
+    }
+    if (isRedHerring)
+    {
+        roomInfo += "Red Herring ";
+    }
     room->setRoomINFO(roomInfo);
     return room;
 }
@@ -604,19 +613,26 @@ Position getRandomDirection(const Position &currentPos, const std::unordered_map
 // Function to connect two rooms
 void connectRooms(Room *room1, Room *room2, const Position &pos1, const Position &pos2)
 {
-    if (pos1.x < pos2.x) {
+    if (pos1.x < pos2.x)
+    {
         // room2 is to the east of room1
         room1->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room2);
         room2->setDoor(Pos(0, HEIGHT / 2), room1);
-    } else if (pos1.x > pos2.x) {
+    }
+    else if (pos1.x > pos2.x)
+    {
         // room2 is to the west of room1
         room1->setDoor(Pos(0, HEIGHT / 2), room2);
         room2->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room1);
-    } else if (pos1.y < pos2.y) {
+    }
+    else if (pos1.y < pos2.y)
+    {
         // room2 is to the south of room1
         room1->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room2);
         room2->setDoor(Pos(WIDTH / 2, 0), room1);
-    } else if (pos1.y > pos2.y) {
+    }
+    else if (pos1.y > pos2.y)
+    {
         // room2 is to the north of room1
         room1->setDoor(Pos(WIDTH / 2, 0), room2);
         room2->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room1);
@@ -624,16 +640,17 @@ void connectRooms(Room *room1, Room *room2, const Position &pos1, const Position
 }
 
 // Function to create main path with random positions
+// Function to create main path with random positions
 void createMainPath(std::unordered_map<Position, Room *, PositionHash> &placedRooms, int &currentRoomId, Position &currentPos)
 {
     Room *prevRoom = nullptr;
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 5; ++i) // Increased to 5 rooms to ensure a longer main path
     {
         Position nextPos = getRandomDirection(currentPos, placedRooms);
         if (nextPos == currentPos)
             break; // No available direction
 
-        bool isFinalRoom = (i == 3);  // Last room in the main path
+        bool isFinalRoom = (i == 4); // Last room in the main path
         Room *room = createRandomRoom(currentRoomId++, true, isFinalRoom, false);
 
         if (prevRoom)
@@ -649,15 +666,18 @@ void createMainPath(std::unordered_map<Position, Room *, PositionHash> &placedRo
 }
 
 // Function to create red herring rooms
-void createRedHerrings(std::unordered_map<Position, Room *, PositionHash> &placedRooms, int &currentRoomId, Room *mainRoom, Position currentPos)
+void createRedHerrings(std::unordered_map<Position, Room *, PositionHash> &placedRooms, int &currentRoomId, Room *startRoom)
 {
+    // Create two red herring paths from the start room
     for (int i = 0; i < 2; ++i)
     {
+        Position currentPos(0, 0); // Start from the beginning
         Position redHerringPos = getRandomDirection(currentPos, placedRooms);
-        if (redHerringPos == currentPos) break;  // No available direction
+        if (redHerringPos == currentPos)
+            continue; // No available direction
 
         Room *redHerring = createRandomRoom(currentRoomId++, false, false, true);
-        connectRooms(mainRoom, redHerring, currentPos, redHerringPos);
+        connectRooms(startRoom, redHerring, currentPos, redHerringPos);
         scatterEnemies(redHerring);
         placedRooms[redHerringPos] = redHerring;
 
@@ -689,10 +709,11 @@ Room *initializeProceduralMap()
     placedRooms[startPos] = startRoom;
 
     // Step 2: Create main path with randomized room positions
-    createMainPath(placedRooms, currentRoomId, startPos);
+    Position currentPos = startPos;
+    createMainPath(placedRooms, currentRoomId, currentPos);
 
-    // Step 3: Add red herring rooms
-    createRedHerrings(placedRooms, currentRoomId, startRoom, startPos);
+    // Step 3: Add red herring rooms from the start room
+    createRedHerrings(placedRooms, currentRoomId, startRoom);
 
     return startRoom; // Return the starting room
 }
@@ -964,7 +985,7 @@ int main()
         Player player('P', 100);
         player.setPosition(WIDTH / 2, HEIGHT / 2);
         currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
-        
+
         // Initial full screen draw
         printToConsole(currentRoom->getDisplay());
         hideCursor();
@@ -978,10 +999,14 @@ int main()
                 newX = currentPos.getX();
                 newY = currentPos.getY();
 
-                if (isKeyPressed('W')) newY--;
-                if (isKeyPressed('S')) newY++;
-                if (isKeyPressed('A')) newX--;
-                if (isKeyPressed('D')) newX++;
+                if (isKeyPressed('W'))
+                    newY--;
+                if (isKeyPressed('S'))
+                    newY++;
+                if (isKeyPressed('A'))
+                    newX--;
+                if (isKeyPressed('D'))
+                    newX++;
 
                 char nextChar = currentRoom->getCharAt(newX, newY);
 
@@ -1020,7 +1045,7 @@ int main()
                             {
                                 currentRoom->removeEnemyAt(newX, newY);
                                 score += 50;
-                                //display the room again
+                                // display the room again
                                 printToConsole(currentRoom->getDisplay());
                                 updatePlayerPosition(currentRoom, player, newX, newY);
                             }
