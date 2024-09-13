@@ -2,6 +2,10 @@
 #include <cstdlib>
 #include <ctime>
 #include <windows.h>
+#include <cstdlib> // For random number generation
+#include <ctime>   // To seed random generator
+#include <map>
+#include <stdexcept>
 #pragma comment(lib, "User32.lib")
 #pragma comment(lib, "Winmm.lib")
 #include <conio.h> // For _kbhit() and _getch()
@@ -518,6 +522,190 @@ Room *initalizeTutorialMap(int roomLength)
     @param display [in] char**, this is the char array to be printed to the console.
     @return void.
 */
+
+// Room position helper
+struct Position
+{
+    int x, y;
+    Position(int x, int y) : x(x), y(y) {}
+
+    bool operator==(const Position &other) const
+    {
+        return x == other.x && y == other.y;
+    }
+};
+
+// Hash function for Position to use in map
+struct PositionHash
+{
+    std::size_t operator()(const Position &pos) const
+    {
+        return std::hash<int>()(pos.x) ^ std::hash<int>()(pos.y);
+    }
+};
+
+// Room Type Decision Based on Door Placement
+char decideRoomType(int numDoors, const Position &currentPos, const Position &nextPos)
+{
+    // Check if there are exactly two doors and they are directly opposite
+    if (numDoors == 2)
+    {
+        if (currentPos.x != nextPos.x && currentPos.y == nextPos.y)
+        {
+            return 'h'; // Horizontal hallway: east-west movement (doors on left and right)
+        }
+        else if (currentPos.y != nextPos.y && currentPos.x == nextPos.x)
+        {
+            return 'b'; // Vertical hallway: north-south movement (doors on top and bottom)
+        }
+    }
+    return 'b'; // Big room for other cases (more than 2 doors or not opposite directions)
+}
+
+Room *createRandomRoom(int id, char type)
+{
+    Room *room = new Room(id, 1, WIDTH, HEIGHT);
+    room->initializeRoom(5, type);
+    return room;
+}
+
+// Function to scatter enemies randomly in the room
+void scatterEnemies(Room *room)
+{
+    Enemy *enemies[] = {
+        new Enemy('+', 20), new Enemy('+', 30), new Enemy('+', 50),
+        new Enemy('*', 20), new Enemy('*', 30), new Enemy('*', 50),
+        new Enemy('/', 20), new Enemy('/', 30), new Enemy('/', 50)};
+    int numEnemies = rand() % 3 + 1; // 1 to 3 enemies
+    for (int i = 0; i < numEnemies; i++)
+    {
+        int xPos = rand() % WIDTH;
+        int yPos = rand() % HEIGHT;
+        room->setEnemy(Pos(xPos, yPos), enemies[rand() % 9]);
+    }
+}
+
+// Function to get a random direction and avoid backtracking
+Position getRandomDirection(const Position &currentPos, const std::unordered_map<Position, Room *, PositionHash> &placedRooms)
+{
+    std::vector<Position> possibleDirections = {
+        Position(currentPos.x + 1, currentPos.y), // Right (east)
+        Position(currentPos.x - 1, currentPos.y), // Left (west)
+        Position(currentPos.x, currentPos.y + 1), // Down (south)
+        Position(currentPos.x, currentPos.y - 1)  // Up (north)
+    };
+
+    // Shuffle the directions to randomize
+    std::shuffle(possibleDirections.begin(), possibleDirections.end(), std::default_random_engine(std::random_device()()));
+
+    for (const auto &dir : possibleDirections)
+    {
+        if (placedRooms.find(dir) == placedRooms.end())
+        {
+            return dir; // Return a valid, unoccupied direction
+        }
+    }
+
+    return currentPos; // In case of no valid direction, return current position (shouldn’t happen if logic is correct)
+}
+
+// Function to create main path with random positions
+Room *createMainPath(std::unordered_map<Position, Room *, PositionHash> &placedRooms, int &currentRoomId, Position &currentPos)
+{
+    Room *prevRoom = nullptr;
+    for (int i = 0; i < 4; ++i)
+    {
+        Position nextPos = getRandomDirection(currentPos, placedRooms);
+        if (nextPos == currentPos)
+            break; // No available direction (shouldn't happen)
+
+        // Count the doors to decide whether to place a hallway or big room
+        int numDoors = 2; // We assume 2 doors for now as part of main path
+        char roomType = decideRoomType(numDoors, currentPos, nextPos);
+
+        Room *room = createRandomRoom(currentRoomId++, roomType);
+
+        if (prevRoom)
+        {
+            // Set doors between the previous room and current one based on room type
+            if (roomType == 'h')
+            {
+                // Horizontal hallway: Connect left-right (west-east)
+                prevRoom->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room); // Connect previous to current (east)
+                room->setDoor(Pos(0, HEIGHT / 2), prevRoom);         // Connect current to previous (west)
+            }
+            else if (roomType == 'b')
+            {
+                // Vertical hallway: Connect top-bottom (north-south)
+                prevRoom->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room); // Connect previous to current (south)
+                room->setDoor(Pos(WIDTH / 2, 0), prevRoom);          // Connect current to previous (north)
+            }
+            else
+            {
+                // Big room: Allow doors in any direction
+                prevRoom->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room); // Connect previous to current (east)
+                room->setDoor(Pos(0, HEIGHT / 2), prevRoom);         // Connect current to previous (west)
+            }
+        }
+
+        scatterEnemies(room);
+        placedRooms[nextPos] = room;
+        currentPos = nextPos; // Move to the next position
+        prevRoom = room;
+    }
+    return prevRoom; // Return last room in the main path
+}
+
+// Function to create red herring rooms
+void createRedHerrings(std::unordered_map<Position, Room *, PositionHash> &placedRooms, int &currentRoomId, Room *mainRoom, Position currentPos)
+{
+    for (int i = 0; i < 2; ++i)
+    {
+        Position redHerringPos = getRandomDirection(currentPos, placedRooms);
+        Room *redHerring = createRandomRoom(currentRoomId++, 'h');
+        mainRoom->setDoor(Pos(WIDTH / 2, HEIGHT - 1), redHerring); // Connect main room to red herring (south)
+        redHerring->setDoor(Pos(0, HEIGHT / 2), mainRoom);         // Back to main room (north)
+        scatterEnemies(redHerring);
+        placedRooms[redHerringPos] = redHerring;
+
+        // One longer red herring path
+        if (i == 0)
+        {
+            Position extendedHerringPos = getRandomDirection(redHerringPos, placedRooms);
+            Room *extendedHerring = createRandomRoom(currentRoomId++, 'b');
+            redHerring->setDoor(Pos(WIDTH / 2, HEIGHT - 1), extendedHerring); // Connect to extended herring (south)
+            extendedHerring->setDoor(Pos(0, HEIGHT / 2), redHerring);         // Connect extended herring back (north)
+            scatterEnemies(extendedHerring);
+            placedRooms[extendedHerringPos] = extendedHerring;
+        }
+    }
+}
+
+Room *initializeProceduralMap()
+{
+    srand(static_cast<unsigned>(time(0))); // Seed random number generator
+
+    std::unordered_map<Position, Room *, PositionHash> placedRooms;
+    int currentRoomId = 1;
+    Position startPos(0, 0);
+
+    // Step 1: Create main path with randomized room positions
+    Room *lastMainRoom = createMainPath(placedRooms, currentRoomId, startPos);
+
+    // Step 2: Add end room to the main path
+    Position endPos = getRandomDirection(startPos, placedRooms);
+    Room *endRoom = createRandomRoom(currentRoomId++, 'b');
+    lastMainRoom->setDoor(Pos(WIDTH - 1, HEIGHT / 2), endRoom);
+    endRoom->setDoor(Pos(0, HEIGHT / 2), lastMainRoom); // Link back to previous room (west)
+    scatterEnemies(endRoom);
+    placedRooms[endPos] = endRoom;
+
+    // Step 3: Add red herring rooms
+    createRedHerrings(placedRooms, currentRoomId, lastMainRoom, startPos);
+
+    return placedRooms[Position(0, 0)]; // Return the starting room
+}
+
 void printToConsole(char **display)
 {
     system("cls");           // Clear the console
@@ -767,63 +955,162 @@ void moveEnemies(Room *room)
 */
 int main()
 {
-    int score = 0;
-    bool gameRunning = true;
-
-    DWORD lastMoveTime = GetTickCount();
-    DWORD lastEnemyMoveTime = GetTickCount();
-
-    const DWORD enemyMoveDelay = 500; // Adjust this value to change enemy movement speed (lower = faster)
-    const DWORD moveDelay = 100;      // Adjust this value to change movement speed (lower = faster)
-    int newX = 0;
-    int newY = 0;
-    srand(static_cast<unsigned>(time(0)));
-    Room *currentRoom = initalizeTutorialMap(1);
-
-    Player player('P', 100); // Increased initial health to 100
-    player.setPosition(WIDTH / 2, HEIGHT / 2);
-    currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
-    printToConsole(currentRoom->getDisplay());
-    hideCursor();
-
-    while (gameRunning)
+    try
     {
-        DWORD currentTime = GetTickCount();
-        if (currentTime - lastMoveTime >= moveDelay)
+        int score = 0;
+        bool gameRunning = true;
+
+        DWORD lastMoveTime = GetTickCount();
+        DWORD lastEnemyMoveTime = GetTickCount();
+
+        const DWORD enemyMoveDelay = 500; // Adjust this value to change enemy movement speed (lower = faster)
+        const DWORD moveDelay = 100;      // Adjust this value to change movement speed (lower = faster)
+        int newX = 0;
+        int newY = 0;
+        srand(static_cast<unsigned>(time(0)));
+        Room *currentRoom = initalizeTutorialMap(1);
+
+        Player player('P', 100); // Increased initial health to 100
+        player.setPosition(WIDTH / 2, HEIGHT / 2);
+        currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
+        printToConsole(currentRoom->getDisplay());
+        hideCursor();
+
+        while (gameRunning)
         {
-            const Pos &currentPos = player.getPos();
-            newX = currentPos.getX();
-            newY = currentPos.getY();
+            int score = 0;
+            bool gameRunning = true;
 
-            if (isKeyPressed('W'))
-                newY--;
-            if (isKeyPressed('S'))
-                newY++;
-            if (isKeyPressed('A'))
-                newX--;
-            if (isKeyPressed('D'))
-                newX++;
+            DWORD lastMoveTime = GetTickCount();
+            DWORD lastEnemyMoveTime = GetTickCount();
 
-            char nextChar = currentRoom->getCharAt(newX, newY);
+            const DWORD enemyMoveDelay = 500; // Adjust this value to change enemy movement speed (lower = faster)
+            const DWORD moveDelay = 100;      // Adjust this value to change movement speed (lower = faster)
+            int newX = 0;
+            int newY = 0;
+            srand(static_cast<unsigned>(time(0)));
+            Room *currentRoom = initializeProceduralMap();
 
-            if (currentRoom->validMove(newX, newY))
+            Player player('P', 100); // Increased initial health to 100
+            player.setPosition(WIDTH / 2, HEIGHT / 2);
+            currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
+            printToConsole(currentRoom->getDisplay());
+            hideCursor();
+
+            while (gameRunning)
             {
-                if (currentRoom->isDoorMove(newX, newY))
+                DWORD currentTime = GetTickCount();
+                if (currentTime - lastMoveTime >= moveDelay)
                 {
-                    currentRoom->removePlayer();
-                    Room *tempRoom = currentRoom->getRoom(newX, newY);
+                    const Pos &currentPos = player.getPos();
+                    newX = currentPos.getX();
+                    newY = currentPos.getY();
 
-                    if (tempRoom)
-                        currentRoom = tempRoom;
+                    if (isKeyPressed('W'))
+                        newY--;
+                    if (isKeyPressed('S'))
+                        newY++;
+                    if (isKeyPressed('A'))
+                        newX--;
+                    if (isKeyPressed('D'))
+                        newX++;
 
-                    if (currentRoom->getID() == 11) // End of the tutorial. clear and say congrats
+                    char nextChar = currentRoom->getCharAt(newX, newY);
+
+                    if (currentRoom->validMove(newX, newY))
                     {
-                        system("cls");
-                        std::cout << "You Win! You have reached the end of the Tutorial.\n";
-                        Sleep(2000);
-                        gameRunning = false;
+                        if (currentRoom->isDoorMove(newX, newY))
+                        {
+                            currentRoom->removePlayer();
+                            Room *tempRoom = currentRoom->getRoom(newX, newY);
+
+                            if (tempRoom)
+                            {
+                                currentRoom = tempRoom;
+                            }
+
+                            if (currentRoom->getID() == 11)
+                            { // End of the tutorial. clear and say congrats
+                                Pos newPos = getDoorsOpposite(Pos(newX, newY));
+                                updatePlayerPosition(currentRoom, player, newPos.getX(), newPos.getY());
+                                printToConsole(currentRoom->getDisplay());
+                            }
+                        }
+                        else if (nextChar == 'C')
+                        {
+                            score += 10;
+                            // play sound coin.wav by using PlaySound
+                            PlaySound(TEXT("coin.wav"), NULL, SND_FILENAME | SND_ASYNC);
+                            currentRoom->setCharAt(newX, newY, ' ');
+                            updatePlayerPosition(currentRoom, player, newX, newY);
+                        }
+                        else if (touchingEnemy(currentRoom, player))
+                        {
+                            Enemy *enemy = currentRoom->getEnemyAt(newX, newY);
+                            if (enemy)
+                            {
+                                bool playerWon = fightEnemy(player, enemy);
+                                if (playerWon)
+                                {
+                                    currentRoom->removeEnemyAt(newX, newY);
+                                    score += 50;
+                                    updatePlayerPosition(currentRoom, player, newX, newY);
+                                }
+                                else
+                                {
+                                    system("cls");
+                                    std::cout << "You Win! You have reached the end of the Tutorial.\n";
+                                    Sleep(2000);
+                                    gameRunning = false;
+                                }
+
+                                Pos newPos = getDoorsOpposite(Pos(newX, newY));
+                                updatePlayerPosition(currentRoom, player, newPos.getX(), newPos.getY());
+                                printToConsole(currentRoom->getDisplay());
+                            }
+                            else if (nextChar == 'C')
+                            {
+                                score += 10;
+                                currentRoom->setCharAt(newX, newY, ' ');
+                                updatePlayerPosition(currentRoom, player, newX, newY);
+                            }
+                            else if (touchingEnemy(currentRoom, player))
+                            {
+                                Enemy *enemy = currentRoom->getEnemyAt(newX, newY);
+                                if (enemy)
+                                {
+                                    bool playerWon = fightEnemy(player, enemy);
+                                    if (playerWon)
+                                    {
+                                        currentRoom->removeEnemyAt(newX, newY);
+                                        score += 50;
+                                        updatePlayerPosition(currentRoom, player, newX, newY);
+                                    }
+                                    else
+                                    {
+                                        gameRunning = false;
+                                    }
+                                }
+                                printToConsole(currentRoom->getDisplay());
+                            }
+                            else
+                            {
+                                updatePlayerPosition(currentRoom, player, newX, newY);
+                            }
+                        }
+
+                        if (currentTime - lastEnemyMoveTime >= enemyMoveDelay)
+                        {
+                            // moveEnemies(currentRoom);
+                            lastEnemyMoveTime = currentTime;
+                        }
+
+                        lastMoveTime = currentTime;
+
+                        // move enemies in this room
                     }
 
+<<<<<<< HEAD
                     Pos newPos = getDoorsOpposite(Pos(newX, newY));
                     updatePlayerPosition(currentRoom, player, newPos.getX(), newPos.getY());
                     printToConsole(currentRoom->getDisplay());
@@ -839,69 +1126,82 @@ int main()
                 {
                     Enemy *enemy = currentRoom->getEnemyAt(newX, newY);
                     if (enemy)
+=======
+                    setCursorPosition(0, HEIGHT + 1);
+                    // Displays the players health.
+
+                    if (currentRoom->getRoomINFO().empty() == false)
+>>>>>>> 7b9df4c1be35b3d34659ff360b66e11fffe31d4c
                     {
-                        bool playerWon = fightEnemy(player, enemy);
-                        if (playerWon)
+                        std::cout << currentRoom->getRoomINFO() << "\n\n";
+                    }
+                    int playerHealthBar = (player.getHealth() * 10) / 100;
+                    // Player Health Bar
+                    std::cout << "Health: [";
+                    setFGColour(124);
+                    for (int i = 0; i < 10; i++)
+                    {
+                        if (i < playerHealthBar)
                         {
-                            currentRoom->removeEnemyAt(newX, newY);
-                            score += 50;
-                            updatePlayerPosition(currentRoom, player, newX, newY);
+                            std::cout << "=";
                         }
                         else
                         {
-                            gameRunning = false;
+                            std::cout << " ";
                         }
                     }
-                    printToConsole(currentRoom->getDisplay());
+                    resetColour();
+                    std::cout << "] " << player.getHealth() << "/" << 100 << "\n";
+                    std::cout << "\nScore: " << score << " | Press Q to quit\n";
+                    std::cout << "Room: " << currentRoom->getID() << "\n";
+                    if (isKeyPressed('Q'))
+                        gameRunning = false;
+                    Sleep(10); // Small delay to prevent excessive CPU usage
                 }
-                else
+
+                std::cout << "Game Over! Final Score: " << score << "\n";
+                system("pause");
+                return 0;
+                setCursorPosition(0, HEIGHT + 1);
+                // Displays the players health.
+
+                if (currentRoom->getRoomINFO().empty() == false)
                 {
-                    updatePlayerPosition(currentRoom, player, newX, newY);
+                    std::cout << currentRoom->getRoomINFO() << "\n\n";
                 }
-            }
-
-            if (currentTime - lastEnemyMoveTime >= enemyMoveDelay)
-            {
-                // moveEnemies(currentRoom);
-                lastEnemyMoveTime = currentTime;
-            }
-
-            lastMoveTime = currentTime;
-
-            // move enemies in this room
-        }
-
-        setCursorPosition(0, HEIGHT + 1);
-        // Displays the players health.
-
-        if (currentRoom->getRoomINFO().empty() == false)
-        {
-            std::cout << currentRoom->getRoomINFO() << "\n\n";
-        }
-        int playerHealthBar = (player.getHealth() * 10) / 100;
-        // Player Health Bar
-        std::cout << "Health: [";
-        setFGColour(124);
-        for (int i = 0; i < 10; i++)
-        {
-            if (i < playerHealthBar)
-            {
-                std::cout << "=";
-            }
-            else
-            {
-                std::cout << " ";
+                int playerHealthBar = (player.getHealth() * 10) / 100;
+                // Player Health Bar
+                std::cout << "Health: [";
+                setFGColour(124);
+                for (int i = 0; i < 10; i++)
+                {
+                    if (i < playerHealthBar)
+                    {
+                        std::cout << "=";
+                    }
+                    else
+                    {
+                        std::cout << " ";
+                    }
+                }
+                resetColour();
+                std::cout << "] " << player.getHealth() << "/" << 100 << "\n";
+                std::cout << "\nScore: " << score << " | Press Q to quit\n";
+                std::cout << "Room: " << currentRoom->getID() << "\n";
+                if (isKeyPressed('Q'))
+                    gameRunning = false;
+                Sleep(10); // Small delay to prevent excessive CPU usage
             }
         }
-        resetColour();
-        std::cout << "] " << player.getHealth() << "/" << 100 << "\n";
-        std::cout << "\nScore: " << score << " | Press Q to quit\n";
-        std::cout << "Room: " << currentRoom->getID() << "\n";
-        if (isKeyPressed('Q'))
-            gameRunning = false;
-        Sleep(10); // Small delay to prevent excessive CPU usage
     }
-
-    std::cout << "Game Over! Final Score: " << score << "\n";
+    catch (const std::exception &e)
+    {
+        std::cerr << "An error occurred: " << e.what() << std::endl;
+    }
+    catch (...)
+    {
+        std::cerr << "An unknown error occurred." << std::endl;
+    }
+    system("pause");
     return 0;
 }
