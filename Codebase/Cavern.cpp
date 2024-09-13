@@ -9,12 +9,12 @@
 #include "Room.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "nums.h"
 #include "Pos.cpp"
 #include "Room.cpp"
 #include "Player.cpp"
 #include "Enemy.cpp"
 #include "nums.cpp"
-#include "nums.h"
 #define WIDTH 25
 #define HEIGHT 13
 /*!
@@ -831,7 +831,6 @@ int main()
                 else if (nextChar == 'C')
                 {
                     score += 10;
-                    // play sound coin.wav by using PlaySound
                     PlaySound(TEXT("coin.wav"), NULL, SND_FILENAME | SND_ASYNC);
                     currentRoom->setCharAt(newX, newY, ' ');
                     updatePlayerPosition(currentRoom, player, newX, newY);
