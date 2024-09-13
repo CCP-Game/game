@@ -38,11 +38,16 @@
 
 Cavern is a command-line based adventure game. Designed & created for a capstone project within COSC345.
 
-### Compiling:
-g++ -o Cavern Cavern.cpp
+### Compiling (Windows):
+1. mkdir build
+2. cmake -B build
+3. cmake --build build
 
 ### Running: 
-./Cavern.exe 
+./build/Codebase/Debug/Cavern.exe 
+
+### Running tests:
+ctest --test-dir build -C Debug
 
 ### Developers:
 - Alex Poore
