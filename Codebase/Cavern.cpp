@@ -1,24 +1,17 @@
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
 #include <windows.h>
 #include <cstdlib> // For random number generation
 #include <ctime>   // To seed random generator
 #include <map>
 #include <stdexcept>
+#include <conio.h> // For _kbhit() and _getch()
 #pragma comment(lib, "User32.lib")
 #pragma comment(lib, "Winmm.lib")
-#include <conio.h> // For _kbhit() and _getch()
 #include "Pos.h"
 #include "Room.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "nums.h"
-#include "Pos.cpp"
-#include "Room.cpp"
-#include "Player.cpp"
-#include "Enemy.cpp"
-#include "nums.cpp"
 #define WIDTH 25
 #define HEIGHT 13
 /*!
