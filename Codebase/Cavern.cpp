@@ -590,8 +590,7 @@ Position getRandomDirection(const Position &currentPos, const std::unordered_map
     };
 
     // Shuffle the directions to randomize
-    std::shuffle(possibleDirections.begin(), possibleDirections.end(), std::default_random_engine(std::random_device()()));
-
+    // std::shuffle(possibleDirections.begin(), possibleDirections.end(), std::mt19937{std::random_device{}()});
     for (const auto &dir : possibleDirections)
     {
         if (placedRooms.find(dir) == placedRooms.end())

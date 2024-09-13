@@ -1,0 +1,5 @@
+C:/Users/Sam Bugden/OneDrive/Documents/GitHub/game/Codebase/build/CMakeFiles/Project.dir
+C:/Users/Sam Bugden/OneDrive/Documents/GitHub/game/Codebase/build/CMakeFiles/Test.dir
+C:/Users/Sam Bugden/OneDrive/Documents/GitHub/game/Codebase/build/CMakeFiles/RUN_TESTS.dir
+C:/Users/Sam Bugden/OneDrive/Documents/GitHub/game/Codebase/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Sam Bugden/OneDrive/Documents/GitHub/game/Codebase/build/CMakeFiles/ZERO_CHECK.dir
