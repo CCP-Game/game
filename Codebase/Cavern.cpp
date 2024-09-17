@@ -12,6 +12,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "nums.h"
+#include "animations.h"
 #define WIDTH 25
 #define HEIGHT 13
 /*!
