@@ -21,4 +21,6 @@ bool generateSubtractionEquation();
 bool generateMultiplicationEquation();
 bool generateDivisionEquation();
 
+void numsunittest();
+
 #endif // NUMS_H
