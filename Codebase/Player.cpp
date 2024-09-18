@@ -87,6 +87,9 @@ void Player::setHealth(int health) {
 void Player::unittest() {
     std::cout << "Player unittest called!" << std::endl;
 
+    // Player defaultPlayer();
+    // assert(defaultPlayer.getSkin() == 'P');
+
     // Test constructor with parameters
     Player testPlayer('A', 5);
     assert(testPlayer.getSkin() == 'A');
@@ -95,5 +98,8 @@ void Player::unittest() {
     testPlayer.setHealth(75);
     assert(testPlayer.getHealth() == 75);
 
+    testPlayer.setPosition(5, 6);
+    assert(testPlayer.getPos().getX() == 5);
+    assert(testPlayer.getPos().getY() == 6);
     std::cout << "All Player tests passed!" << std::endl;
 }
