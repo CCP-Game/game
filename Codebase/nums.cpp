@@ -128,13 +128,25 @@ const char *ASCII_NUMBERS[] = {
  *
  * @return The integer input by the user.
  */
-int getUserInput()
+int getUserInput() 
 {
     int userAnswer;
-    std::cout << "Enter your answer: ";
-    std::cin >> userAnswer;
-    return userAnswer;
+    while (true) {
+        std::cout << "Enter your answer: ";
+        std::cin >> userAnswer;
+
+        // Check if the input was valid
+        if (std::cin.fail()) {
+            std::cin.clear();  // Clear the error flag
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Discard invalid input
+            std::cout << "Invalid input. Please enter an integer.\n";
+        } else {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Discard any remaining input
+            return userAnswer;  // Valid input, return the answer
+        }
+    }
 }
+
 
 /*!
  * @brief Prints the given string as ASCII art.
