@@ -507,6 +507,7 @@ void Room::unittest() {
     testRoom.removeEnemyAt(3, 4);
     assert(testRoom.getEnemyAt(3, 4) == nullptr);
 
+
     // Test setting and getting characters in the grid
     testRoom.setCharAt(5, 4, 'G');
     assert(testRoom.getCharAt(5, 4) == 'G');

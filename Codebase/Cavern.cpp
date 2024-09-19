@@ -200,7 +200,7 @@ void resetColour()
     @param enemyName [in] String, this is the enemies name.
     @return void.
 */
-void displayHealthBars(int playerHealth, int playerMaxHealth, int enemyHealth, int enemyMaxHealth, std::string enemyName)
+void displayHealthBars(int playerHealth, int playerMaxHealth, int enemyHealth, int enemyMaxHealth, const std::string enemyName)
 {
     const int barLength = 10; // Length of the health bar
     int playerHealthBar = (playerHealth * barLength) / playerMaxHealth;
@@ -815,7 +815,7 @@ void printToConsole(char **display)
     @param player [in] Player , the current player.
     @return boolean, t/f if we are or aren't touching an enemy.
 */
-boolean touchingEnemy(Room *room, Player player)
+boolean touchingEnemy(Room *room, const Player& player)
 {
     Pos playerPos = player.getPos();
     for (size_t i = 0; i < room->getEnemies().size(); i++)
