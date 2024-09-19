@@ -487,22 +487,25 @@ void Room::unittest() {
     assert(testRoom.getPlayerPos().getX() == 4);
     assert(testRoom.getPlayerPos().getY() == 5);
 
+    testRoom.removePlayer();
+    assert(testRoom.getCharAt(4, 5) == ' ');
+
 
     assert(testRoom.isDoorMove(10, 9) == false);
     testRoom.setDoor(Pos(8, 8), &testRoom);
     assert(testRoom.isDoorMove(8, 8));
 
-
+    Enemy* testEnemy = new Enemy(Pos(6, 7), 'K', 2);
+    std::vector<Enemy*> enemiesList = testRoom.getEnemies();
+    
     testRoom.setEnemy(Pos(3, 4), new Enemy(Pos(1, 1), 'E', 2));
     int enemy1X = testRoom.getEnemyAt(3, 4)->getX();
     int enemy1Y = testRoom.getEnemyAt(3, 4)->getY();
     assert(enemy1X == 3);
     assert(enemy1Y == 4);
-
+    
     testRoom.removeEnemyAt(3, 4);
     assert(testRoom.getEnemyAt(3, 4) == nullptr);
-
-
 
     // Test setting and getting characters in the grid
     testRoom.setCharAt(5, 4, 'G');
@@ -519,9 +522,18 @@ void Room::unittest() {
     testRoom.setRoomINFO("Test Room Info");
     assert(testRoom.getRoomINFO() == "Test Room Info");
 
+    // Room roomCopy = Room(testRoom);
+    // assert(roomCopy.getRoomINFO == "Test Room Info");
+
     // Doesn't work.
     //testRoom.initializeRoom(5, 'b');
+    
+    testRoom.getDisplay();
+    std::string enemys = testRoom.enemiesToString();
 
+    testRoom.setFinal(true);
+    assert(testRoom.getFinal() == true);
+    
 
     std::cout << "All Room tests passed!" << std::endl;
 
