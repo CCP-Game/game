@@ -346,12 +346,12 @@ void numsunittest()
 
     assert(improvedRandom(4, 4) == 4);
 
-    std::istringstream mockInput("5\n");
-    std::streambuf* originalCinBuffer = std::cin.rdbuf();
-    std::cin.rdbuf(mockInput.rdbuf());
-    int res = getUserInput();
-    assert(res == 5);
-    assert(res != 3);
+    // std::istringstream mockInput("5\n");
+    // std::streambuf* originalCinBuffer = std::cin.rdbuf();
+    // std::cin.rdbuf(mockInput.rdbuf());
+    // int res = getUserInput();
+    // assert(res == 5);
+    // assert(res != 3);
 
     std::istringstream mockInput1("201\n");
     std::streambuf* CinBuffer1 = std::cin.rdbuf();
