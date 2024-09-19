@@ -1,6 +1,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include "animations.h"
 
  const std::string cavernArt[] = {
 
@@ -49,7 +50,11 @@ const std::string gameOverArt[] = {
 };
 
 
-
+/*!
+    @brief displays the Cavern logo.
+    @param roomInfo string cavernArt[] - the ascii acrt for the Cavern screen.
+    @return. void
+*/
 void displayCavernAnimation(const std::string art[])
 {
 
@@ -61,6 +66,12 @@ void displayCavernAnimation(const std::string art[])
         if (gameOverArt[i].length() > maxLength) {
             maxLength = gameOverArt[i].length();
         }
+    }
+
+
+    //this possible /0 error needs dealing with...
+    if(maxLength == 0){
+        return;
     }
 
     int delay = duration / maxLength; // Delay to fit within the total duration
@@ -77,6 +88,10 @@ void displayCavernAnimation(const std::string art[])
     std::cout.flush();
 }
 
+/*!
+    @brief displays the game over animation.
+    @return. void
+*/
 void displayGameOverAnimation()
 {
     int rows = sizeof(cavernArt) / sizeof(cavernArt[0]);
@@ -89,7 +104,11 @@ void displayGameOverAnimation()
         }
     }
 
-    int totalDuration = 2000; // 10 seconds in milliseconds
+    if(maxLength == 0){
+        return;
+    }
+    //this possible /0 error needs dealing with...
+    int totalDuration = 2000; // 2 seconds in milliseconds
     int delay = totalDuration / maxLength; // Delay based on the longest line
 
     for (int step = 0; step <= maxLength; ++step) {
@@ -102,4 +121,13 @@ void displayGameOverAnimation()
     }
 
     std::cout.flush();
+}
+
+
+void aniunittest()
+{
+    // Not ideal but currently just running the animations to make sure they dodn't throw any errors.
+    displayCavernAnimation(cavernArt);
+    displayCavernAnimation(gameOverArt);
+    displayGameOverAnimation();
 }
