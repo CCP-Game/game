@@ -3,6 +3,10 @@
 #include <vector>
 #include <random>
 #include "nums.h"
+#include <cassert>
+#include <iostream>
+#include <functional>
+
 
 /*!
  * @brief Array of ASCII art representations for digits 0-9 and some symbols.
@@ -317,4 +321,35 @@ bool generateDivisionEquation()
 
     int answer = getUserInput();
     return answer == result;
+}
+
+
+void numsunittest()
+{
+    std::cout << "Player unittest called!" << std::endl;
+
+    assert(improvedRandom(4, 4) == 4);
+
+
+    
+    // //EquationGenerator generator;
+
+    // // Simulate correct user input
+    // auto mockCorrectInput = []() -> int {
+    //     return 5; // Mocked input value, assuming the expected result is 5
+    // };
+
+    // // Simulate incorrect user input
+    // auto mockIncorrectInput = []() -> int {
+    //     return 3; // Mocked wrong input value
+    // };
+
+    // // Test case 1: User gives the correct answer
+    // bool resultCorrect = generateDivisionEquation();
+    // assert(resultCorrect == true); // Expect true for correct input
+
+    // // Test case 2: User gives the wrong answer
+    // bool resultIncorrect = generateDivisionEquation();
+    // assert(resultIncorrect == false); // Expect false for incorrect input
+    std::cout << "All Player tests passed!" << std::endl;
 }

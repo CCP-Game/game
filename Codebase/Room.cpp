@@ -269,6 +269,26 @@ void Room::setEnemy(Pos p, Enemy* e){
     this->enemies.push_back(e);
     // Set the enemy in the grid
 }
+
+/*! 
+    @brief Method sets the final room.
+    @param value [in] bool - the value we're setting the room to be.
+    @return void
+*/
+void Room::setFinal(bool value)
+{
+    this->isFinal = value;
+}
+
+/*! 
+    @brief Method gets the final room.
+    @return bool - the value of the room.
+*/
+bool Room::getFinal()
+{
+    return this->isFinal;
+}
+
 /*!
     @brief This method gets the enemy at a given position.
     @details this method should only be called when we know an enemy is at a given position, this just refers to the correct enemy.
@@ -459,6 +479,27 @@ void Room::unittest() {
     assert(testRoom.getID() == 2);
     assert(testRoom.getLevel() == 1);
 
+    testRoom.setPlayerPos(Pos(2, 3));
+    assert(testRoom.getPlayerPos().getX() == 2);
+    assert(testRoom.getPlayerPos().getY() == 3);
+
+    testRoom.updatePlayerPos(4, 5);
+    assert(testRoom.getPlayerPos().getX() == 4);
+    assert(testRoom.getPlayerPos().getY() == 5);
+
+    assert(testRoom.isDoorMove(10, 9) == false);
+    testRoom.setDoor(Pos(8, 8), &testRoom);
+    assert(testRoom.isDoorMove(8, 8));
+
+    testRoom.setEnemy(Pos(3, 4), new Enemy(Pos(1, 1), 'E', 2));
+    assert(testRoom.getEnemyAt(3, 4)->getX() == 3);
+    assert(testRoom.getEnemyAt(3, 4)->getY() == 4);
+
+    testRoom.removeEnemyAt(3, 4);
+    assert(testRoom.getEnemyAt(3, 4) == nullptr);
+
+
+
     // Test setting and getting characters in the grid
     testRoom.setCharAt(5, 4, 'G');
     assert(testRoom.getCharAt(5, 4) == 'G');
@@ -473,6 +514,10 @@ void Room::unittest() {
     // Test setting and getting room info
     testRoom.setRoomINFO("Test Room Info");
     assert(testRoom.getRoomINFO() == "Test Room Info");
+
+    // Doesn't work.
+    //testRoom.initializeRoom(5, 'b');
+
 
     std::cout << "All Room tests passed!" << std::endl;
 

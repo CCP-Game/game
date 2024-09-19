@@ -10,9 +10,9 @@
  * @param skin The character representing the player's appearance.
  * @param colour The color code associated with the player.
  */
-Player::Player(char skin, int colour) : skin(skin), colour(colour) {
-    health = 100;  // Initialize health to 100
-    currentLocation = Pos(0, 0);  // Initialize Position to (0,0)
+Player::Player(char skin, int colour) : skin(skin), colour(colour), health(100), currentLocation(0, 0){
+    //health = 100;  // Initialize health to 100
+    //currentLocation = Pos(0, 0);  // Initialize Position to (0,0)
 }
 
 /*!
@@ -87,6 +87,9 @@ void Player::setHealth(int health) {
 void Player::unittest() {
     std::cout << "Player unittest called!" << std::endl;
 
+    // Player defaultPlayer();
+    // assert(defaultPlayer.getSkin() == 'P');
+
     // Test constructor with parameters
     Player testPlayer('A', 5);
     assert(testPlayer.getSkin() == 'A');
@@ -95,5 +98,8 @@ void Player::unittest() {
     testPlayer.setHealth(75);
     assert(testPlayer.getHealth() == 75);
 
+    testPlayer.setPosition(5, 6);
+    assert(testPlayer.getPos().getX() == 5);
+    assert(testPlayer.getPos().getY() == 6);
     std::cout << "All Player tests passed!" << std::endl;
 }

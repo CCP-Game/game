@@ -24,6 +24,7 @@ private:
     std::vector<Pos> doorPos;
     std::vector<Room*> doorRooms;
     //std::unordered_map<Pos,Room,Pos::HashFunction> doorMap;
+    bool isFinal;
 
 public:
     Room();
@@ -55,6 +56,8 @@ public:
     void removePlayer();
     std::string getRoomINFO();
     void setRoomINFO(std::string info);
+    void setFinal(bool value);
+    bool getFinal();
 };
 
 #endif

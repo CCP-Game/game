@@ -1,26 +1,27 @@
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
 #include <windows.h>
-#pragma comment(lib, "User32.lib")
+#include <cstdlib> // For random number generation
+#include <ctime>   // To seed random generator
+#include <map>
+#include <stdexcept>
 #include <conio.h> // For _kbhit() and _getch()
+#pragma comment(lib, "User32.lib")
+#pragma comment(lib, "Winmm.lib")
+#include <algorithm>
 #include "Pos.h"
 #include "Room.h"
 #include "Player.h"
 #include "Enemy.h"
-#include "Pos.cpp"
-#include "Room.cpp"
-#include "Player.cpp"
-#include "Enemy.cpp"
-#include "nums.cpp"
 #include "nums.h"
+#include "animations.h"
+#include <random>
 #define WIDTH 25
 #define HEIGHT 13
 /*!
-    @file 
+    @file
     @brief Cavern is the main class for our game. It contains the game loop and the manner in which we display our game to the user.
     @author Sam Budgen, Ben Darlington, Ben Nicholson & Alex Poore.
-    @copyright CCP 2024 
+    @copyright CCP 2024
 */
 /*!
     @brief The core methods for this file are the "main" method and initalizeTutorialMap they initalize and run the game.
@@ -63,8 +64,9 @@ bool isKeyPressed(int key)
     @brief Method clears the console screen.
     @return void.
 */
-void clearScreen() {
-    std::system("cls");  // On Unix/Linux/OSX use "clear" instead of "cls"
+void clearScreen()
+{
+    std::system("cls"); // On Unix/Linux/OSX use "clear" instead of "cls"
 }
 /*!
     @brief Method acts as a delay of given miliseconds.
@@ -72,44 +74,53 @@ void clearScreen() {
     @param miliseconds [in] this is the int representing the miliseconds we want the delay for.
     @return void.
 */
-void delay(int milliseconds) {
+void delay(int milliseconds)
+{
     clock_t start_time = clock();
-    while (clock() < start_time + milliseconds);
+    while (clock() < start_time + milliseconds)
+        ;
 }
 /*!
     @brief This method displays the "encounter" phase of combat an animation when we walk upto an enemy.
-    @param playerPosition [in] this is the position to print the player. 
+    @param playerPosition [in] this is the position to print the player.
     @param enemyPosition [in] this is the position we want to print the enemy
     @param enemyHead [in] This is the enemies head. Whether it is a + - / or x type of enemy.
     @return void
 */
-void displayScene(int playerPosition, int enemyPosition, char enemyHead) {
+void displayScene(int playerPosition, int enemyPosition, char enemyHead)
+{
     // Print player head
-    for (int i = 0; i < playerPosition; ++i) std::cout << ' ';
+    for (int i = 0; i < playerPosition; ++i)
+        std::cout << ' ';
     std::cout << "  O  ";
 
     // Print spaces between the player and the skeleton
-    for (int i = playerPosition + 5; i < enemyPosition; ++i) std::cout << ' ';
+    for (int i = playerPosition + 5; i < enemyPosition; ++i)
+        std::cout << ' ';
 
     // Skeleton head
     std::cout << "  " << enemyHead << "  " << std::endl;
 
     // Print player arms/torso
-    for (int i = 0; i < playerPosition; ++i) std::cout << ' ';
+    for (int i = 0; i < playerPosition; ++i)
+        std::cout << ' ';
     std::cout << " /|\\ ";
 
     // Print spaces between player arms and skeleton arms
-    for (int i = playerPosition + 5; i < enemyPosition; ++i) std::cout << ' ';
+    for (int i = playerPosition + 5; i < enemyPosition; ++i)
+        std::cout << ' ';
 
     // Skeleton arms/torso
     std::cout << " /|\\ " << std::endl;
 
     // Print player legs
-    for (int i = 0; i < playerPosition; ++i) std::cout << ' ';
+    for (int i = 0; i < playerPosition; ++i)
+        std::cout << ' ';
     std::cout << " / \\ ";
 
     // Print spaces between player legs and skeleton legs
-    for (int i = playerPosition + 5; i < enemyPosition; ++i) std::cout << ' ';
+    for (int i = playerPosition + 5; i < enemyPosition; ++i)
+        std::cout << ' ';
 
     // Skeleton legs
     std::cout << " / \\ " << std::endl;
@@ -120,14 +131,16 @@ void displayScene(int playerPosition, int enemyPosition, char enemyHead) {
     @param enemyHead [in] Char, this is the type of enemy displayed as it's head.
     @return void.
 */
-void animateEncounter(char enemyHead) {
-    int playerPosition = 0;   // Start position of the player
-    int enemyPosition = 20;   // Fixed position of the skeleton, closer to the player
+void animateEncounter(char enemyHead)
+{
+    int playerPosition = 0; // Start position of the player
+    int enemyPosition = 20; // Fixed position of the skeleton, closer to the player
 
-    while (playerPosition < enemyPosition - 7) { // 7 is the total width of the player character
+    while (playerPosition < enemyPosition - 7)
+    { // 7 is the total width of the player character
         clearScreen();
         displayScene(playerPosition, enemyPosition, enemyHead);
-        delay(200);  // Adjust speed here
+        delay(200); // Adjust speed here
         playerPosition++;
     }
 
@@ -151,12 +164,12 @@ void setFGColour(int textColour = 255)
 
     std::cout << "m";
 }
- /*!
-    @brief This method sets the Background Colour for text being printed to console
-    @details Utilizing ANSI escape codes we can set the background colour of text.
-    @param textColour [in] int, this is the background colour we have chosen. Default is 255 (white)
-    @return void.
- */
+/*!
+   @brief This method sets the Background Colour for text being printed to console
+   @details Utilizing ANSI escape codes we can set the background colour of text.
+   @param textColour [in] int, this is the background colour we have chosen. Default is 255 (white)
+   @return void.
+*/
 void setBGColour(int textColour = 255)
 {
     std::cout << "\x1b[48;5;";
@@ -168,10 +181,10 @@ void setBGColour(int textColour = 255)
     std::cout << "m";
 }
 /*!
-    @brief 
+    @brief
     @details
     @param
-    @return 
+    @return
  */
 void resetColour()
 {
@@ -186,17 +199,22 @@ void resetColour()
     @param enemyName [in] String, this is the enemies name.
     @return void.
 */
-void displayHealthBars(int playerHealth, int playerMaxHealth, int enemyHealth, int enemyMaxHealth, std::string enemyName) {
-    const int barLength = 10;  // Length of the health bar
+void displayHealthBars(int playerHealth, int playerMaxHealth, int enemyHealth, int enemyMaxHealth, std::string enemyName)
+{
+    const int barLength = 10; // Length of the health bar
     int playerHealthBar = (playerHealth * barLength) / playerMaxHealth;
     int enemyHealthBar = (enemyHealth * barLength) / enemyMaxHealth;
     // Player Health Bar
     std::cout << "Player:   [";
     setFGColour(124);
-    for (int i = 0; i < barLength; i++) {
-        if (i < playerHealthBar) {
+    for (int i = 0; i < barLength; i++)
+    {
+        if (i < playerHealthBar)
+        {
             std::cout << "=";
-        } else {
+        }
+        else
+        {
             std::cout << " ";
         }
     }
@@ -205,10 +223,14 @@ void displayHealthBars(int playerHealth, int playerMaxHealth, int enemyHealth, i
     // Enemy Health Bar on the same line
     std::cout << "   " << enemyName << ": [";
     setFGColour(124);
-    for (int i = 0; i < barLength; i++) {
-        if (i < enemyHealthBar) {
+    for (int i = 0; i < barLength; i++)
+    {
+        if (i < enemyHealthBar)
+        {
             std::cout << "=";
-        } else {
+        }
+        else
+        {
             std::cout << " ";
         }
     }
@@ -221,45 +243,49 @@ void displayHealthBars(int playerHealth, int playerMaxHealth, int enemyHealth, i
     @param Player [in] Player&, this is our player object , containing our health etc.
     @return returns a boolean t/f whether we won or lost..
 */
-bool battleScreen(Enemy &enemy, Player &Player) {
+bool battleScreen(Enemy &enemy, Player &Player)
+{
     char enemyHead = enemy.getSkin();
 
     animateEncounter(enemyHead);
+    PlaySound(TEXT("encounter.wav"), NULL, SND_FILENAME | SND_ASYNC);
+
     std::string enemyName;
 
     int encounterType = 0;
 
-    if (enemyHead == '+') {
+    if (enemyHead == '+')
+    {
         enemyName = "Additor";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
         encounterType = 1;
-
-
-
-    } else if (enemyHead == '-') {
+    }
+    else if (enemyHead == '-')
+    {
         enemyName = "Subraktor";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
         encounterType = 2;
-
-
-    } else if (enemyHead == '/') {
+    }
+    else if (enemyHead == '/')
+    {
 
         enemyName = "Divisor";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
         encounterType = 3;
-
-    } else if (enemyHead == '*') {
+    }
+    else if (enemyHead == '*')
+    {
 
         enemyName = "Multiplikator";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
         encounterType = 4;
-
-    } else {
+    }
+    else
+    {
         enemyName = "Additor";
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
 
         encounterType = 1;
-
     }
     delay(1000);
 
@@ -272,53 +298,65 @@ bool battleScreen(Enemy &enemy, Player &Player) {
     bool outcome = false;
     clearScreen();
 
-
-    while(playerHealth > 0 && enemyHealth > 0){
+    while (playerHealth > 0 && enemyHealth > 0)
+    {
 
         displayScene(12, 50, enemyHead);
-        std::cout <<" here";
+        std::cout << " here";
         displayHealthBars(playerHealth, playerStartHealth, enemyHealth, enemyStartHealth, enemyName);
 
-
-        if (encounterType == 1) {
+        if (encounterType == 1)
+        {
             outcome = generateEquation();
-
-        } else if (encounterType == 2) {
+        }
+        else if (encounterType == 2)
+        {
             outcome = generateSubtractionEquation();
-        } else if (encounterType == 3) {
+        }
+        else if (encounterType == 3)
+        {
             outcome = generateDivisionEquation();
-        } else if (encounterType == 4) {
+        }
+        else if (encounterType == 4)
+        {
 
             outcome = generateMultiplicationEquation();
-
         }
 
-        if(outcome){
+        if (outcome)
+        {
             enemyHealth -= 10;
-            std::cout << "Effective attack" << std::endl;
-        } else {
-            playerHealth -= 10;
-            std::cout << "Couldnt block incoming attack" << std::endl;
 
+            PlaySound(TEXT("good.wav"), NULL, SND_FILENAME | SND_ASYNC);
+
+            std::cout << "Effective attack" << std::endl;
+        }
+        else
+        {
+            playerHealth -= 10;
+
+            PlaySound(TEXT("encounter.wav"), NULL, SND_FILENAME | SND_ASYNC);
+
+            std::cout << "Couldnt block incoming attack" << std::endl;
         }
         delay(750);
         clearScreen();
-
-
-
     }
 
-    if(playerHealth <= 0){
+    if (playerHealth <= 0)
+    {
         std::cout << "You have been defeated by " << enemyName << "." << std::endl;
-    } else {
+    }
+    else
+    {
+        PlaySound(TEXT("winfight.wav"), NULL, SND_FILENAME | SND_ASYNC);
         std::cout << "You have defeated " << enemyName << "." << std::endl;
-
     }
     delay(750);
 
     Player.setHealth(playerHealth);
-    return outcome;
 
+    return outcome;
 }
 /*!
     @brief The method updates the players postition within the map.
@@ -386,11 +424,13 @@ Pos getDoorsOpposite(Pos oldPos)
     }
 }
 /*!
-    @brief This method initalizes are Tutorial map. 
+    @brief This method initalizes are Tutorial map.
     @details This method creates all the Rooms, enemies and links them together. Returning a pointer to the first room.
     @param roomLength [in] int, this is how many rooms we want.
     @return Room - Returns a pointer to the first room in the map.
 */
+Room *initializeProceduralMap();
+
 Room *initalizeTutorialMap(int roomLength)
 {
     Room *room1 = new Room(1, 1, WIDTH, HEIGHT);
@@ -403,7 +443,7 @@ Room *initalizeTutorialMap(int roomLength)
     Room *room8 = new Room(8, 1, WIDTH, HEIGHT);
     Room *room9 = new Room(9, 1, WIDTH, HEIGHT);
     Room *room10 = new Room(10, 1, WIDTH, HEIGHT);
-    Room *end = new Room(11, 1, WIDTH, HEIGHT);
+    Room *end = nullptr;
 
     Enemy *e1 = new Enemy('+', 20);
     Enemy *e2 = new Enemy('+', 30);
@@ -426,7 +466,7 @@ Room *initalizeTutorialMap(int roomLength)
     room8->initializeRoom(5, 'h');
     room9->initializeRoom(5, 'b');
     room10->initializeRoom(5, 'v');
-    end->initializeRoom(5, 'b');
+    // end->setFinal(true);
 
     // Add Information to each room.
     room1->setRoomINFO("USE W A S D to move!\nThe \"D\" refers to a Door! ");
@@ -443,7 +483,7 @@ Room *initalizeTutorialMap(int roomLength)
     room3->setDoor(Pos(WIDTH / 2, 0), room7);          // Top to Room 7
     room3->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room4); // Bottom to Room 4
     room3->setEnemy(Pos(7, HEIGHT / 2), e2);           // Enemy to the side of the room
-    room3->setEnemy(Pos(9, HEIGHT / 2), e3); 
+    room3->setEnemy(Pos(9, HEIGHT / 2), e3);
     room3->setRoomINFO("Which door to take? So many choices!");
 
     // room3->setEnemy(Pos(WIDTH / 2, HEIGHT / 2), e1);    // Enemy in the middle of the room
@@ -473,13 +513,13 @@ Room *initalizeTutorialMap(int roomLength)
 
     room9->setDoor(Pos(0, HEIGHT / 2), room8);          // Left to Room 8
     room9->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room10); // Bottom to Room 10
-    room9->setEnemy(Pos(WIDTH / 2, 6), e8);    // Enemy in the middle of the room
-    room9->setEnemy(Pos(4, HEIGHT / 2), e9);    // Enemy in the middle of the room
+    room9->setEnemy(Pos(WIDTH / 2, 6), e8);             // Enemy in the middle of the room
+    room9->setEnemy(Pos(4, HEIGHT / 2), e9);            // Enemy in the middle of the room
     room9->setRoomINFO("LOTS OF ENEMIES!");
 
     room10->setDoor(Pos(WIDTH / 2, 0), room9); // Top to Room 9
     // Room 10 has a staircase to another room
-    room10->setDoor(Pos(WIDTH / 2, HEIGHT - 2), end); // Stairway to new room
+    room10->setDoor(Pos(WIDTH / 2, HEIGHT -3 ), end); // Stairway to new room
     room10->setRoomINFO("Congratulations! You've reached the end of the tutorial!");
 
     return room1; // Game starts in room 1
@@ -490,10 +530,228 @@ Room *initalizeTutorialMap(int roomLength)
     @param display [in] char**, this is the char array to be printed to the console.
     @return void.
 */
+// Room position helper
+struct Position
+{
+    int x, y;
+    Position(int x, int y) : x(x), y(y) {}
+
+    bool operator==(const Position &other) const
+    {
+        return x == other.x && y == other.y;
+    }
+
+    bool operator!=(const Position &other) const
+    {
+        return !(*this == other);
+    }
+};
+
+// Hash function for Position to use in map
+struct PositionHash
+{
+    std::size_t operator()(const Position &pos) const
+    {
+        return std::hash<int>()(pos.x) ^ std::hash<int>()(pos.y);
+    }
+};
+
+Position convertPosToPosition(Pos pos)
+{
+    return Position(pos.getX(), pos.getY());
+}
+
+Room *initializeProceduralMap();
+
+Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerring)
+{
+    Room *room = new Room(id, 1, WIDTH, HEIGHT);
+    room->initializeRoom(5, 'b'); // Always create big rooms
+    // Set room information with id, isMainPath, isFinalRoom, and isRedHerring
+    std::string roomInfo;
+    if (isMainPath)
+    {
+        roomInfo += "Main Path ";
+    }
+    if (isFinalRoom)
+    {
+        roomInfo += "Final Room ";
+    }
+    if (isRedHerring)
+    {
+        roomInfo += "Red Herring ";
+    }
+    room->setRoomINFO(roomInfo);
+
+    // if final room add a door in the middle of the room that takes you to the next level
+    if (isFinalRoom)
+    {
+        room->setFinal(true);
+        room->setDoor(Pos(WIDTH / 2, HEIGHT / 2), nullptr);
+    }
+
+    return room;
+}
+
+// Function to scatter enemies randomly in the room
+void scatterEnemies(Room *room)
+{
+    Enemy *enemies[] = {
+        new Enemy('+', 20), new Enemy('+', 30), new Enemy('+', 50),
+        new Enemy('*', 20), new Enemy('*', 30), new Enemy('*', 50),
+        new Enemy('/', 20), new Enemy('/', 30), new Enemy('/', 50)};
+    int numEnemies = rand() % 3 + 1; // 1 to 3 enemies
+    for (int i = 0; i < numEnemies; i++)
+    {
+        int xPos = rand() % (WIDTH - 2) + 1;  // Generate random x position within the inner ring
+        int yPos = rand() % (HEIGHT - 2) + 1; // Generate random y position within the inner ring
+        room->setEnemy(Pos(xPos, yPos), enemies[rand() % 9]);
+    }
+}
+
+// Function to get a random direction and avoid backtracking
+Position getRandomDirection(const Position &currentPos, const std::unordered_map<Position, Room *, PositionHash> &placedRooms)
+{
+    std::vector<Position> possibleDirections = {
+        Position(currentPos.x + 1, currentPos.y), // Right (east)
+        Position(currentPos.x - 1, currentPos.y), // Left (west)
+        Position(currentPos.x, currentPos.y + 1), // Down (south)
+        Position(currentPos.x, currentPos.y - 1)  // Up (north)
+    };
+
+    // Shuffle the directions to randomize
+    std::shuffle(possibleDirections.begin(), possibleDirections.end(), std::mt19937{std::random_device{}()});
+    for (const auto &dir : possibleDirections)
+    {
+        if (placedRooms.find(dir) == placedRooms.end())
+        {
+            return dir; // Return a valid, unoccupied direction
+        }
+    }
+
+    return currentPos; // In case of no valid direction, return current position
+}
+
+// Function to connect two rooms
+void connectRooms(Room *room1, Room *room2, const Position &pos1, const Position &pos2)
+{
+    if (pos1.x < pos2.x)
+    {
+        // room2 is to the east of room1
+        room1->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room2);
+        room2->setDoor(Pos(0, HEIGHT / 2), room1);
+    }
+    else if (pos1.x > pos2.x)
+    {
+        // room2 is to the west of room1
+        room1->setDoor(Pos(0, HEIGHT / 2), room2);
+        room2->setDoor(Pos(WIDTH - 1, HEIGHT / 2), room1);
+    }
+    else if (pos1.y < pos2.y)
+    {
+        // room2 is to the south of room1
+        room1->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room2);
+        room2->setDoor(Pos(WIDTH / 2, 0), room1);
+    }
+    else if (pos1.y > pos2.y)
+    {
+        // room2 is to the north of room1
+        room1->setDoor(Pos(WIDTH / 2, 0), room2);
+        room2->setDoor(Pos(WIDTH / 2, HEIGHT - 1), room1);
+    }
+}
+
+// Function to create main path with random positions
+void createMainPath(std::unordered_map<Position, Room *, PositionHash> &placedRooms, int &currentRoomId, Position &currentPos, Room *startRoom)
+{
+    Room *prevRoom = startRoom;
+    for (int i = 0; i < 5; ++i) // Increased to 5 rooms to ensure a longer main path
+    {
+        Position nextPos = getRandomDirection(currentPos, placedRooms);
+
+        if (nextPos == currentPos || placedRooms.find(nextPos) != placedRooms.end())
+        {
+            break; // No available direction or position is occupied
+        }
+
+        bool isFinalRoom = (i == 4); // Last room in the main path
+        Room *room = createRandomRoom(currentRoomId++, true, isFinalRoom, false);
+
+        connectRooms(prevRoom, room, currentPos, nextPos);
+
+        // if (i == 3)
+        // {
+        //     // add a red herring room
+        //     Room *redHerring = createRandomRoom(currentRoomId++, false, false, true);
+        //     connectRooms(room, redHerring, nextPos, getRandomDirection(nextPos, placedRooms));
+        //     scatterEnemies(redHerring);
+        //     placedRooms[Position(getDoorsOpposite(Pos(nextPos.x, nextPos.y)).getX(), getDoorsOpposite(Pos(nextPos.x, nextPos.y)).getY())] = redHerring;
+        // }
+
+        scatterEnemies(room);
+        placedRooms[nextPos] = room;
+        currentPos = nextPos; // Move to the next position
+        prevRoom = room;
+    }
+}
+
+// Function to create red herring rooms
+void createRedHerrings(std::unordered_map<Position, Room *, PositionHash> &placedRooms, int &currentRoomId, Room *startRoom)
+{
+    // Create two red herring paths from the start room
+    for (int i = 0; i < 2; ++i)
+    {
+        Position currentPos(0, 0); // Start from the beginning
+        Position redHerringPos = getRandomDirection(currentPos, placedRooms);
+        if (redHerringPos == currentPos)
+            continue; // No available direction
+
+        Room *redHerring = createRandomRoom(currentRoomId++, false, false, true);
+        connectRooms(startRoom, redHerring, currentPos, redHerringPos);
+        scatterEnemies(redHerring);
+        placedRooms[redHerringPos] = redHerring;
+
+        // One longer red herring path
+        if (i == 0)
+        {
+            Position extendedHerringPos = getRandomDirection(redHerringPos, placedRooms);
+            if (extendedHerringPos != redHerringPos)
+            {
+                Room *extendedHerring = createRandomRoom(currentRoomId++, false, false, true);
+                connectRooms(redHerring, extendedHerring, redHerringPos, extendedHerringPos);
+                scatterEnemies(extendedHerring);
+                placedRooms[extendedHerringPos] = extendedHerring;
+            }
+        }
+    }
+}
+
+Room *initializeProceduralMap()
+{
+    srand(static_cast<unsigned>(time(0))); // Seed random number generator
+
+    std::unordered_map<Position, Room *, PositionHash> placedRooms;
+    int currentRoomId = 1;
+    Position startPos(0, 0);
+
+    // Step 1: Create starting room
+    Room *startRoom = createRandomRoom(currentRoomId++, true, false, false);
+    placedRooms[startPos] = startRoom;
+
+    // Step 2: Create main path with randomized room positions
+    Position currentPos = startPos;
+    createMainPath(placedRooms, currentRoomId, currentPos, startRoom);
+
+    // Step 3: Add red herring rooms from the start room
+    createRedHerrings(placedRooms, currentRoomId, startRoom);
+
+    return startRoom; // Return the starting room
+}
+
 void printToConsole(char **display)
 {
-    system("cls");            // Clear the console
-    setCursorPosition(0, 0);  // Sets the cursor position..
+    system("cls");           // Clear the console
+    setCursorPosition(0, 0); // Sets the cursor position..
     for (int y = 0; y < HEIGHT; y++)
     {
         for (int x = 0; x < WIDTH; x++)
@@ -657,9 +915,10 @@ int generateMathProblem()
     @param player [in] Player& - the current player.
     @param enemy [in] Enemy* the current enemy
     @return boolean t/f if we won or lost.
-    
+
 */
-bool fightEnemy(Player &player, Enemy *enemy){
+bool fightEnemy(Player &player, Enemy *enemy)
+{
 
     system("cls");
 
@@ -731,143 +990,194 @@ void moveEnemies(Room *room)
         }
     }
 }
+
+void playFootstep()
+{
+    // choose random step sound format "footstep00"-09.wav
+    // int stepSound = rand() % 10;
+    // std::string stepSoundFile = "footstep0" + std::to_string(stepSound) + ".wav";
+    // PlaySound(TEXT(stepSoundFile.c_str()), NULL, SND_FILENAME | SND_ASYNC);
+}
+
 /*!
-    @brief This "main" runs our game. It is where the game-loop is located 
+    @brief This "main" runs our game. It is where the game-loop is located
     @details Method initalizes our game and runs it.
     @return int , exit code.
 */
 int main()
 {
-    int score = 0;
-    bool gameRunning = true;
-
-    DWORD lastMoveTime = GetTickCount();
-    DWORD lastEnemyMoveTime = GetTickCount();
-
-    const DWORD enemyMoveDelay = 500; // Adjust this value to change enemy movement speed (lower = faster)
-    const DWORD moveDelay = 100;      // Adjust this value to change movement speed (lower = faster)
-    int newX = 0;
-    int newY = 0;
-    srand(static_cast<unsigned>(time(0)));
-    Room *currentRoom = initalizeTutorialMap(1);
-
-    Player player('P', 100); // Increased initial health to 100
-    player.setPosition(WIDTH / 2, HEIGHT / 2);
-    currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
-    printToConsole(currentRoom->getDisplay());
-    hideCursor();
-    
-    while (gameRunning)
+    try
     {
-        DWORD currentTime = GetTickCount();
-        if (currentTime - lastMoveTime >= moveDelay)
+        int score = 0;
+        bool gameRunning = true;
+
+        DWORD lastMoveTime = GetTickCount();
+        DWORD lastEnemyMoveTime = GetTickCount();
+
+        const DWORD enemyMoveDelay = 500;
+        const DWORD moveDelay = 100;
+        int newX = 0;
+        int newY = 0;
+        srand(static_cast<unsigned>(time(0)));
+
+        Room *currentRoom = initalizeTutorialMap(10);
+
+        Player player('P', 100);
+        player.setPosition(WIDTH / 2, HEIGHT / 2);
+        currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
+
+        // Initial full screen draw
+        printToConsole(currentRoom->getDisplay());
+        hideCursor();
+
+        while (gameRunning)
         {
-            const Pos &currentPos = player.getPos();
-            newX = currentPos.getX();
-            newY = currentPos.getY();
-
-            if (isKeyPressed('W'))
-                newY--;
-            if (isKeyPressed('S'))
-                newY++;
-            if (isKeyPressed('A'))
-                newX--;
-            if (isKeyPressed('D'))
-                newX++;
-
-            char nextChar = currentRoom->getCharAt(newX, newY);
-
-            if (currentRoom->validMove(newX, newY))
+            DWORD currentTime = GetTickCount();
+            if (currentTime - lastMoveTime >= moveDelay)
             {
-                if (currentRoom->isDoorMove(newX, newY))
+                const Pos &currentPos = player.getPos();
+                newX = currentPos.getX();
+                newY = currentPos.getY();
+
+                if (isKeyPressed('W'))
                 {
-                    currentRoom->removePlayer();
-                    Room *tempRoom = currentRoom->getRoom(newX, newY);
-
-                    if (tempRoom)
-                        currentRoom = tempRoom;
-
-                    if (currentRoom->getID() == 11) // End of the tutorial. clear and say congrats
-                    {
-                        system("cls");
-                        std::cout << "You Win! You have reached the end of the Tutorial.\n";
-                        Sleep(2000);
-                        gameRunning = false;
-                    }
-
-                    Pos newPos = getDoorsOpposite(Pos(newX, newY));
-                    updatePlayerPosition(currentRoom, player, newPos.getX(), newPos.getY());
-                    printToConsole(currentRoom->getDisplay());
+                    newY--;
+                    playFootstep();
                 }
-                else if (nextChar == 'C')
+                if (isKeyPressed('S'))
                 {
-                    score += 10;
-                    currentRoom->setCharAt(newX, newY, ' ');
-                    updatePlayerPosition(currentRoom, player, newX, newY);
+                    newY++;
+                    playFootstep();
                 }
-                else if (touchingEnemy(currentRoom, player))
+
+                if (isKeyPressed('A'))
                 {
-                    Enemy *enemy = currentRoom->getEnemyAt(newX, newY);
-                    if (enemy)
+                    newX--;
+                    playFootstep();
+                }
+
+                if (isKeyPressed('D'))
+                {
+                    newX++;
+                    playFootstep();
+                }
+
+                char nextChar = currentRoom->getCharAt(newX, newY);
+
+                if (currentRoom->validMove(newX, newY))
+                {
+
+                    if (currentRoom->isDoorMove(newX, newY))
                     {
-                        bool playerWon = fightEnemy(player, enemy);
-                        if (playerWon)
+                        PlaySound(TEXT("door.wav"), NULL, SND_FILENAME | SND_ASYNC);
+                        currentRoom->removePlayer();
+                        Room *tempRoom = currentRoom->getRoom(newX, newY);
+
+                        if (tempRoom)
                         {
-                            currentRoom->removeEnemyAt(newX, newY);
-                            score += 50;
-                            updatePlayerPosition(currentRoom, player, newX, newY);
+                            currentRoom = tempRoom;
+                            // Calculate the new position in the next room
+                            Pos newPos = getDoorsOpposite(Pos(newX, newY));
+                            // Update player position to the new room
+                            updatePlayerPosition(currentRoom, player, newPos.getX(), newPos.getY());
+                            // Full redraw when changing rooms
+                            printToConsole(currentRoom->getDisplay());
                         }
                         else
                         {
-                            gameRunning = false;
+                            tempRoom = initializeProceduralMap();
+                            currentRoom = tempRoom;
+                            // Calculate the new position in the next room
+                            Pos newPos = getDoorsOpposite(Pos(newX, newY));
+                            // Update player position to the new room
+                            updatePlayerPosition(currentRoom, player, newPos.getX(), newPos.getY());
+                            // Full redraw when changing rooms
+                            printToConsole(currentRoom->getDisplay());
+                            player.setPosition(WIDTH / 2, HEIGHT / 2);
+                            currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
                         }
                     }
-                    printToConsole(currentRoom->getDisplay());
+                    else if (nextChar == 'C')
+                    {
+                        score += 10;
+                        PlaySound(TEXT("coin.wav"), NULL, SND_FILENAME | SND_ASYNC);
+                        currentRoom->setCharAt(newX, newY, ' ');
+                        updatePlayerPosition(currentRoom, player, newX, newY);
+                    }
+                    else if (touchingEnemy(currentRoom, player))
+                    {
+                        PlaySound(TEXT("danger.wav"), NULL, SND_FILENAME | SND_ASYNC);
+                        Enemy *enemy = currentRoom->getEnemyAt(newX, newY);
+                        if (enemy)
+                        {
+                            bool playerWon = fightEnemy(player, enemy);
+                            if (playerWon)
+                            {
+                                PlaySound(TEXT("win.wav"), NULL, SND_FILENAME | SND_ASYNC);
+                                currentRoom->removeEnemyAt(newX, newY);
+                                score += 50;
+                                // display the room again
+                                printToConsole(currentRoom->getDisplay());
+                                updatePlayerPosition(currentRoom, player, newX, newY);
+                            }
+                            else
+                            {
+                                PlaySound(TEXT("encounter.wav"), NULL, SND_FILENAME | SND_ASYNC);
+                                gameRunning = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        updatePlayerPosition(currentRoom, player, newX, newY);
+                    }
+
+                    if (currentTime - lastEnemyMoveTime >= enemyMoveDelay)
+                    {
+                        // moveEnemies(currentRoom);
+                        // lastEnemyMoveTime = currentTime;
+                    }
+
+                    lastMoveTime = currentTime;
                 }
-                else
+
+                // Update status information
+                setCursorPosition(0, HEIGHT + 1);
+                if (!currentRoom->getRoomINFO().empty())
                 {
-                    updatePlayerPosition(currentRoom, player, newX, newY);
+                    std::cout << currentRoom->getRoomINFO() << std::string(80 - currentRoom->getRoomINFO().length(), ' ') << "\n\n";
                 }
+
+                int playerHealthBar = (player.getHealth() * 10) / 100;
+                std::cout << "Health: [";
+                setFGColour(124);
+                for (int i = 0; i < 10; i++)
+                {
+                    std::cout << (i < playerHealthBar ? "=" : " ");
+                }
+                resetColour();
+                std::cout << "] " << player.getHealth() << "/" << 100 << std::string(50, ' ') << "\n";
+                std::cout << "Score: " << score << " | Press Q to quit" << std::string(50, ' ') << "\n";
+                std::cout << "Room: " << currentRoom->getID() << std::string(50, ' ') << "\n";
+
+                if (isKeyPressed('Q'))
+                    gameRunning = false;
             }
 
-            if (currentTime - lastEnemyMoveTime >= enemyMoveDelay)
-            {
-                // moveEnemies(currentRoom);
-                lastEnemyMoveTime = currentTime;
-            }
-
-            lastMoveTime = currentTime;
-
-            // move enemies in this room
+            Sleep(10);
         }
 
-        setCursorPosition(0, HEIGHT + 1);
-        //Displays the players health.
-
-        if (currentRoom->getRoomINFO().empty() == false)
-        {
-            std::cout << currentRoom->getRoomINFO() << "\n\n";
-        }
-               int playerHealthBar = (player.getHealth()* 10) /100;
-         // Player Health Bar
-        std::cout << "Health: [";
-        setFGColour(124);
-        for (int i = 0; i < 10; i++) {
-            if (i < playerHealthBar) {
-                std::cout << "=";
-            } else {
-                std::cout << " ";
-            }
-        }
-        resetColour();
-        std::cout << "] " << player.getHealth()<< "/" << 100<<"\n";
-        std::cout << "\nScore: " << score << " | Press Q to quit\n";
-        std::cout << "Room: " << currentRoom->getID() << "\n";
-        if (isKeyPressed('Q'))
-            gameRunning = false;
-        Sleep(10); // Small delay to prevent excessive CPU usage
+        std::cout << "Game Over! Final Score: " << score << "\n";
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "An error occurred: " << e.what() << std::endl;
+    }
+    catch (...)
+    {
+        std::cerr << "An unknown error occurred." << std::endl;
     }
 
-    std::cout << "Game Over! Final Score: " << score << "\n";
+    system("pause");
     return 0;
 }
