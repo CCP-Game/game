@@ -17,7 +17,7 @@ private:
     char **grid;
     int width;
     int height;
-    int colour;
+    //int colour;
     std::string roomINFO;
     Pos playerPos;
     std::vector<Enemy*> enemies;

@@ -459,7 +459,7 @@ std::string Room::getRoomINFO(){
     @param roomInfo [in] String - the room information
     @return. void
 */
-void Room::setRoomINFO(std::string info){
+void Room::setRoomINFO(const std::string info){
     this->roomINFO = info;
 }
 /*!
@@ -494,9 +494,10 @@ void Room::unittest() {
 
 
     testRoom.setEnemy(Pos(3, 4), new Enemy(Pos(1, 1), 'E', 2));
-    assert(testRoom.getEnemyAt(3, 4)->getX() == 3);
-    assert(testRoom.getEnemyAt(3, 4)->getY() == 4);
-
+    int enemy1X = testRoom.getEnemyAt(3, 4)->getX();
+    int enemy1Y = testRoom.getEnemyAt(3, 4)->getY();
+    assert(enemy1X == 3);
+    assert(enemy1Y == 4);
 
     testRoom.removeEnemyAt(3, 4);
     assert(testRoom.getEnemyAt(3, 4) == nullptr);

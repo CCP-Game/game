@@ -20,7 +20,7 @@ Enemy::Enemy(Pos pos, char skin, int difficulty) : Position(pos), skin(skin), di
  * @param skin The character representing the enemy's appearance.
  * @param health The health of the enemy.
  */
-Enemy::Enemy(char skin, int health) : skin(skin), health(health) {
+Enemy::Enemy(char skin, int health) : skin(skin), health(health), difficulty(1) {
     // Other initialization
 }
 
