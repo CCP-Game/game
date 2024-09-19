@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include <random>
+#include <sstream> 
+#include <stack> 
 #include "nums.h"
 #include <cassert>
 #include <iostream>
@@ -334,6 +336,107 @@ bool generateDivisionEquation()
 
     int answer = getUserInput();
     return answer == result;
+}
+
+/*!
+ * @brief Evaluates a mathematical expression represented as a string.
+ *
+ * This function uses stacks to evaluate an arithmetic expression containing +, -, *, / operations.
+ * It respects the operator precedence ( higher than +-).
+ *
+ * @param expression [in] The string containing the arithmetic expression.
+ *
+ * @return The evaluated result of the expression.
+ */
+ 
+int evaluateExpression(const std::string &expression)
+{
+    std::stack<int> values;
+    std::stack<char> operators;
+    std::stringstream ss(expression);
+    char ch;
+    int number;
+
+    while (ss >> ch)
+    {
+        if (isdigit(ch))
+        {
+            ss.putback(ch);
+            ss >> number;
+            values.push(number);
+        }
+        else if (ch == '+' || ch == '-')
+        {
+            while (!operators.empty() && (operators.top() == '*' || operators.top() == '/'))
+            {
+                char op = operators.top();
+                operators.pop();
+
+                int val2 = values.top(); values.pop();
+                int val1 = values.top(); values.pop();
+                if (op == '*') values.push(val1 * val2);
+                else values.push(val1 / val2);
+            }
+            operators.push(ch);
+        }
+        else if (ch == '*' || ch == '/')
+        {
+            operators.push(ch);
+        }
+    }
+
+    while (!operators.empty())
+    {
+        char op = operators.top();
+        operators.pop();
+
+        int val2 = values.top(); values.pop();
+        int val1 = values.top(); values.pop();
+        if (op == '+') values.push(val1 + val2);
+        else if (op == '-') values.push(val1 - val2);
+        else if (op == '*') values.push(val1 * val2);
+        else values.push(val1 / val2);
+    }
+
+    return values.top();
+}
+
+/*!
+ * @brief Generates a more complex equation with multiple operations, prints it in ASCII art, and checks if the user's answer is correct.
+ *
+ * Generates a random sequence of numbers and operations (+, -, *, /), prints the equation in ASCII art,
+ * and evaluates the user's input.
+ *
+ * @return Returns true if the user's answer is correct, false otherwise.
+ */
+bool generateComplexEquation()
+{
+    std::string operators = "+-*/";
+    std::string equation;
+
+    // Generate a random number of operations (e.g., 3 operations, resulting in 4 numbers)
+    int numOperations = improvedRandom(2, 4); // 2 to 4 operations
+
+    // Build the equation by alternating between random numbers and random operators
+    equation += std::to_string(improvedRandom(1, 50));
+    for (int i = 0; i < numOperations; ++i)
+    {
+        char op = operators[improvedRandom(0, 3)]; // Random operator
+        equation += op;
+        equation += std::to_string(improvedRandom(1, 50)); // Random number
+    }
+    equation += "=";
+
+    // Print the equation in ASCII art
+    printNums(equation);
+
+    // Get the correct answer by evaluating the equation
+    int correctAnswer = evaluateExpression(equation);
+
+    // Get user input
+    int userAnswer = getUserInput();
+
+    return userAnswer == correctAnswer;
 }
 
 /*!
