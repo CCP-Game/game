@@ -15,7 +15,6 @@
 #include "nums.h"
 #include "animations.h"
 #include <random>
-#include <unistd.h>
 #include <string>
 #define WIDTH 25
 #define HEIGHT 13
@@ -1087,9 +1086,6 @@ int main()
                 return(0);
             }
         }
-    
-     
-
         Player player('P', 100);
         player.setPosition(WIDTH / 2, HEIGHT / 2);
         currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
@@ -1097,10 +1093,6 @@ int main()
         // Initial full screen draw
         printToConsole(currentRoom->getDisplay());
         hideCursor();
-
-
-        //Logic for the main menu.
-     
         //Game
         while (gameRunning)
         {
@@ -1149,7 +1141,6 @@ int main()
                                 resumeGame = true; 
                                 score = 0;
                             }
-
                         }
                         DWORD lastMoveTime = currentTime; 
                     }
