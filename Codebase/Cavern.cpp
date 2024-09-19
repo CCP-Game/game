@@ -281,6 +281,13 @@ bool battleScreen(Enemy &enemy, Player &Player)
         std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
         encounterType = 4;
     }
+    else if (enemyHead == 'B')
+    {
+
+        enemyName = "Boss";
+        std::cout << "\nYou have encountered " << enemyName << "." << std::endl;
+        encounterType = 5;
+    }
     else
     {
         enemyName = "Additor";
@@ -322,6 +329,27 @@ bool battleScreen(Enemy &enemy, Player &Player)
         {
 
             outcome = generateMultiplicationEquation();
+            
+        }else if (encounterType == 5)
+        {
+            int chooser = rand() % 4 + 1;
+            
+            if(chooser == 1)
+            {
+                outcome = generateEquation();
+            }
+            else if(chooser == 2)
+            {
+                outcome = generateSubtractionEquation();
+            }
+            else if(chooser == 3)
+            {
+                outcome = generateDivisionEquation();
+            }
+            else if(chooser == 4)
+            {
+                outcome = generateMultiplicationEquation();
+            }
         }
 
         if (outcome)
