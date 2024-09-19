@@ -324,13 +324,15 @@ bool generateDivisionEquation()
     return answer == result;
 }
 
-
+/*!
+    @brief runs unittest for the other methods.
+    @return. void
+*/
 void numsunittest()
 {
     std::cout << "Player unittest called!" << std::endl;
 
     assert(improvedRandom(4, 4) == 4);
-
 
     std::istringstream mockInput("5\n");
     std::streambuf* originalCinBuffer = std::cin.rdbuf();
@@ -339,14 +341,29 @@ void numsunittest()
     assert(res == 5);
     assert(res != 3);
 
-    std::istringstream mockInput1("151\n");
-    std::streambuf* CinBuffer = std::cin.rdbuf();
+    std::istringstream mockInput1("201\n");
+    std::streambuf* CinBuffer1 = std::cin.rdbuf();
+    std::cin.rdbuf(mockInput1.rdbuf());
+    bool resPlus = generateEquation();
+    assert(resPlus == false);
+
+    std::istringstream mockInput2("101\n");
+    std::streambuf* CinBuffer2 = std::cin.rdbuf();
+    std::cin.rdbuf(mockInput1.rdbuf());
+    bool resMin = generateMultiplicationEquation();
+    assert(resMin == false);
+
+    std::istringstream mockInput3("151\n");
+    std::streambuf* CinBuffer3 = std::cin.rdbuf();
     std::cin.rdbuf(mockInput1.rdbuf());
     bool resMult = generateMultiplicationEquation();
-    
     assert(resMult == false);
     
-
-   
+    std::istringstream mockInput4("200\n");
+    std::streambuf* CinBuffer4 = std::cin.rdbuf();
+    std::cin.rdbuf(mockInput4.rdbuf());
+    bool resDiv = generateDivisionEquation();
+    assert(resDiv == false);
+    
     std::cout << "All Player tests passed!" << std::endl;
 }

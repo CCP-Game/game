@@ -123,10 +123,13 @@ void displayGameOverAnimation()
     std::cout.flush();
 }
 
-
+/*!
+    @brief runs unittest for the other methods.
+    @return. void
+*/
 void aniunittest()
 {
-    // Not ideal but currently just running the animations to make sure they dodn't throw any errors.
+    // Not ideal but currently just running the animations to make sure they don't throw any errors.
     displayCavernAnimation(cavernArt);
     displayCavernAnimation(gameOverArt);
     displayGameOverAnimation();
