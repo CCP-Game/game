@@ -269,6 +269,26 @@ void Room::setEnemy(Pos p, Enemy* e){
     this->enemies.push_back(e);
     // Set the enemy in the grid
 }
+
+/*! 
+    @brief Method sets the final room.
+    @param value [in] bool - the value we're setting the room to be.
+    @return void
+*/
+void Room::setFinal(bool value)
+{
+    this->isFinal = value;
+}
+
+/*! 
+    @brief Method gets the final room.
+    @return bool - the value of the room.
+*/
+bool Room::getFinal()
+{
+    return this->isFinal;
+}
+
 /*!
     @brief This method gets the enemy at a given position.
     @details this method should only be called when we know an enemy is at a given position, this just refers to the correct enemy.

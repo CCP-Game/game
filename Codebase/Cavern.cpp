@@ -7,12 +7,14 @@
 #include <conio.h> // For _kbhit() and _getch()
 #pragma comment(lib, "User32.lib")
 #pragma comment(lib, "Winmm.lib")
+#include <algorithm>
 #include "Pos.h"
 #include "Room.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "nums.h"
 #include "animations.h"
+#include <random>
 #define WIDTH 25
 #define HEIGHT 13
 /*!
@@ -427,6 +429,8 @@ Pos getDoorsOpposite(Pos oldPos)
     @param roomLength [in] int, this is how many rooms we want.
     @return Room - Returns a pointer to the first room in the map.
 */
+Room *initializeProceduralMap();
+
 Room *initalizeTutorialMap(int roomLength)
 {
     Room *room1 = new Room(1, 1, WIDTH, HEIGHT);
@@ -439,7 +443,7 @@ Room *initalizeTutorialMap(int roomLength)
     Room *room8 = new Room(8, 1, WIDTH, HEIGHT);
     Room *room9 = new Room(9, 1, WIDTH, HEIGHT);
     Room *room10 = new Room(10, 1, WIDTH, HEIGHT);
-    Room *end = new Room(11, 1, WIDTH, HEIGHT);
+    Room *end = nullptr;
 
     Enemy *e1 = new Enemy('+', 20);
     Enemy *e2 = new Enemy('+', 30);
@@ -462,7 +466,7 @@ Room *initalizeTutorialMap(int roomLength)
     room8->initializeRoom(5, 'h');
     room9->initializeRoom(5, 'b');
     room10->initializeRoom(5, 'v');
-    end->initializeRoom(5, 'b');
+    // end->setFinal(true);
 
     // Add Information to each room.
     room1->setRoomINFO("USE W A S D to move!\nThe \"D\" refers to a Door! ");
@@ -515,7 +519,7 @@ Room *initalizeTutorialMap(int roomLength)
 
     room10->setDoor(Pos(WIDTH / 2, 0), room9); // Top to Room 9
     // Room 10 has a staircase to another room
-    room10->setDoor(Pos(WIDTH / 2, HEIGHT - 2), end); // Stairway to new room
+    room10->setDoor(Pos(WIDTH / 2, HEIGHT -3 ), end); // Stairway to new room
     room10->setRoomINFO("Congratulations! You've reached the end of the tutorial!");
 
     return room1; // Game starts in room 1
@@ -552,6 +556,13 @@ struct PositionHash
     }
 };
 
+Position convertPosToPosition(Pos pos)
+{
+    return Position(pos.getX(), pos.getY());
+}
+
+Room *initializeProceduralMap();
+
 Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerring)
 {
     Room *room = new Room(id, 1, WIDTH, HEIGHT);
@@ -571,6 +582,14 @@ Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerr
         roomInfo += "Red Herring ";
     }
     room->setRoomINFO(roomInfo);
+
+    // if final room add a door in the middle of the room that takes you to the next level
+    if (isFinalRoom)
+    {
+        room->setFinal(true);
+        room->setDoor(Pos(WIDTH / 2, HEIGHT / 2), nullptr);
+    }
+
     return room;
 }
 
@@ -601,7 +620,7 @@ Position getRandomDirection(const Position &currentPos, const std::unordered_map
     };
 
     // Shuffle the directions to randomize
-    // std::shuffle(possibleDirections.begin(), possibleDirections.end(), std::mt19937{std::random_device{}()});
+    std::shuffle(possibleDirections.begin(), possibleDirections.end(), std::mt19937{std::random_device{}()});
     for (const auto &dir : possibleDirections)
     {
         if (placedRooms.find(dir) == placedRooms.end())
@@ -643,23 +662,31 @@ void connectRooms(Room *room1, Room *room2, const Position &pos1, const Position
 }
 
 // Function to create main path with random positions
-// Function to create main path with random positions
-void createMainPath(std::unordered_map<Position, Room *, PositionHash> &placedRooms, int &currentRoomId, Position &currentPos)
+void createMainPath(std::unordered_map<Position, Room *, PositionHash> &placedRooms, int &currentRoomId, Position &currentPos, Room *startRoom)
 {
-    Room *prevRoom = nullptr;
+    Room *prevRoom = startRoom;
     for (int i = 0; i < 5; ++i) // Increased to 5 rooms to ensure a longer main path
     {
         Position nextPos = getRandomDirection(currentPos, placedRooms);
-        if (nextPos == currentPos)
-            break; // No available direction
+
+        if (nextPos == currentPos || placedRooms.find(nextPos) != placedRooms.end())
+        {
+            break; // No available direction or position is occupied
+        }
 
         bool isFinalRoom = (i == 4); // Last room in the main path
         Room *room = createRandomRoom(currentRoomId++, true, isFinalRoom, false);
 
-        if (prevRoom)
-        {
-            connectRooms(prevRoom, room, currentPos, nextPos);
-        }
+        connectRooms(prevRoom, room, currentPos, nextPos);
+
+        // if (i == 3)
+        // {
+        //     // add a red herring room
+        //     Room *redHerring = createRandomRoom(currentRoomId++, false, false, true);
+        //     connectRooms(room, redHerring, nextPos, getRandomDirection(nextPos, placedRooms));
+        //     scatterEnemies(redHerring);
+        //     placedRooms[Position(getDoorsOpposite(Pos(nextPos.x, nextPos.y)).getX(), getDoorsOpposite(Pos(nextPos.x, nextPos.y)).getY())] = redHerring;
+        // }
 
         scatterEnemies(room);
         placedRooms[nextPos] = room;
@@ -713,13 +740,14 @@ Room *initializeProceduralMap()
 
     // Step 2: Create main path with randomized room positions
     Position currentPos = startPos;
-    createMainPath(placedRooms, currentRoomId, currentPos);
+    createMainPath(placedRooms, currentRoomId, currentPos, startRoom);
 
     // Step 3: Add red herring rooms from the start room
     createRedHerrings(placedRooms, currentRoomId, startRoom);
 
     return startRoom; // Return the starting room
 }
+
 void printToConsole(char **display)
 {
     system("cls");           // Clear the console
@@ -992,7 +1020,7 @@ int main()
         int newY = 0;
         srand(static_cast<unsigned>(time(0)));
 
-        Room *currentRoom = initializeProceduralMap();
+        Room *currentRoom = initalizeTutorialMap(10);
 
         Player player('P', 100);
         player.setPosition(WIDTH / 2, HEIGHT / 2);
@@ -1054,6 +1082,19 @@ int main()
                             updatePlayerPosition(currentRoom, player, newPos.getX(), newPos.getY());
                             // Full redraw when changing rooms
                             printToConsole(currentRoom->getDisplay());
+                        }
+                        else
+                        {
+                            tempRoom = initializeProceduralMap();
+                            currentRoom = tempRoom;
+                            // Calculate the new position in the next room
+                            Pos newPos = getDoorsOpposite(Pos(newX, newY));
+                            // Update player position to the new room
+                            updatePlayerPosition(currentRoom, player, newPos.getX(), newPos.getY());
+                            // Full redraw when changing rooms
+                            printToConsole(currentRoom->getDisplay());
+                            player.setPosition(WIDTH / 2, HEIGHT / 2);
+                            currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
                         }
                     }
                     else if (nextChar == 'C')
