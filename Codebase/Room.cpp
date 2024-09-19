@@ -467,13 +467,16 @@ void Room::unittest() {
     assert(testRoom.getPlayerPos().getX() == 4);
     assert(testRoom.getPlayerPos().getY() == 5);
 
+
     assert(testRoom.isDoorMove(10, 9) == false);
     testRoom.setDoor(Pos(8, 8), &testRoom);
     assert(testRoom.isDoorMove(8, 8));
 
+
     testRoom.setEnemy(Pos(3, 4), new Enemy(Pos(1, 1), 'E', 2));
     assert(testRoom.getEnemyAt(3, 4)->getX() == 3);
     assert(testRoom.getEnemyAt(3, 4)->getY() == 4);
+
 
     testRoom.removeEnemyAt(3, 4);
     assert(testRoom.getEnemyAt(3, 4) == nullptr);

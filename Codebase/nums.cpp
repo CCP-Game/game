@@ -6,6 +6,7 @@
 #include <cassert>
 #include <iostream>
 #include <functional>
+#include <sstream>
 
 
 /*!
@@ -331,25 +332,21 @@ void numsunittest()
     assert(improvedRandom(4, 4) == 4);
 
 
+    std::istringstream mockInput("5\n");
+    std::streambuf* originalCinBuffer = std::cin.rdbuf();
+    std::cin.rdbuf(mockInput.rdbuf());
+    int res = getUserInput();
+    assert(res == 5);
+    assert(res != 3);
+
+    std::istringstream mockInput1("151\n");
+    std::streambuf* CinBuffer = std::cin.rdbuf();
+    std::cin.rdbuf(mockInput1.rdbuf());
+    bool resMult = generateMultiplicationEquation();
     
-    // //EquationGenerator generator;
+    assert(resMult == false);
+    
 
-    // // Simulate correct user input
-    // auto mockCorrectInput = []() -> int {
-    //     return 5; // Mocked input value, assuming the expected result is 5
-    // };
-
-    // // Simulate incorrect user input
-    // auto mockIncorrectInput = []() -> int {
-    //     return 3; // Mocked wrong input value
-    // };
-
-    // // Test case 1: User gives the correct answer
-    // bool resultCorrect = generateDivisionEquation();
-    // assert(resultCorrect == true); // Expect true for correct input
-
-    // // Test case 2: User gives the wrong answer
-    // bool resultIncorrect = generateDivisionEquation();
-    // assert(resultIncorrect == false); // Expect false for incorrect input
+   
     std::cout << "All Player tests passed!" << std::endl;
 }
