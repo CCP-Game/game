@@ -131,6 +131,11 @@
     "stop_token": "cpp",
     "thread": "cpp",
     "xhash": "cpp",
-    "xtree": "cpp"
+    "xtree": "cpp",
+    "mutex": "cpp",
+    "ranges": "cpp",
+    "span": "cpp",
+    "stack": "cpp",
+    "xstddef": "cpp"
   }
 }

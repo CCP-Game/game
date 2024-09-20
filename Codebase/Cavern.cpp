@@ -1090,7 +1090,8 @@ void playFootstep()
 int main()
 {
     try
-    {
+    {   
+        
         int score = 0;
         bool gameRunning = true;
 
@@ -1103,16 +1104,16 @@ int main()
         int newY = 0;
         srand(static_cast<unsigned>(time(0)));
         Room *currentRoom;
-        boolean resumeGame = false;
-        system("cls");
-        std::cout << getMenuScreen(false) << std::endl;
-        // Start menu logic!
-        while (resumeGame == false)
-        {
-            if (isKeyPressed('S'))
-            {
-                currentRoom = initializeProceduralMap();
-                resumeGame = true;
+        boolean resumeGame =false;
+        system("cls");  
+        
+        displayCavernAnimation();
+        std::cout << getMenuScreen(false)<<std::endl;
+        //Start menu logic!
+        while(resumeGame == false){
+            if(isKeyPressed('S')){
+                  currentRoom = initializeProceduralMap();
+                  resumeGame = true;
             }
             if (isKeyPressed('T'))
             {
@@ -1276,6 +1277,8 @@ int main()
                             {
                                 PlaySound(TEXT("encounter.wav"), NULL, SND_FILENAME | SND_ASYNC);
                                 gameRunning = false;
+                                displayGameOverAnimation();
+                                system("cls");
                             }
                         }
                     }
