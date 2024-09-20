@@ -1298,7 +1298,7 @@ int main()
                 }
                 resetColour();
                 std::cout << "] " << player.getHealth() << "/" << 100 << std::string(50, ' ') << "\n";
-                std::cout << "Score: " << score << " | Press Q to quit" << std::string(50, ' ') << "\n";
+                std::cout << "Score: " << score << " | Press M for the menu " << std::string(50, ' ') << "\n";
                 std::cout << "Room: " << currentRoom->getID() << std::string(50, ' ') << "\n";
 
                 
