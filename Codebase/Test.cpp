@@ -12,7 +12,6 @@ int main() {
     Room::unittest();
     Enemy::unittest();
     Player::unittest();
-    //numsunittest();
     aniunittest();
     std::cout << "All Tests Are Done!";
 
