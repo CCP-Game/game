@@ -329,24 +329,24 @@ bool battleScreen(Enemy &enemy, Player &Player)
         {
 
             outcome = generateMultiplicationEquation();
-            
-        }else if (encounterType == 5)
+        }
+        else if (encounterType == 5)
         {
             int chooser = rand() % 4 + 1;
-            
-            if(chooser == 1)
+
+            if (chooser == 1)
             {
                 outcome = generateEquation();
             }
-            else if(chooser == 2)
+            else if (chooser == 2)
             {
                 outcome = generateSubtractionEquation();
             }
-            else if(chooser == 3)
+            else if (chooser == 3)
             {
                 outcome = generateDivisionEquation();
             }
-            else if(chooser == 4)
+            else if (chooser == 4)
             {
                 outcome = generateMultiplicationEquation();
             }
@@ -548,7 +548,7 @@ Room *initalizeTutorialMap(int roomLength)
 
     room10->setDoor(Pos(WIDTH / 2, 0), room9); // Top to Room 9
     // Room 10 has a staircase to another room
-    room10->setDoor(Pos(WIDTH / 2, HEIGHT -3 ), end); // Stairway to new room
+    room10->setDoor(Pos(WIDTH / 2, HEIGHT - 3), end); // Stairway to new room
     room10->setRoomINFO("Congratulations! You've reached the end of the tutorial!");
 
     return room1; // Game starts in room 1
@@ -617,6 +617,9 @@ Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerr
     {
         room->setFinal(true);
         room->setDoor(Pos(WIDTH / 2, HEIGHT / 2), nullptr);
+        // if new room is final room, add boss enemy ('B')
+        Enemy *boss = new Enemy('B', 100);
+        room->setEnemy(Pos(WIDTH / 2, HEIGHT - 5), boss);
     }
 
     return room;
@@ -815,7 +818,7 @@ void printToConsole(char **display)
     @param player [in] Player , the current player.
     @return boolean, t/f if we are or aren't touching an enemy.
 */
-boolean touchingEnemy(Room *room, const Player& player)
+boolean touchingEnemy(Room *room, const Player &player)
 {
     Pos playerPos = player.getPos();
     for (size_t i = 0; i < room->getEnemies().size(); i++)
@@ -1023,47 +1026,51 @@ void moveEnemies(Room *room)
  * @brief Simply returns the menu screen to be displayed. In this case a string.
  * @return - Returns the cavern homescreen logo.
  */
-std::string getMenuScreen(boolean ingame){
-    std::string menuScreenInGame  = 
-    "\n"
-    "       _______  _______           _______  _______  _             \n"   
-    "      (  ____ \\(  ___  )|\\     /|(  ____ \\(  _____)( )    /|   \n"	
-    "      | (    \\/| (   ) || )   ( || (    \\/| (    )||  \\  ( |   \n"
-    "      | |      | (___) || |   | || (__    | (____)||   \\ | |     \n"		
-    "      | |      |  ___  |( (   ) )|  __)   |     __)| (\\ \\) |    \n"	
-    "      | |      | (   ) | \\ \\_/ / | (      | (\\ (   | | \\   |  \n"	
-    "      | (____/\\| )   ( |  \\   /  | (____/\\| ) \\ \\__| )  \\  |\n"
-    "      (_______/|/     \\|   \\_/   (_______/|/   \\__/|/    )_)   \n"
-    "                                                                  \n"
-    "       Press \"R\" to continue current game                        \n"
-    "                                                                  \n"
-    "       Press \"S\" to restart CAVERN                              \n"
-    "                                                                  \n"
-    "       Press \"T\" to play the tutorial                           \n"
-    "                                                                  \n"
-    "       Press \"Q\" to quit CAVERN                                 \n"
-    "                                                                  \n";
+std::string getMenuScreen(boolean ingame)
+{
+    std::string menuScreenInGame =
+        "\n"
+        "       _______  _______           _______  _______  _             \n"
+        "      (  ____ \\(  ___  )|\\     /|(  ____ \\(  _____)( )    /|   \n"
+        "      | (    \\/| (   ) || )   ( || (    \\/| (    )||  \\  ( |   \n"
+        "      | |      | (___) || |   | || (__    | (____)||   \\ | |     \n"
+        "      | |      |  ___  |( (   ) )|  __)   |     __)| (\\ \\) |    \n"
+        "      | |      | (   ) | \\ \\_/ / | (      | (\\ (   | | \\   |  \n"
+        "      | (____/\\| )   ( |  \\   /  | (____/\\| ) \\ \\__| )  \\  |\n"
+        "      (_______/|/     \\|   \\_/   (_______/|/   \\__/|/    )_)   \n"
+        "                                                                  \n"
+        "       Press \"R\" to continue current game                        \n"
+        "                                                                  \n"
+        "       Press \"S\" to restart CAVERN                              \n"
+        "                                                                  \n"
+        "       Press \"T\" to play the tutorial                           \n"
+        "                                                                  \n"
+        "       Press \"Q\" to quit CAVERN                                 \n"
+        "                                                                  \n";
 
-    std::string menuScreenStart  = 
-    "\n"
-    "       _______  _______           _______  _______  _             \n"   
-    "      (  ____ \\(  ___  )|\\     /|(  ____ \\(  _____)( )    /|    \n"	
-    "      | (    \\/| (   ) || )   ( || (    \\/| (    )||  \\  ( |   \n"
-    "      | |      | (___) || |   | || (__    | (____)||   \\ | |     \n"		
-    "      | |      |  ___  |( (   ) )|  __)   |     __)| (\\ \\) |    \n"	
-    "      | |      | (   ) | \\ \\_/ / | (      | (\\ (   | | \\   |  \n"	
-    "      | (____/\\| )   ( |  \\   /  | (____/\\| ) \\ \\__| )  \\  |\n"
-    "      (_______/|/     \\|   \\_/   (_______/|/   \\__/|/    )_)   \n"
-    "                                                                  \n"
-    "       Press \"S\" to start CAVERN                                \n"
-    "                                                                  \n"
-    "       Press \"T\" to play the tutorial                           \n"
-    "                                                                  \n"
-    "       Press \"Q\" to quit CAVERN                                 \n"
-    "                                                                  \n";
-    if(ingame == true){
+    std::string menuScreenStart =
+        "\n"
+        "       _______  _______           _______  _______  _             \n"
+        "      (  ____ \\(  ___  )|\\     /|(  ____ \\(  _____)( )    /|    \n"
+        "      | (    \\/| (   ) || )   ( || (    \\/| (    )||  \\  ( |   \n"
+        "      | |      | (___) || |   | || (__    | (____)||   \\ | |     \n"
+        "      | |      |  ___  |( (   ) )|  __)   |     __)| (\\ \\) |    \n"
+        "      | |      | (   ) | \\ \\_/ / | (      | (\\ (   | | \\   |  \n"
+        "      | (____/\\| )   ( |  \\   /  | (____/\\| ) \\ \\__| )  \\  |\n"
+        "      (_______/|/     \\|   \\_/   (_______/|/   \\__/|/    )_)   \n"
+        "                                                                  \n"
+        "       Press \"S\" to start CAVERN                                \n"
+        "                                                                  \n"
+        "       Press \"T\" to play the tutorial                           \n"
+        "                                                                  \n"
+        "       Press \"Q\" to quit CAVERN                                 \n"
+        "                                                                  \n";
+    if (ingame == true)
+    {
         return menuScreenInGame;
-    }else{
+    }
+    else
+    {
         return menuScreenStart;
     }
 }
@@ -1096,22 +1103,26 @@ int main()
         int newY = 0;
         srand(static_cast<unsigned>(time(0)));
         Room *currentRoom;
-        boolean resumeGame =false;
-        system("cls");  
-        std::cout << getMenuScreen(false)<<std::endl;
-        //Start menu logic!
-        while(resumeGame == false){
-            if(isKeyPressed('S')){
-                  currentRoom = initializeProceduralMap();
-                  resumeGame = true;
+        boolean resumeGame = false;
+        system("cls");
+        std::cout << getMenuScreen(false) << std::endl;
+        // Start menu logic!
+        while (resumeGame == false)
+        {
+            if (isKeyPressed('S'))
+            {
+                currentRoom = initializeProceduralMap();
+                resumeGame = true;
             }
-            if(isKeyPressed('T')){
-                  currentRoom = initalizeTutorialMap(10);
-                  resumeGame = true;
+            if (isKeyPressed('T'))
+            {
+                currentRoom = initalizeTutorialMap(10);
+                resumeGame = true;
             }
-            if(isKeyPressed('Q')){
+            if (isKeyPressed('Q'))
+            {
                 system("cls");
-                return(0);
+                return (0);
             }
         }
         Player player('P', 100);
@@ -1121,7 +1132,7 @@ int main()
         // Initial full screen draw
         printToConsole(currentRoom->getDisplay());
         hideCursor();
-        //Game
+        // Game
         while (gameRunning)
         {
             currentTime = GetTickCount();
@@ -1130,25 +1141,29 @@ int main()
                 const Pos &currentPos = player.getPos();
                 newX = currentPos.getX();
                 newY = currentPos.getY();
-                //Below, logic for when the menu button is pressed.
-                if(isKeyPressed('M'))
+                // Below, logic for when the menu button is pressed.
+                if (isKeyPressed('M'))
                 {
-                    system("cls");  
-                    std::cout<< getMenuScreen(true)<<std::endl; 
-                    //Loop for whilst we're in the menu.
-                    while(resumeGame == false){
+                    system("cls");
+                    std::cout << getMenuScreen(true) << std::endl;
+                    // Loop for whilst we're in the menu.
+                    while (resumeGame == false)
+                    {
                         DWORD currentTime = GetTickCount();
                         if (currentTime - lastMoveTime >= (DWORD)500)
                         {
-                            if(isKeyPressed('R')){
-                                resumeGame = true; 
+                            if (isKeyPressed('R'))
+                            {
+                                resumeGame = true;
                             }
-                            if (isKeyPressed('Q')){
-                                system("cls");  
-                                return(0);
+                            if (isKeyPressed('Q'))
+                            {
+                                system("cls");
+                                return (0);
                             }
-                            if(isKeyPressed('S')){
-                                Room* tempRoom = initializeProceduralMap();
+                            if (isKeyPressed('S'))
+                            {
+                                Room *tempRoom = initializeProceduralMap();
                                 currentRoom = tempRoom;
                                 // Calculate the new position in the next room
                                 Pos newPos = getDoorsOpposite(Pos(newX, newY));
@@ -1158,19 +1173,20 @@ int main()
                                 player.setPosition(WIDTH / 2, HEIGHT / 2);
                                 player.setHealth(100);
                                 currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
-                                resumeGame = true; 
+                                resumeGame = true;
                                 score = 0;
                             }
-                            if(isKeyPressed('T')){
+                            if (isKeyPressed('T'))
+                            {
                                 currentRoom = initalizeTutorialMap(10);
                                 player.setPosition(WIDTH / 2, HEIGHT / 2);
                                 player.setHealth(100);
                                 currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
-                                resumeGame = true; 
+                                resumeGame = true;
                                 score = 0;
                             }
                         }
-                        DWORD lastMoveTime = currentTime; 
+                        DWORD lastMoveTime = currentTime;
                     }
                     resumeGame = false;
                     printToConsole(currentRoom->getDisplay());
@@ -1295,8 +1311,6 @@ int main()
                 std::cout << "] " << player.getHealth() << "/" << 100 << std::string(50, ' ') << "\n";
                 std::cout << "Score: " << score << " | Press M for the menu " << std::string(50, ' ') << "\n";
                 std::cout << "Room: " << currentRoom->getID() << std::string(50, ' ') << "\n";
-
-                
             }
 
             Sleep(10);
