@@ -4,9 +4,8 @@
 #include <string>
 #include <vector>
 
-// Function to display ASCII art for cave animation
-void displayCaveAnimation();
-
+//displayCavernAnimation
+void displayCavernAnimation();
 // Function to display ASCII art for game over animation
 void displayGameOverAnimation();
 
