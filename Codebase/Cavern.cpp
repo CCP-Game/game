@@ -964,22 +964,20 @@ bool fightEnemy(Player &player, Enemy *enemy)
     @brief Method updates the enemy position each time it is called.
     @param room [in] Room* - the current room
     @param enemy [in] Enemy* - the current enemy
-    @param newX [in] int - enemies new x-coord
-    @param newy [in] int - enemies new y-coord
+    @param newX [in] int - players x coord
+    @param newy [in] int - palyers y coord
     @return void
 
 */
 void updateEnemyPosition(Room *room, Enemy *enemy, int newX, int newY)
 {
-    const Pos &currentPos = enemy->getPos();
+
     // Clear the old enemy position in the room matrix
-    room->setCharAt(currentPos.getX(), currentPos.getY(), ' ');
+    room->setCharAt(enemy->getX(), enemy->getY(), ' ');
     // Clear the old enemy position on the screen
-    setCursorPosition(currentPos.getX(), currentPos.getY());
+    setCursorPosition(enemy->getX(), enemy->getY());
     std::cout << ' ';
-    room->removeEnemyAt(currentPos.getX(), currentPos.getY());
-    // Update the enemy's position
-    enemy->setX(newX);
+    enemy->setX(newX); 
     enemy->setY(newY);
     // Set the new enemy position in the room matrix
     room->setCharAt(newX, newY, enemy->getSkin());
@@ -1005,20 +1003,37 @@ void moveEnemies(Room *room)
         int playerX = room->getPlayerPos().getX();
         int playerY = room->getPlayerPos().getY();
 
-        // set the direction to move based on the player's position
-        if (playerX < newX)
-            newX--;
-        else if (playerX > newX)
-            newX++;
-        else if (playerY < newY)
-            newY--;
-        else if (playerY > newY)
-            newY++;
+        //Showcases the option available to our enemy
+         std::vector<std::vector<int>> pairs = {
+            {-1,-1}, {0,-1}, {1,-1},
+            {-1,0},{0,0},{1,0},
+            {-1,1},{0,1},{1,1}};
+        //Finding the next best positoon
+        double nextbestposScore = std::numeric_limits<double>::max(); // Use max to find minimum
+        double tempscore = 0.0;
+        int nextbestmove = 0;
+        //Using Pythagorean theorem calculates the distances given a potential move. Chooses the shortest distance.
+        for (int i = 0; i < pairs.size(); i++) {
+            // Calculate the new potential position
+            int potentialX = newX + pairs[i][0];
+            int potentialY = newY + pairs[i][1];
+            // Calculate the distance to the player
+            tempscore = std::sqrt(std::pow(playerX - potentialX, 2) + std::pow(playerY - potentialY, 2));
+            // Update the best move if the current score is better
+            if (tempscore < nextbestposScore) {
+                nextbestposScore = tempscore;
+                nextbestmove = i;
+            }
+        }
+
+        //Update the position based on the best move found
+        newX += pairs[nextbestmove][0];
+        newY += pairs[nextbestmove][1];
 
         // Ensure the move is valid
         if (room->validMove(newX, newY))
         {
-            updateEnemyPosition(room, enemy, newX, newY);
+           updateEnemyPosition(room, enemy, newX, newY);
         }
     }
 }
@@ -1051,7 +1066,7 @@ std::string getMenuScreen(boolean ingame)
     std::string menuScreenStart =
         "\n"
         "       _______  _______           _______  _______  _             \n"
-        "      (  ____ \\(  ___  )|\\     /|(  ____ \\(  _____)( )    /|    \n"
+        "      (  ____ \\(  ___  )|\\     /|(  ____ \\(  _____)( )    /|   \n"
         "      | (    \\/| (   ) || )   ( || (    \\/| (    )||  \\  ( |   \n"
         "      | |      | (___) || |   | || (__    | (____)||   \\ | |     \n"
         "      | |      |  ___  |( (   ) )|  __)   |     __)| (\\ \\) |    \n"
@@ -1235,6 +1250,7 @@ int main()
                             updatePlayerPosition(currentRoom, player, newPos.getX(), newPos.getY());
                             // Full redraw when changing rooms
                             printToConsole(currentRoom->getDisplay());
+                          
                         }
                         else
                         {
@@ -1242,12 +1258,13 @@ int main()
                             currentRoom = tempRoom;
                             // Calculate the new position in the next room
                             Pos newPos = getDoorsOpposite(Pos(newX, newY));
-                            // Update player position to the new room
+                            // Update player position to the new room  
                             updatePlayerPosition(currentRoom, player, newPos.getX(), newPos.getY());
                             // Full redraw when changing rooms
                             printToConsole(currentRoom->getDisplay());
                             player.setPosition(WIDTH / 2, HEIGHT / 2);
                             currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
+                            
                         }
                     }
                     else if (nextChar == 'C')
@@ -1256,6 +1273,7 @@ int main()
                         PlaySound(TEXT("coin.wav"), NULL, SND_FILENAME | SND_ASYNC);
                         currentRoom->setCharAt(newX, newY, ' ');
                         updatePlayerPosition(currentRoom, player, newX, newY);
+                       
                     }
                     else if (touchingEnemy(currentRoom, player))
                     {
@@ -1272,6 +1290,7 @@ int main()
                                 // display the room again
                                 printToConsole(currentRoom->getDisplay());
                                 updatePlayerPosition(currentRoom, player, newX, newY);
+                  
                             }
                             else
                             {
@@ -1285,13 +1304,18 @@ int main()
                     else
                     {
                         updatePlayerPosition(currentRoom, player, newX, newY);
+                        
                     }
 
-                    if (currentTime - lastEnemyMoveTime >= enemyMoveDelay)
-                    {
-                        // moveEnemies(currentRoom);
-                        // lastEnemyMoveTime = currentTime;
+                    //Move enemies.
+                    if ((currentTime - lastEnemyMoveTime) >= enemyMoveDelay){
+                          moveEnemies(currentRoom);
+                          lastEnemyMoveTime=GetTickCount();
                     }
+                    // // {
+                    // //     moveEnemies(currentRoom);
+                    // //     lastEnemyMoveTime = currentTime;
+                    // }
 
                     lastMoveTime = currentTime;
                 }
@@ -1314,6 +1338,10 @@ int main()
                 std::cout << "] " << player.getHealth() << "/" << 100 << std::string(50, ' ') << "\n";
                 std::cout << "Score: " << score << " | Press M for the menu " << std::string(50, ' ') << "\n";
                 std::cout << "Room: " << currentRoom->getID() << std::string(50, ' ') << "\n";
+                std::cout << " PLAYER POS " <<currentRoom->getPlayerPos().getX() << " " <<currentRoom->getPlayerPos().getY();
+                std::cout<<"Number enemies "<<currentRoom->getEnemies().size();
+                
+                
             }
 
             Sleep(10);
