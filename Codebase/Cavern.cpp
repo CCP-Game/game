@@ -1037,7 +1037,7 @@ void moveEnemies(Room *room)
         for(int i =0; i < room->getEnemies().size(); i++){
             if(room->getEnemies()[i]->getX() == newX && room->getEnemies()[i]->getY()==newY)validmove =false;
         }
-        if (room->validMove(newX, newY) ==true && validmove == true)
+        if (room->validMove(newX, newY) ==true && validmove == true && room->getCharAt(newX,newY)!= 'D')
         {
            updateEnemyPosition(room, enemy, newX, newY);
         }
