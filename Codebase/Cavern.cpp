@@ -984,7 +984,9 @@ void updateEnemyPosition(Room *room, Enemy *enemy, int newX, int newY)
     room->setEnemyAt(newX, newY, enemy);
     // Draw the new enemy position on the screen
     setCursorPosition(newX, newY);
+    setFGColour(124);
     std::cout << enemy->getSkin();
+    resetColour();
 }
 /*!
     @brief Method updates all enemies position within the room.
@@ -993,6 +995,7 @@ void updateEnemyPosition(Room *room, Enemy *enemy, int newX, int newY)
 */
 void moveEnemies(Room *room)
 {
+    bool validmove =true;
     for (auto &enemy : room->getEnemies())
     {
         const Pos &currentPos = enemy->getPos();
@@ -1029,12 +1032,16 @@ void moveEnemies(Room *room)
         //Update the position based on the best move found
         newX += pairs[nextbestmove][0];
         newY += pairs[nextbestmove][1];
-
-        // Ensure the move is valid
-        if (room->validMove(newX, newY))
+        
+        // Ensure the move is valid (not hitting another enemy player.)
+        for(int i =0; i < room->getEnemies().size(); i++){
+            if(room->getEnemies()[i]->getX() == newX && room->getEnemies()[i]->getY()==newY)validmove =false;
+        }
+        if (room->validMove(newX, newY) ==true && validmove == true)
         {
            updateEnemyPosition(room, enemy, newX, newY);
         }
+        validmove = true;
     }
 }
 /*!
