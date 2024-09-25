@@ -228,10 +228,14 @@ void Room::updatePlayerPos(int x, int y){
     @return boolean - true or false regardign a valid move or not.
  */
 bool Room::validMove(int newx, int newy){
-    if(this->getCharAt(newx,newy) !='#'){
-        return true;
+    if(this->getCharAt(newx,newy) =='#'){
+        return false;
     }
-    return false;
+    if(this->getCharAt(newx,newy) =='L'){
+        return false;
+    }
+
+    return true;
 }
 /*!
     @brief Checks whether our move is on a door.
@@ -270,15 +274,17 @@ void Room::setEnemy(Pos p, Enemy* e){
     // Set the enemy in the grid
 }
 
+
 /*! 
     @brief Method sets the final room.
-    @param value [in] bool - the value we're setting the room to be.
+    @param value [in] bool - the value of the room.
     @return void
 */
 void Room::setFinal(bool value)
 {
     this->isFinal = value;
 }
+
 
 /*! 
     @brief Method gets the final room.
@@ -463,6 +469,35 @@ void Room::setRoomINFO(const std::string info){
     this->roomINFO = info;
 }
 /*!
+    @brief sets the key for the room.
+    @return void
+*/
+void Room::setKey()
+{
+    this->hasKey = true;
+    // set put a single key in the room ('K')
+    int keyX, keyY;
+    do
+    {
+        keyX = rand() % (WIDTH - 2) + 1;
+        keyY = rand() % (HEIGHT - 2) + 1;
+    } while (getCharAt(keyX, keyY) != ' ');
+    setCharAt(keyX, keyY, 'K');    
+}
+
+
+/*!
+    @brief Method checks if the room has a key.
+    @return bool - true or false whether the room has a key or not.
+*/
+bool Room::getKey()
+{
+    return this->hasKey;
+}
+
+/*!
+
+
     @brief this method contains our unit test for our room class.
     @return void.
 */

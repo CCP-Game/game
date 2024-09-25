@@ -8,7 +8,6 @@
 #define WIDTH 25
 #define HEIGHT 13
 
-
 class Room
 {
 private:
@@ -17,47 +16,51 @@ private:
     char **grid;
     int width;
     int height;
-    //int colour;
+    // int colour;
     std::string roomINFO;
     Pos playerPos;
-    std::vector<Enemy*> enemies;
+    std::vector<Enemy *> enemies;
     std::vector<Pos> doorPos;
-    std::vector<Room*> doorRooms;
-    //std::unordered_map<Pos,Room,Pos::HashFunction> doorMap;
+    std::vector<Room *> doorRooms;
+    // std::unordered_map<Pos,Room,Pos::HashFunction> doorMap;
+
+    bool hasKey;
     bool isFinal;
 
 public:
     Room();
     ~Room();
-    Room(int id,int depth, int width, int height);
-    Room(const Room& other); // Copy constructor
-    Room& operator=(const Room& other); // Assignment operator
+    Room(int id, int depth, int width, int height);
+    Room(const Room &other);            // Copy constructor
+    Room &operator=(const Room &other); // Assignment operator
     void initializeRoom(int NUM_COINS, char type);
     char **getDisplay();
     int getLevel();
     void updatePlayerPos(int x, int y);
-    void setDoor(Pos dPos, Room* room);
+    void setDoor(Pos dPos, Room *room);
     Room *getRoom(int x, int y) const;
     char getCharAt(int x, int y) const;
     void setCharAt(int x, int y, char c);
     int getID();
-    void setEnemy(Pos p, Enemy* e);
+    void setEnemy(Pos p, Enemy *e);
     bool validMove(int newX, int newY);
     bool isDoorMove(int newX, int newY);
-    std::vector<Enemy*> getEnemies();
+    std::vector<Enemy *> getEnemies();
     std::string enemiesToString();
-    Enemy* getEnemyAt(int x, int y);
+    Enemy *getEnemyAt(int x, int y);
     void removeEnemyAt(int x, int y);
-    void setEnemyAt(int x, int y, Enemy* e);
+    void setEnemyAt(int x, int y, Enemy *e);
     void setPlayerPos(Pos p);
     Pos getPlayerPos();
-    //void unittest();
+    // void unittest();
     static void unittest();
     void removePlayer();
     std::string getRoomINFO();
     void setRoomINFO(std::string info);
     void setFinal(bool value);
     bool getFinal();
+    void setKey();
+    bool getKey();
 };
 
 #endif

@@ -24,6 +24,8 @@
     @author Sam Budgen, Ben Darlington, Ben Nicholson & Alex Poore.
     @copyright CCP 2024
 */
+
+bool hasKey = false;
 /*!
     @brief The core methods for this file are the "main" method and initalizeTutorialMap they initalize and run the game.
 */
@@ -592,6 +594,8 @@ Position convertPosToPosition(Pos pos)
 
 Room *initializeProceduralMap();
 
+bool hasPlacedKey = false;
+
 Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerring)
 {
     Room *room = new Room(id, 1, WIDTH, HEIGHT);
@@ -600,15 +604,24 @@ Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerr
     std::string roomInfo;
     if (isMainPath)
     {
-        roomInfo += "Main Path ";
+        roomInfo += "A solid and sturdy room";
     }
     if (isFinalRoom)
     {
-        roomInfo += "Final Room ";
+        if (hasKey){
+            roomInfo = "A staircase to the next level";
+        } else {
+            roomInfo = "You need a key to unlock the staircase!";
+        }
     }
     if (isRedHerring)
     {
-        roomInfo += "Red Herring ";
+        roomInfo += "A cold and dark room";
+        if (!hasPlacedKey)
+        {
+            hasPlacedKey = true;
+            room->setKey();
+        }
     }
     room->setRoomINFO(roomInfo);
 
@@ -620,6 +633,10 @@ Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerr
         // if new room is final room, add boss enemy ('B')
         Enemy *boss = new Enemy('B', 100);
         room->setEnemy(Pos(WIDTH / 2, HEIGHT - 5), boss);
+    }
+    else
+    {
+        room->setFinal(false);
     }
 
     return room;
@@ -761,6 +778,9 @@ void createRedHerrings(std::unordered_map<Position, Room *, PositionHash> &place
 Room *initializeProceduralMap()
 {
     srand(static_cast<unsigned>(time(0))); // Seed random number generator
+
+    hasKey = false;
+    hasPlacedKey = false;
 
     std::unordered_map<Position, Room *, PositionHash> placedRooms;
     int currentRoomId = 1;
@@ -977,7 +997,7 @@ void updateEnemyPosition(Room *room, Enemy *enemy, int newX, int newY)
     // Clear the old enemy position on the screen
     setCursorPosition(enemy->getX(), enemy->getY());
     std::cout << ' ';
-    enemy->setX(newX); 
+    enemy->setX(newX);
     enemy->setY(newY);
     // Set the new enemy position in the room matrix
     room->setCharAt(newX, newY, enemy->getSkin());
@@ -995,7 +1015,7 @@ void updateEnemyPosition(Room *room, Enemy *enemy, int newX, int newY)
 */
 void moveEnemies(Room *room)
 {
-    bool validmove =true;
+    bool validmove = true;
     for (auto &enemy : room->getEnemies())
     {
         const Pos &currentPos = enemy->getPos();
@@ -1006,40 +1026,42 @@ void moveEnemies(Room *room)
         int playerX = room->getPlayerPos().getX();
         int playerY = room->getPlayerPos().getY();
 
-        //Showcases the option available to our enemy
-         std::vector<std::vector<int>> pairs = {
-            {-1,-1}, {0,-1}, {1,-1},
-            {-1,0},{0,0},{1,0},
-            {-1,1},{0,1},{1,1}};
-        //Finding the next best positoon
-        double nextbestposScore = std::numeric_limits<double>::max(); // Use max to find minimum
+        // Showcases the option available to our enemy
+        std::vector<std::vector<int>> pairs = {
+            {-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {0, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
+        // Finding the next best positoon
+        double nextbestposScore = 1e9; // Use a large number to find minimum
         double tempscore = 0.0;
         int nextbestmove = 0;
-        //Using Pythagorean theorem calculates the distances given a potential move. Chooses the shortest distance.
-        for (int i = 0; i < pairs.size(); i++) {
+        // Using Pythagorean theorem calculates the distances given a potential move. Chooses the shortest distance.
+        for (int i = 0; i < pairs.size(); i++)
+        {
             // Calculate the new potential position
             int potentialX = newX + pairs[i][0];
             int potentialY = newY + pairs[i][1];
             // Calculate the distance to the player
             tempscore = std::sqrt(std::pow(playerX - potentialX, 2) + std::pow(playerY - potentialY, 2));
             // Update the best move if the current score is better
-            if (tempscore < nextbestposScore) {
+            if (tempscore < nextbestposScore)
+            {
                 nextbestposScore = tempscore;
                 nextbestmove = i;
             }
         }
 
-        //Update the position based on the best move found
+        // Update the position based on the best move found
         newX += pairs[nextbestmove][0];
         newY += pairs[nextbestmove][1];
-        
+
         // Ensure the move is valid (not hitting another enemy player.)
-        for(int i =0; i < room->getEnemies().size(); i++){
-            if(room->getEnemies()[i]->getX() == newX && room->getEnemies()[i]->getY()==newY)validmove =false;
-        }
-        if (room->validMove(newX, newY) ==true && validmove == true && room->getCharAt(newX,newY)!= 'D')
+        for (int i = 0; i < room->getEnemies().size(); i++)
         {
-           updateEnemyPosition(room, enemy, newX, newY);
+            if (room->getEnemies()[i]->getX() == newX && room->getEnemies()[i]->getY() == newY)
+                validmove = false;
+        }
+        if (room->validMove(newX, newY) == true && validmove == true && room->getCharAt(newX, newY) != 'D')
+        {
+            updateEnemyPosition(room, enemy, newX, newY);
         }
         validmove = true;
     }
@@ -1112,8 +1134,8 @@ void playFootstep()
 int main()
 {
     try
-    {   
-        
+    {
+
         int score = 0;
         bool gameRunning = true;
 
@@ -1126,16 +1148,18 @@ int main()
         int newY = 0;
         srand(static_cast<unsigned>(time(0)));
         Room *currentRoom;
-        boolean resumeGame =false;
-        system("cls");  
-        
+        boolean resumeGame = false;
+        system("cls");
+
         displayCavernAnimation();
-        std::cout << getMenuScreen(false)<<std::endl;
-        //Start menu logic!
-        while(resumeGame == false){
-            if(isKeyPressed('S')){
-                  currentRoom = initializeProceduralMap();
-                  resumeGame = true;
+        std::cout << getMenuScreen(false) << std::endl;
+        // Start menu logic!
+        while (resumeGame == false)
+        {
+            if (isKeyPressed('S'))
+            {
+                currentRoom = initializeProceduralMap();
+                resumeGame = true;
             }
             if (isKeyPressed('T'))
             {
@@ -1213,6 +1237,12 @@ int main()
                     }
                     resumeGame = false;
                     printToConsole(currentRoom->getDisplay());
+                    // if final room and hasKey is false, set the center door to be locked 'L'
+                    if (currentRoom->getFinal() && !hasKey)
+                    {
+                        Pos doorPos = Pos(WIDTH / 2, HEIGHT / 2);
+                        currentRoom->setCharAt(doorPos.getX(), doorPos.getY(), 'L');
+                    }
                 }
                 if (isKeyPressed('W'))
                 {
@@ -1257,7 +1287,11 @@ int main()
                             updatePlayerPosition(currentRoom, player, newPos.getX(), newPos.getY());
                             // Full redraw when changing rooms
                             printToConsole(currentRoom->getDisplay());
-                          
+                            if (currentRoom->getFinal() && !hasKey)
+                            {
+                                Pos doorPos = Pos(WIDTH / 2, HEIGHT / 2);
+                                currentRoom->setCharAt(doorPos.getX(), doorPos.getY(), 'L');
+                            }
                         }
                         else
                         {
@@ -1265,13 +1299,12 @@ int main()
                             currentRoom = tempRoom;
                             // Calculate the new position in the next room
                             Pos newPos = getDoorsOpposite(Pos(newX, newY));
-                            // Update player position to the new room  
+                            // Update player position to the new room
                             updatePlayerPosition(currentRoom, player, newPos.getX(), newPos.getY());
                             // Full redraw when changing rooms
                             printToConsole(currentRoom->getDisplay());
                             player.setPosition(WIDTH / 2, HEIGHT / 2);
                             currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
-                            
                         }
                     }
                     else if (nextChar == 'C')
@@ -1280,7 +1313,13 @@ int main()
                         PlaySound(TEXT("coin.wav"), NULL, SND_FILENAME | SND_ASYNC);
                         currentRoom->setCharAt(newX, newY, ' ');
                         updatePlayerPosition(currentRoom, player, newX, newY);
-                       
+                    }
+                    else if (nextChar == 'K')
+                    {
+                        PlaySound(TEXT("key.wav"), NULL, SND_FILENAME | SND_ASYNC);
+                        currentRoom->setCharAt(newX, newY, ' ');
+                        hasKey = true;
+                        updatePlayerPosition(currentRoom, player, newX, newY);
                     }
                     else if (touchingEnemy(currentRoom, player))
                     {
@@ -1297,7 +1336,6 @@ int main()
                                 // display the room again
                                 printToConsole(currentRoom->getDisplay());
                                 updatePlayerPosition(currentRoom, player, newX, newY);
-                  
                             }
                             else
                             {
@@ -1311,13 +1349,13 @@ int main()
                     else
                     {
                         updatePlayerPosition(currentRoom, player, newX, newY);
-                        
                     }
 
-                    //Move enemies.
-                    if ((currentTime - lastEnemyMoveTime) >= enemyMoveDelay){
-                          moveEnemies(currentRoom);
-                          lastEnemyMoveTime=GetTickCount();
+                    // Move enemies.
+                    if ((currentTime - lastEnemyMoveTime) >= enemyMoveDelay)
+                    {
+                        moveEnemies(currentRoom);
+                        lastEnemyMoveTime = GetTickCount();
                     }
                     // // {
                     // //     moveEnemies(currentRoom);
@@ -1345,10 +1383,7 @@ int main()
                 std::cout << "] " << player.getHealth() << "/" << 100 << std::string(50, ' ') << "\n";
                 std::cout << "Score: " << score << " | Press M for the menu " << std::string(50, ' ') << "\n";
                 std::cout << "Room: " << currentRoom->getID() << std::string(50, ' ') << "\n";
-                std::cout << " PLAYER POS " <<currentRoom->getPlayerPos().getX() << " " <<currentRoom->getPlayerPos().getY();
-                std::cout<<"Number enemies "<<currentRoom->getEnemies().size();
-                
-                
+                std::cout << "Has Key: " << (hasKey ? "Yes" : "No") << std::string(50, ' ') << "\n";
             }
 
             Sleep(10);
