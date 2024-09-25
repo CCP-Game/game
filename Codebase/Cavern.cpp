@@ -602,21 +602,49 @@ Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerr
     room->initializeRoom(5, 'b'); // Always create big rooms
     // Set room information with id, isMainPath, isFinalRoom, and isRedHerring
     std::string roomInfo;
+    // list of good adjectives
+    std::string adjectives[] = {"Studry", "Solid", "Spacious", "Warm", "Cozy", "Glowing", "Clean", "Tidy", "Neat"};
+    // list of bad adjectives
+    std::string badAdjectives[] = {"Cold", "Dark", "Damp", "Smelly", "Dirty", "Dusty", "Moldy", "Gloomy", "Creepy"};
+
     if (isMainPath)
     {
-        roomInfo += "A solid and sturdy room";
+        std::string first = adjectives[rand() % 9];
+        std::string second = adjectives[rand() % 9];
+        while (first == second)
+        {
+            second = adjectives[rand() % 9];
+        }
+        roomInfo += "A ";
+        roomInfo += first;
+        roomInfo += " and ";
+        roomInfo += second;
+        roomInfo += " room";
     }
     if (isFinalRoom)
     {
-        if (hasKey){
+        if (hasKey)
+        {
             roomInfo = "A staircase to the next level";
-        } else {
+        }
+        else
+        {
             roomInfo = "You need a key to unlock the staircase!";
         }
     }
     if (isRedHerring)
     {
-        roomInfo += "A cold and dark room";
+        std::string first = badAdjectives[rand() % 9];
+        std::string second = badAdjectives[rand() % 9];
+        while (first == second)
+        {
+            second = badAdjectives[rand() % 9];
+        }
+        roomInfo += "A ";
+        roomInfo += first;
+        roomInfo += " and ";
+        roomInfo += second;
+        roomInfo += " room";
         if (!hasPlacedKey)
         {
             hasPlacedKey = true;
