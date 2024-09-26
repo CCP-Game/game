@@ -603,17 +603,17 @@ Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerr
     // Set room information with id, isMainPath, isFinalRoom, and isRedHerring
     std::string roomInfo;
     // list of good adjectives
-    std::string adjectives[] = {"Studry", "Solid", "Spacious", "Warm", "Cozy", "Glowing", "Clean", "Tidy", "Neat"};
+    std::string adjectives[] = {"Studry", "Solid", "Spacious", "Warm", "Cozy", "Glowing", "Clean", "Tidy", "Neat", "Large"};
     // list of bad adjectives
-    std::string badAdjectives[] = {"Cold", "Dark", "Damp", "Smelly", "Dirty", "Dusty", "Moldy", "Gloomy", "Creepy"};
+    std::string badAdjectives[] = {"Cold", "Dark", "Damp", "Smelly", "Dirty", "Dusty", "Moldy", "Gloomy", "Creepy", "Small"};
 
     if (isMainPath)
     {
-        std::string first = adjectives[rand() % 9];
-        std::string second = adjectives[rand() % 9];
+        std::string first = adjectives[rand() % 10];
+        std::string second = adjectives[rand() % 10];
         while (first == second)
         {
-            second = adjectives[rand() % 9];
+            second = adjectives[rand() % 10];
         }
         roomInfo += "A ";
         roomInfo += first;
@@ -634,11 +634,11 @@ Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerr
     }
     if (isRedHerring)
     {
-        std::string first = badAdjectives[rand() % 9];
-        std::string second = badAdjectives[rand() % 9];
+        std::string first = badAdjectives[rand() % 10];
+        std::string second = badAdjectives[rand() % 10];
         while (first == second)
         {
-            second = badAdjectives[rand() % 9];
+            second = badAdjectives[rand() % 10];
         }
         roomInfo += "A ";
         roomInfo += first;
