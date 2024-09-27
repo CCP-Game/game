@@ -414,6 +414,88 @@ bool generateComplexEquation()
                 printNums(equation);
             }
             else if (order == 3)
+            { 
+                int num2 = improvedRandom(2, 10); 
+                int num1 = num2 * improvedRandom(2, 10);
+                answer = num1 / num2;
+                
+
+                std::string equation ;
+
+                if(i-1 == expressions){
+                    equation = std::to_string(num1) + "/" + std::to_string(num2) + "=";
+                }else{
+
+                    equation = "(" + std::to_string(num1) + "/" + std::to_string(num2) + ")";
+                }
+                
+
+                printNums(equation);
+            }
+        }else{
+            int mathType = rand() % 4 + 1;
+
+            if (order == 0)
+            {
+                int num1 = improvedRandom(2, 100); 
+                int num2 = improvedRandom(2, 100);
+                int currentAnswer = num1 + num2;
+                std::string equation ;
+                if(mathType = 0){
+                    answer += currentAnswer;
+                    equation = " + (" + std::to_string(num1) + "+" + std::to_string(num2) + ") ="
+                }else if(mathType = 1){
+                    answer -= currentAnswer;
+                    equation = " - (" + std::to_string(num1) + "+" + std::to_string(num2) + ") ="
+
+                }else if(mathType = 2){
+                    answer -= currentAnswer;
+                    equation = " * (" + std::to_string(num1) + "+" + std::to_string(num2) + ") ="
+
+                }else{
+                    answer -= currentAnswer;
+                    equation = " / (" + std::to_string(num1) + "+" + std::to_string(num2) + ") ="
+
+                }
+
+                printNums(equation);
+            }
+
+            else if (order == 1)
+            {
+                int num1 = improvedRandom(2, 100); 
+                int num2 = improvedRandom(2, num1);
+                answer = num1 - num2;
+                std::string equation ;
+
+                if(i-1 == expressions){
+                    equation = std::to_string(num1) + "-" + std::to_string(num2) + "=";
+                }else{
+
+                    equation = "(" + std::to_string(num1) + "-" + std::to_string(num2) + ")";
+                }
+                
+
+                printNums(equation);
+            }
+            else if (order == 2)
+            {
+                int num1 = improvedRandom(2, 10); 
+                int num2 = improvedRandom(2, 15);
+                answer = num1 * num2;
+                std::string equation ;
+
+                if(i-1 == expressions){
+                    equation = std::to_string(num1) + "*" + std::to_string(num2) + "=";
+                }else{
+
+                    equation = "(" + std::to_string(num1) + "*" + std::to_string(num2) + ")";
+                }
+                
+
+                printNums(equation);
+            }
+            else if (order == 3)
             {
                 int num2 = improvedRandom(2, 10); 
                 int num1 = num2 * improvedRandom(2, 10);
@@ -430,9 +512,8 @@ bool generateComplexEquation()
 
                 printNums(equation);
             }
-        }else{
 
-            
+
         }
 
         
