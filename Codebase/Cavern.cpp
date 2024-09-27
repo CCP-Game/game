@@ -943,6 +943,60 @@ bool fightEnemy(Player &player, Enemy *enemy)
     return outcome;
 }
 /*!
+    @brief Method updates a coin position.
+    @param oldX - old x pos
+    @param oldY - old y pos
+    @param pX - player posx
+    @param pY - player pos y
+    @param *room -> current room 
+    @return void
+*/
+void updateCoinPosition(Room *room, int oldX, int oldY, int pX,int pY){
+    int newX = 0;
+    int newY = 0;
+    std::vector<std::vector<int>> pairs = {
+            {-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {0, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
+        // Finding the next best positoon
+    double nextbestposScore = 1e9; // Use a large number to find minimum
+    double tempscore = 0.0;
+    int nextbestmove = 0;
+    // Using Pythagorean theorem calculates the distances given a potential move. Chooses the shortest distance.
+    for (int i = 0; i < pairs.size(); i++)
+    {
+        // Calculate the new potential position
+        int potentialX = oldX + pairs[i][0];
+        int potentialY = oldY + pairs[i][1];
+        // Calculate the distance to the player
+        tempscore = std::sqrt(std::pow(pX - potentialX, 2) + std::pow(pY - potentialY, 2));
+        // Update the best move if the current score is better
+        if (tempscore < nextbestposScore)
+        {
+            nextbestposScore = tempscore;
+            nextbestmove = i;
+        }
+    }
+    newX += pairs[nextbestmove][0] + oldX;
+    newY += pairs[nextbestmove][1] + oldY;
+    boolean validmove = true;
+    for(int i = 0; i < room->getEnemies().size(); i++)
+        {
+            if (room->getEnemies()[i]->getX() == newX && room->getEnemies()[i]->getY() == newY)
+                validmove = false;
+        }
+    if (room->validMove(newX, newY) == true && room->getCharAt(newX, newY) != 'D' && room->getCharAt(newX, newY) !='C' && validmove ==true)
+    {
+        setCursorPosition(oldX,oldY);
+        std::cout << ' '<<std::endl;
+        room->setCharAt(oldX,oldY, ' ');
+        room->setCharAt(newX,newY,'C');
+        setCursorPosition(newX,newY);
+        std::cout << ' ';
+        setFGColour(226);
+        std::cout << 'C';
+        resetColour();
+    }
+}
+/*!
     @brief Method updates the enemy position each time it is called.
     @param room [in] Room* - the current room
     @param enemy [in] Enemy* - the current enemy
@@ -1315,8 +1369,15 @@ int main()
                     if ((currentTime - lastEnemyMoveTime) >= enemyMoveDelay)
                     {
                         moveEnemies(currentRoom);
-                        lastEnemyMoveTime = GetTickCount();
+                       
+                        for(int x = -3; x < 4; x++){
+                            for(int y = -3; y < 4; y++ ){
+                                if(currentRoom->getCharAt(currentRoom->getPlayerPos().getX() + x,currentRoom->getPlayerPos().getY() + y)=='C')updateCoinPosition(currentRoom,currentRoom->getPlayerPos().getX() + x,currentRoom->getPlayerPos().getY() + y,currentRoom->getPlayerPos().getX(),currentRoom->getPlayerPos().getY());
+                            }
+                        }
+                     lastEnemyMoveTime = GetTickCount();
                     }
+                    
                     // // {
                     // //     moveEnemies(currentRoom);
                     // //     lastEnemyMoveTime = currentTime;
