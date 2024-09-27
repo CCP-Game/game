@@ -20,6 +20,7 @@ bool generateEquation();
 bool generateSubtractionEquation();
 bool generateMultiplicationEquation();
 bool generateDivisionEquation();
+bool generateComplexEquation();
 
 void numsunittest();
 

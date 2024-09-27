@@ -334,23 +334,33 @@ bool battleScreen(Enemy &enemy, Player &Player)
         }
         else if (encounterType == 5)
         {
-            int chooser = rand() % 4 + 1;
+            //int firstChooser = rand() % 2 + 1;
+            int firstChooser = 2;
 
-            if (chooser == 1)
+            if (firstChooser == 1)
             {
-                outcome = generateEquation();
+                generateComplexEquation();
             }
-            else if (chooser == 2)
+            else
             {
-                outcome = generateSubtractionEquation();
-            }
-            else if (chooser == 3)
-            {
-                outcome = generateDivisionEquation();
-            }
-            else if (chooser == 4)
-            {
-                outcome = generateMultiplicationEquation();
+                int chooser = rand() % 4 + 1;
+
+                if (chooser == 1)
+                {
+                    outcome = generateEquation();
+                }
+                else if (chooser == 2)
+                {
+                    outcome = generateSubtractionEquation();
+                }
+                else if (chooser == 3)
+                {
+                    outcome = generateDivisionEquation();
+                }
+                else if (chooser == 4)
+                {
+                    outcome = generateMultiplicationEquation();
+                }
             }
         }
 
