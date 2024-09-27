@@ -2,14 +2,13 @@
 #include <string>
 #include <vector>
 #include <random>
-#include <sstream> 
-#include <stack> 
+#include <sstream>
+#include <stack>
 #include "nums.h"
 #include <cassert>
 #include <iostream>
 #include <functional>
 #include <sstream>
-
 
 /*!
  * @brief Array of ASCII art representations for digits 0-9 and some symbols.
@@ -130,25 +129,28 @@ const char *ASCII_NUMBERS[] = {
  *
  * @return The integer input by the user.
  */
-int getUserInput() 
+int getUserInput()
 {
     int userAnswer;
-    while (true) {
+    while (true)
+    {
         std::cout << "Enter your answer: ";
         std::cin >> userAnswer;
 
         // Check if the input was valid
-        if (std::cin.fail()) {
-            std::cin.clear();  // Clear the error flag
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Discard invalid input
+        if (std::cin.fail())
+        {
+            std::cin.clear();                                                   // Clear the error flag
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
             std::cout << "Invalid input. Please enter an integer.\n";
-        } else {
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Discard any remaining input
-            return userAnswer;  // Valid input, return the answer
+        }
+        else
+        {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard any remaining input
+            return userAnswer;                                                  // Valid input, return the answer
         }
     }
 }
-
 
 /*!
  * @brief Prints the given string as ASCII art.
@@ -260,8 +262,8 @@ int improvedRandom(int min, int max)
  */
 bool generateEquation()
 {
-    int num1 = improvedRandom(1, 100); // Generate first number
-    int num2 = improvedRandom(1, 100); // Generate second number
+    int num1 = improvedRandom(2, 100); // Generate first number
+    int num2 = improvedRandom(2, 100); // Generate second number
     int result = num1 + num2;
 
     // Print the equation
@@ -282,8 +284,8 @@ bool generateEquation()
  */
 bool generateSubtractionEquation()
 {
-    int num1 = improvedRandom(1, 100);  // Generate first number
-    int num2 = improvedRandom(1, num1); // Generate second number
+    int num1 = improvedRandom(2, 100);  // Generate first number
+    int num2 = improvedRandom(2, num1); // Generate second number
     int result = num1 - num2;
 
     // Print the equation
@@ -304,8 +306,8 @@ bool generateSubtractionEquation()
  */
 bool generateMultiplicationEquation()
 {
-    int num1 = improvedRandom(1, 10); // Generate first number
-    int num2 = improvedRandom(1, 15); // Generate second number
+    int num1 = improvedRandom(2, 10); // Generate first number
+    int num2 = improvedRandom(2, 15); // Generate second number
     int result = num1 * num2;
 
     // Print the equation
@@ -326,8 +328,8 @@ bool generateMultiplicationEquation()
  */
 bool generateDivisionEquation()
 {
-    int num2 = improvedRandom(1, 10);        // Generate divisor
-    int num1 = num2 * improvedRandom(1, 10); // Generate dividend as a multiple of num2
+    int num2 = improvedRandom(2, 10);        // Generate divisor
+    int num1 = num2 * improvedRandom(2, 10); // Generate dividend as a multiple of num2
     int result = num1 / num2;
 
     // Print the equation
@@ -346,13 +348,96 @@ bool generateDivisionEquation()
  *
  * @return Returns true if the user's answer is correct, false otherwise.
  */
-// bool generateComplexEquation()
-// {
-//     int expressions = 
-//     int order = rand() % 4 + 1;
+bool generateComplexEquation()
+{
+    int expressions = 2;
+    int answer = 0;
+    
+    for (int i = 0; i < expressions; i++)
+    {
 
-//     if()
-// }
+        int order = rand() % 4 + 1;
+
+        if (i == 0)
+        {
+            if (order == 0)
+            {
+                int num1 = improvedRandom(2, 100); 
+                int num2 = improvedRandom(2, 100);
+                answer = num1 + num2;
+
+                std::string equation ;
+
+                if(i-1 == expressions){
+                    equation = std::to_string(num1) + "+" + std::to_string(num2) + "=";
+                }else{
+
+                    equation = "(" + std::to_string(num1) + "+" + std::to_string(num2) + ")";
+                }
+                
+
+                printNums(equation);
+            }
+
+            else if (order == 1)
+            {
+                int num1 = improvedRandom(2, 100); 
+                int num2 = improvedRandom(2, num1);
+                answer = num1 - num2;
+                std::string equation ;
+
+                if(i-1 == expressions){
+                    equation = std::to_string(num1) + "-" + std::to_string(num2) + "=";
+                }else{
+
+                    equation = "(" + std::to_string(num1) + "-" + std::to_string(num2) + ")";
+                }
+                
+
+                printNums(equation);
+            }
+            else if (order == 2)
+            {
+                int num1 = improvedRandom(2, 10); 
+                int num2 = improvedRandom(2, 15);
+                answer = num1 * num2;
+                std::string equation ;
+
+                if(i-1 == expressions){
+                    equation = std::to_string(num1) + "*" + std::to_string(num2) + "=";
+                }else{
+
+                    equation = "(" + std::to_string(num1) + "*" + std::to_string(num2) + ")";
+                }
+                
+
+                printNums(equation);
+            }
+            else if (order == 3)
+            {
+                int num2 = improvedRandom(2, 10); 
+                int num1 = num2 * improvedRandom(2, 10);
+                answer = num1 / num2;
+                std::string equation ;
+
+                if(i-1 == expressions){
+                    equation = std::to_string(num1) + "/" + std::to_string(num2) + "=";
+                }else{
+
+                    equation = "(" + std::to_string(num1) + "/" + std::to_string(num2) + ")";
+                }
+                
+
+                printNums(equation);
+            }
+        }else{
+
+            
+        }
+
+        
+    }
+}
 
 /*!
     @brief runs unittest for the other methods.
@@ -365,35 +450,35 @@ void numsunittest()
     assert(improvedRandom(4, 4) == 4);
 
     std::istringstream mockInput("5\n");
-    std::streambuf* originalCinBuffer = std::cin.rdbuf();
+    std::streambuf *originalCinBuffer = std::cin.rdbuf();
     std::cin.rdbuf(mockInput.rdbuf());
     int res = getUserInput();
     assert(res == 5);
     assert(res != 3);
 
     std::istringstream mockInput1("201\n");
-    std::streambuf* CinBuffer1 = std::cin.rdbuf();
+    std::streambuf *CinBuffer1 = std::cin.rdbuf();
     std::cin.rdbuf(mockInput1.rdbuf());
     bool resPlus = generateEquation();
     assert(resPlus == false);
 
     std::istringstream mockInput2("101\n");
-    std::streambuf* CinBuffer2 = std::cin.rdbuf();
+    std::streambuf *CinBuffer2 = std::cin.rdbuf();
     std::cin.rdbuf(mockInput1.rdbuf());
     bool resMin = generateMultiplicationEquation();
     assert(resMin == false);
 
     std::istringstream mockInput3("151\n");
-    std::streambuf* CinBuffer3 = std::cin.rdbuf();
+    std::streambuf *CinBuffer3 = std::cin.rdbuf();
     std::cin.rdbuf(mockInput1.rdbuf());
     bool resMult = generateMultiplicationEquation();
     assert(resMult == false);
-    
+
     std::istringstream mockInput4("200\n");
-    std::streambuf* CinBuffer4 = std::cin.rdbuf();
+    std::streambuf *CinBuffer4 = std::cin.rdbuf();
     std::cin.rdbuf(mockInput4.rdbuf());
     bool resDiv = generateDivisionEquation();
     assert(resDiv == false);
-    
+
     std::cout << "All Player tests passed!" << std::endl;
 }
