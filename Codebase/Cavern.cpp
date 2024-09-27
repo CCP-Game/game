@@ -69,7 +69,7 @@ bool isKeyPressed(int key)
 */
 void clearScreen()
 {
-    std::system("cls"); // On Unix/Linux/OSX use "clear" instead of "cls"
+    std::cout << "\033cls";       // On Unix/Linux/OSX use "clear" instead of "cls"
 }
 /*!
     @brief Method acts as a delay of given miliseconds.
@@ -830,7 +830,7 @@ Room *initializeProceduralMap()
 
 void printToConsole(char **display)
 {
-    system("cls");           // Clear the console
+    std::cout << "\033cls";         // Clear the console
     setCursorPosition(0, 0); // Sets the cursor position..
     for (int y = 0; y < HEIGHT; y++)
     {
@@ -915,81 +915,6 @@ int generateMathProblem()
         return 0;
     }
 }
-
-// bool fightEnemy(Player &player, Enemy *enemy)
-// {
-//     system("cls");
-//     clearInputBuffer();
-//     std::cout << "You are in combat with an enemy!\n";
-
-//     int enemyHealth = enemy->getHealth();
-
-//     while (enemyHealth > 0 && player.getHealth() > 0)
-//     {
-//         std::cout << "Player Health: " << player.getHealth() << " | Enemy Health: " << enemyHealth << "\n";
-//         std::cout << "Enter your answer or type 'run' to attempt escape: ";
-//         int correctAnswer = generateMathProblem();
-//         std::string userInput;
-//         std::cin >> userInput;
-
-//         if (userInput == "run")
-//         {
-//             if (rand() % 2 == 0) // 50% chance to escape
-//             {
-//                 std::cout << "You successfully escaped!\n";
-//                 Sleep(2000);
-//                 return true;
-//             }
-//             else
-//             {
-//                 std::cout << "Escape failed! The enemy attacks you for 3 damage.\n";
-//                 player.setHealth(player.getHealth() - 3);
-//             }
-//         }
-//         else
-//         {
-//             int userAnswer;
-//             try
-//             {
-//                 userAnswer = std::stoi(userInput);
-//             }
-//             catch (const std::invalid_argument &)
-//             {
-//                 std::cout << "Invalid input. The enemy attacks you for 3 damage.\n";
-//                 player.setHealth(player.getHealth() - 3);
-//                 Sleep(2000);
-//                 continue;
-//             }
-
-//             if (userAnswer == correctAnswer)
-//             {
-//                 std::cout << "Correct! You dealt 10 damage to the enemy!\n";
-//                 enemyHealth -= 10;
-//             }
-//             else
-//             {
-//                 std::cout << "Incorrect! You have taken 5 damage!\n";
-//                 player.setHealth(player.getHealth() - 5);
-//             }
-//         }
-
-//         Sleep(1500);   // Pause for 2 seconds between rounds
-//         system("cls"); // Clear the screen for the next round
-//     }
-
-//     if (player.getHealth() <= 0)
-//     {
-//         std::cout << "You have been defeated!\n";
-//         Sleep(2000);
-//         return false;
-//     }
-//     else
-//     {
-//         std::cout << "You have defeated the enemy!\n";
-//         Sleep(2000);
-//         return true;
-//     }
-// }
 /*!
     @brief Starts the fight enemy seqeunce.
     @param player [in] Player& - the current player.
@@ -1000,7 +925,7 @@ int generateMathProblem()
 bool fightEnemy(Player &player, Enemy *enemy)
 {
 
-    system("cls");
+    std::cout << "\033cls";      
 
     clearInputBuffer();
 
@@ -1163,10 +1088,8 @@ int main()
 {
     try
     {
-
         int score = 0;
         bool gameRunning = true;
-
         DWORD lastMoveTime = GetTickCount();
         DWORD lastEnemyMoveTime = GetTickCount();
         DWORD currentTime = GetTickCount();
@@ -1176,8 +1099,8 @@ int main()
         int newY = 0;
         srand(static_cast<unsigned>(time(0)));
         Room *currentRoom;
-        boolean resumeGame = false;
-        system("cls");
+        bool resumeGame = false;
+        clearScreen();
 
         displayCavernAnimation();
         std::cout << getMenuScreen(false) << std::endl;
@@ -1196,14 +1119,14 @@ int main()
             }
             if (isKeyPressed('Q'))
             {
-                system("cls");
+                std::cout << "\033cls";      
                 return (0);
             }
         }
         Player player('P', 100);
         player.setPosition(WIDTH / 2, HEIGHT / 2);
         currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
-
+    //he
         // Initial full screen draw
         printToConsole(currentRoom->getDisplay());
         hideCursor();
@@ -1219,7 +1142,7 @@ int main()
                 // Below, logic for when the menu button is pressed.
                 if (isKeyPressed('M'))
                 {
-                    system("cls");
+                    std::cout << "\033cls";      
                     std::cout << getMenuScreen(true) << std::endl;
                     // Loop for whilst we're in the menu.
                     while (resumeGame == false)
@@ -1233,7 +1156,7 @@ int main()
                             }
                             if (isKeyPressed('Q'))
                             {
-                                system("cls");
+                                std::cout << "\033cls";      
                                 return (0);
                             }
                             if (isKeyPressed('S'))
@@ -1370,7 +1293,7 @@ int main()
                                 PlaySound(TEXT("encounter.wav"), NULL, SND_FILENAME | SND_ASYNC);
                                 gameRunning = false;
                                 displayGameOverAnimation();
-                                system("cls");
+                                std::cout << "\033cls";      
                             }
                         }
                     }
