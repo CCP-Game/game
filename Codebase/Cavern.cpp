@@ -339,7 +339,7 @@ bool battleScreen(Enemy &enemy, Player &Player)
 
             if (firstChooser == 1)
             {
-                generateComplexEquation();
+                //generateComplexEquation();
             }
             else
             {
