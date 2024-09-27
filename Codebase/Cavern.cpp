@@ -69,7 +69,7 @@ bool isKeyPressed(int key)
 */
 void clearScreen()
 {
-    std::cout << "\033cls";       // On Unix/Linux/OSX use "clear" instead of "cls"
+    std::cout << "\033cls"<< std::endl;       // On Unix/Linux/OSX use "clear" instead of "cls"
 }
 /*!
     @brief Method acts as a delay of given miliseconds.
@@ -312,7 +312,6 @@ bool battleScreen(Enemy &enemy, Player &Player)
     {
 
         displayScene(12, 50, enemyHead);
-        std::cout << " here";
         displayHealthBars(playerHealth, playerStartHealth, enemyHealth, enemyStartHealth, enemyName);
 
         if (encounterType == 1)
