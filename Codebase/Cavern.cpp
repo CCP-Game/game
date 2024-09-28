@@ -1033,7 +1033,7 @@ void moveEnemies(Room *room)
  * @brief Simply returns the menu screen to be displayed. In this case a string.
  * @return - Returns the cavern homescreen logo.
  */
-std::string getMenuScreen(boolean ingame)
+std::string getMenuScreen(bool ingame)
 {
     std::string menuScreenInGame =
         "\n"

@@ -191,9 +191,50 @@ void Room::initializeRoom(int NUM_COINS, char type)
         maxX = startX + hallwayWidth - 2;
         minY = 1;
         maxY = HEIGHT - 2;
-    }
-    else
-    {
+    } else if(type == 'x'){
+        int passageWidth = 5;
+        int centerX = WIDTH / 2;
+        int centerY = HEIGHT / 2;
+        
+        int offsetX = (WIDTH - passageWidth)/ 2;
+        int offsetY = (HEIGHT - passageWidth)/ 2;
+
+        for (int i = 0; i < WIDTH; i++){
+            if (i < offsetX || i >= offsetX + passageWidth){
+                setCharAt(i, offsetY - 1, '#');
+                setCharAt(i, offsetY + passageWidth, '#');
+            }else{
+                setCharAt(i, 0, '#');
+                setCharAt(i, HEIGHT - 1, '#');
+            }
+        }
+
+        for (int y = 0; y < HEIGHT; y++){
+            if (y < offsetY || y >= offsetY + passageWidth){
+                setCharAt(offsetX - 1, y, '#');
+                setCharAt(offsetX + passageWidth, y, '#');
+            }else{
+                setCharAt(0, y, '#');
+                setCharAt(WIDTH - 1, y, '#');
+            }
+        }
+
+        minX = 1;
+        maxX = WIDTH - 2;
+        minY = 1;
+        maxY = HEIGHT - 2;
+        //Handles own scatter coins.
+        for (int i = 0; i < NUM_COINS; i++){
+            int coinX, coinY;
+            do
+            {
+                coinX = rand() % (maxX - minX + 1) + minX;
+                coinY = rand() % (maxY - minY + 1) + minY;
+            } while (getCharAt(coinX, coinY) != ' ' || coinX <= offsetX && coinY <= offsetY || coinX > offsetX + passageWidth && coinY <= offsetY || coinX <= offsetX && coinY > offsetY + passageWidth ||coinX > offsetX + passageWidth && coinY > offsetY + passageWidth);
+                setCharAt(coinX, coinY, 'C');
+        }
+        return;  
+    }else{
         // Handle invalid room type if necessary
         std::cerr << "Invalid room type!" << std::endl;
         return;
