@@ -683,16 +683,29 @@ Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerr
 // Function to scatter enemies randomly in the room
 void scatterEnemies(Room *room)
 {
+    
+
     Enemy *enemies[] = {
         new Enemy('+', 20), new Enemy('+', 30), new Enemy('+', 50),
         new Enemy('*', 20), new Enemy('*', 30), new Enemy('*', 50),
         new Enemy('/', 20), new Enemy('/', 30), new Enemy('/', 50)};
     int numEnemies = rand() % 3 + 1; // 1 to 3 enemies
-    for (int i = 0; i < numEnemies; i++)
-    {
-        int xPos = rand() % (WIDTH - 2) + 1;  // Generate random x position within the inner ring
-        int yPos = rand() % (HEIGHT - 2) + 1; // Generate random y position within the inner ring
+
+//New for plus room
+    if (room->getType() == 'x'){
+        for (int i = 0; i < numEnemies; i++)
+        {
+        int xPos = rand() % (WIDTH - 14) + 7;  // Generate random x position within the inner ring
+        int yPos = rand() % (HEIGHT - 10) + 5; // Generate random y position within the inner ring
         room->setEnemy(Pos(xPos, yPos), enemies[rand() % 9]);
+        }
+    }else{
+        for (int i = 0; i < numEnemies; i++)
+        {
+            int xPos = rand() % (WIDTH - 2) + 1;  // Generate random x position within the inner ring
+            int yPos = rand() % (HEIGHT - 2) + 1; // Generate random y position within the inner ring
+            room->setEnemy(Pos(xPos, yPos), enemies[rand() % 9]);
+        }
     }
 }
 

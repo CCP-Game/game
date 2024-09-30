@@ -113,6 +113,7 @@ Room& Room::operator=(const Room& other) {
  */
 void Room::initializeRoom(int NUM_COINS, char type)
 {
+    this->type = type;
     // Clear the room first
     for (int y = 0; y < HEIGHT; y++)
     {
@@ -336,6 +337,14 @@ bool Room::getFinal()
     return this->isFinal;
 }
 
+/*! 
+    @brief Method gets the type of room.
+    @return char - the type of the room.
+*/
+char Room::getType(){
+    return this->type;
+}
+
 /*!
     @brief This method gets the enemy at a given position.
     @details this method should only be called when we know an enemy is at a given position, this just refers to the correct enemy.
@@ -389,6 +398,9 @@ char** Room::getDisplay()
 {
     return grid;
 }
+
+
+
 /*!
     @brief Returns the array of all enemies.
     @return std::vector - the array of enemies.
@@ -518,12 +530,21 @@ void Room::setKey()
     this->hasKey = true;
     // set put a single key in the room ('K')
     int keyX, keyY;
-    do
-    {
-        keyX = rand() % (WIDTH - 2) + 1;
-        keyY = rand() % (HEIGHT - 2) + 1;
-    } while (getCharAt(keyX, keyY) != ' ');
-    setCharAt(keyX, keyY, 'K');    
+    if (this->type == 'x'){
+        do
+        {
+            keyX = rand() % (WIDTH - 14) + 7;  
+            keyY = rand() % (HEIGHT - 10) + 5; 
+        } while (getCharAt(keyX, keyY) != ' ');
+        setCharAt(keyX, keyY, 'K');   
+    }else{
+        do
+        {
+            keyX = rand() % (WIDTH - 2) + 1;
+            keyY = rand() % (HEIGHT - 2) + 1;
+        } while (getCharAt(keyX, keyY) != ' ');
+        setCharAt(keyX, keyY, 'K');    
+    }
 }
 
 
