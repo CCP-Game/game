@@ -88,7 +88,7 @@ void displayGameOverAnimation()
             std::cout << gameOverArt[i].substr(0, step) << std::endl;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-        system("cls"); // Clear the screen for animation effect
+       std::cout << "\033[2J\033[H" << std::endl;
     }
 
     std::cout.flush();
@@ -123,7 +123,7 @@ void displayCavernAnimation()
             std::cout << std::endl;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(delay)); // Wait
-        system("cls"); // Clear the screen for animation effect
+        std::cout << "\033[2J\033[H" << std::endl;
     }
 
     std::cout.flush();

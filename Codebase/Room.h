@@ -16,6 +16,7 @@ private:
     char **grid;
     int width;
     int height;
+    char type;
     // int colour;
     std::string roomINFO;
     Pos playerPos;
@@ -36,6 +37,7 @@ public:
     void initializeRoom(int NUM_COINS, char type);
     char **getDisplay();
     int getLevel();
+    char getType();
     void updatePlayerPos(int x, int y);
     void setDoor(Pos dPos, Room *room);
     Room *getRoom(int x, int y) const;

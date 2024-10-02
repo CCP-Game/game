@@ -69,8 +69,9 @@ bool isKeyPressed(int key)
 */
 void clearScreen()
 {
-    std::cout << "\033cls"<< std::endl;       // On Unix/Linux/OSX use "clear" instead of "cls"
-}
+    std::cout << "\033[2J\033[H" << std::endl;
+    //system("cls");       // On Unix/Linux/OSX use "clear" instead of "cls"
+}   
 /*!
     @brief Method acts as a delay of given miliseconds.
     @details Method runs a while loop for a given number of miliseconds delaying the code.
@@ -312,6 +313,7 @@ bool battleScreen(Enemy &enemy, Player &Player)
     {
 
         displayScene(12, 50, enemyHead);
+        
         displayHealthBars(playerHealth, playerStartHealth, enemyHealth, enemyStartHealth, enemyName);
 
         if (encounterType == 1)
@@ -612,9 +614,9 @@ Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerr
     // Set room information with id, isMainPath, isFinalRoom, and isRedHerring
     std::string roomInfo;
     // list of good adjectives
-    std::string adjectives[] = {"Studry", "Solid", "Spacious", "Warm", "Cozy", "Glowing", "Clean", "Tidy", "Neat", "Large"};
+    std::string adjectives[] = {"Studry", "Solid", "Spacious", "Warm", "Inviting", "Glowing", "Strange", "Tidy", "Neat", "Large"};
     // list of bad adjectives
-    std::string badAdjectives[] = {"Cold", "Dark", "Damp", "Smelly", "Dirty", "Dusty", "Moldy", "Gloomy", "Creepy", "Small"};
+    std::string badAdjectives[] = {"Cold", "Dark", "Damp", "Old", "Ominous", "Dusty", "Uncanny", "Gloomy", "Creepy", "Small"};
 
     if (isMainPath)
     {
@@ -682,16 +684,29 @@ Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerr
 // Function to scatter enemies randomly in the room
 void scatterEnemies(Room *room)
 {
+    
+
     Enemy *enemies[] = {
         new Enemy('+', 20), new Enemy('+', 30), new Enemy('+', 50),
         new Enemy('*', 20), new Enemy('*', 30), new Enemy('*', 50),
         new Enemy('/', 20), new Enemy('/', 30), new Enemy('/', 50)};
     int numEnemies = rand() % 3 + 1; // 1 to 3 enemies
-    for (int i = 0; i < numEnemies; i++)
-    {
-        int xPos = rand() % (WIDTH - 2) + 1;  // Generate random x position within the inner ring
-        int yPos = rand() % (HEIGHT - 2) + 1; // Generate random y position within the inner ring
+
+//New for plus room
+    if (room->getType() == 'x'){
+        for (int i = 0; i < numEnemies; i++)
+        {
+        int xPos = rand() % (WIDTH - 14) + 7;  // Generate random x position within the inner ring
+        int yPos = rand() % (HEIGHT - 10) + 5; // Generate random y position within the inner ring
         room->setEnemy(Pos(xPos, yPos), enemies[rand() % 9]);
+        }
+    }else{
+        for (int i = 0; i < numEnemies; i++)
+        {
+            int xPos = rand() % (WIDTH - 2) + 1;  // Generate random x position within the inner ring
+            int yPos = rand() % (HEIGHT - 2) + 1; // Generate random y position within the inner ring
+            room->setEnemy(Pos(xPos, yPos), enemies[rand() % 9]);
+        }
     }
 }
 
@@ -839,7 +854,7 @@ Room *initializeProceduralMap()
 
 void printToConsole(char **display)
 {
-    std::cout << "\033cls";         // Clear the console
+    std::cout << "\033[2J\033[H" << std::endl;         // Clear the console
     setCursorPosition(0, 0); // Sets the cursor position..
     for (int y = 0; y < HEIGHT; y++)
     {
@@ -934,7 +949,7 @@ int generateMathProblem()
 bool fightEnemy(Player &player, Enemy *enemy)
 {
 
-    std::cout << "\033cls";      
+    std::cout << "\033[2J\033[H" << std::endl;      
 
     clearInputBuffer();
 
@@ -984,26 +999,26 @@ void moveEnemies(Room *room)
         int newX = currentPos.getX();
         int newY = currentPos.getY();
 
-        // Move towards the player
+        //Move towards the player
         int playerX = room->getPlayerPos().getX();
         int playerY = room->getPlayerPos().getY();
 
-        // Showcases the option available to our enemy
+        //Showcases the option available to our enemy
         std::vector<std::vector<int>> pairs = {
             {-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {0, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
-        // Finding the next best positoon
+        //Finding the next best positoon
         double nextbestposScore = 1e9; // Use a large number to find minimum
         double tempscore = 0.0;
         int nextbestmove = 0;
-        // Using Pythagorean theorem calculates the distances given a potential move. Chooses the shortest distance.
+        //Using Pythagorean theorem calculates the distances given a potential move. Chooses the shortest distance.
         for (int i = 0; i < pairs.size(); i++)
         {
-            // Calculate the new potential position
+            //Calculate the new potential position
             int potentialX = newX + pairs[i][0];
             int potentialY = newY + pairs[i][1];
-            // Calculate the distance to the player
+            //Calculate the distance to the player
             tempscore = std::sqrt(std::pow(playerX - potentialX, 2) + std::pow(playerY - potentialY, 2));
-            // Update the best move if the current score is better
+            //Update the best move if the current score is better
             if (tempscore < nextbestposScore)
             {
                 nextbestposScore = tempscore;
@@ -1021,18 +1036,20 @@ void moveEnemies(Room *room)
             if (room->getEnemies()[i]->getX() == newX && room->getEnemies()[i]->getY() == newY)
                 validmove = false;
         }
-        if (room->validMove(newX, newY) == true && validmove == true && room->getCharAt(newX, newY) != 'D')
+
+        if (room->validMove(newX, newY) == true && validmove == true && room->getCharAt(newX, newY) != 'D' && room->getCharAt(newX,newY)!='K')
         {
             updateEnemyPosition(room, enemy, newX, newY);
         }
-        validmove = true;
+
+        
     }
 }
 /*!
  * @brief Simply returns the menu screen to be displayed. In this case a string.
  * @return - Returns the cavern homescreen logo.
  */
-std::string getMenuScreen(boolean ingame)
+std::string getMenuScreen(bool ingame)
 {
     std::string menuScreenInGame =
         "\n"
@@ -1128,7 +1145,7 @@ int main()
             }
             if (isKeyPressed('Q'))
             {
-                std::cout << "\033cls";      
+                std::cout << "\033[2J\033[H" << std::endl;      
                 return (0);
             }
         }
@@ -1151,7 +1168,7 @@ int main()
                 // Below, logic for when the menu button is pressed.
                 if (isKeyPressed('M'))
                 {
-                    std::cout << "\033cls";      
+                    std::cout << "\033[2J\033[H" << std::endl;      
                     std::cout << getMenuScreen(true) << std::endl;
                     // Loop for whilst we're in the menu.
                     while (resumeGame == false)
@@ -1165,7 +1182,7 @@ int main()
                             }
                             if (isKeyPressed('Q'))
                             {
-                                std::cout << "\033cls";      
+                                std::cout << "\033[2J\033[H" << std::endl;      
                                 return (0);
                             }
                             if (isKeyPressed('S'))
@@ -1302,7 +1319,7 @@ int main()
                                 PlaySound(TEXT("encounter.wav"), NULL, SND_FILENAME | SND_ASYNC);
                                 gameRunning = false;
                                 displayGameOverAnimation();
-                                std::cout << "\033cls";      
+                                std::cout << "\033[2J\033[H" << std::endl;      
                             }
                         }
                     }
