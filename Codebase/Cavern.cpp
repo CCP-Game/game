@@ -614,9 +614,9 @@ Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerr
     // Set room information with id, isMainPath, isFinalRoom, and isRedHerring
     std::string roomInfo;
     // list of good adjectives
-    std::string adjectives[] = {"Studry", "Solid", "Spacious", "Warm", "Cozy", "Glowing", "Clean", "Tidy", "Neat", "Large"};
+    std::string adjectives[] = {"Studry", "Solid", "Spacious", "Warm", "Inviting", "Glowing", "Strange", "Tidy", "Neat", "Large"};
     // list of bad adjectives
-    std::string badAdjectives[] = {"Cold", "Dark", "Damp", "Smelly", "Dirty", "Dusty", "Moldy", "Gloomy", "Creepy", "Small"};
+    std::string badAdjectives[] = {"Cold", "Dark", "Damp", "Old", "Ominous", "Dusty", "Uncanny", "Gloomy", "Creepy", "Small"};
 
     if (isMainPath)
     {
