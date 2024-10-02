@@ -69,8 +69,9 @@ bool isKeyPressed(int key)
 */
 void clearScreen()
 {
-    std::cout << "\033cls";       // On Unix/Linux/OSX use "clear" instead of "cls"
-}
+    std::cout << "\033[2J\033[H" << std::endl;
+    //system("cls");       // On Unix/Linux/OSX use "clear" instead of "cls"
+}   
 /*!
     @brief Method acts as a delay of given miliseconds.
     @details Method runs a while loop for a given number of miliseconds delaying the code.
@@ -312,7 +313,7 @@ bool battleScreen(Enemy &enemy, Player &Player)
     {
 
         displayScene(12, 50, enemyHead);
-        std::cout << " here";
+        
         displayHealthBars(playerHealth, playerStartHealth, enemyHealth, enemyStartHealth, enemyName);
 
         if (encounterType == 1)
@@ -853,7 +854,7 @@ Room *initializeProceduralMap()
 
 void printToConsole(char **display)
 {
-    std::cout << "\033cls";         // Clear the console
+    std::cout << "\033[2J\033[H" << std::endl;         // Clear the console
     setCursorPosition(0, 0); // Sets the cursor position..
     for (int y = 0; y < HEIGHT; y++)
     {
@@ -948,7 +949,7 @@ int generateMathProblem()
 bool fightEnemy(Player &player, Enemy *enemy)
 {
 
-    std::cout << "\033cls";      
+    std::cout << "\033[2J\033[H" << std::endl;      
 
     clearInputBuffer();
 
@@ -998,26 +999,26 @@ void moveEnemies(Room *room)
         int newX = currentPos.getX();
         int newY = currentPos.getY();
 
-        // Move towards the player
+        //Move towards the player
         int playerX = room->getPlayerPos().getX();
         int playerY = room->getPlayerPos().getY();
 
-        // Showcases the option available to our enemy
+        //Showcases the option available to our enemy
         std::vector<std::vector<int>> pairs = {
             {-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {0, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
-        // Finding the next best positoon
+        //Finding the next best positoon
         double nextbestposScore = 1e9; // Use a large number to find minimum
         double tempscore = 0.0;
         int nextbestmove = 0;
-        // Using Pythagorean theorem calculates the distances given a potential move. Chooses the shortest distance.
+        //Using Pythagorean theorem calculates the distances given a potential move. Chooses the shortest distance.
         for (int i = 0; i < pairs.size(); i++)
         {
-            // Calculate the new potential position
+            //Calculate the new potential position
             int potentialX = newX + pairs[i][0];
             int potentialY = newY + pairs[i][1];
-            // Calculate the distance to the player
+            //Calculate the distance to the player
             tempscore = std::sqrt(std::pow(playerX - potentialX, 2) + std::pow(playerY - potentialY, 2));
-            // Update the best move if the current score is better
+            //Update the best move if the current score is better
             if (tempscore < nextbestposScore)
             {
                 nextbestposScore = tempscore;
@@ -1035,11 +1036,13 @@ void moveEnemies(Room *room)
             if (room->getEnemies()[i]->getX() == newX && room->getEnemies()[i]->getY() == newY)
                 validmove = false;
         }
-        if (room->validMove(newX, newY) == true && validmove == true && room->getCharAt(newX, newY) != 'D')
+
+        if (room->validMove(newX, newY) == true && validmove == true && room->getCharAt(newX, newY) != 'D' && room->getCharAt(newX,newY)!='K')
         {
             updateEnemyPosition(room, enemy, newX, newY);
         }
-        validmove = true;
+
+        
     }
 }
 /*!
@@ -1142,7 +1145,7 @@ int main()
             }
             if (isKeyPressed('Q'))
             {
-                std::cout << "\033cls";      
+                std::cout << "\033[2J\033[H" << std::endl;      
                 return (0);
             }
         }
@@ -1165,7 +1168,7 @@ int main()
                 // Below, logic for when the menu button is pressed.
                 if (isKeyPressed('M'))
                 {
-                    std::cout << "\033cls";      
+                    std::cout << "\033[2J\033[H" << std::endl;      
                     std::cout << getMenuScreen(true) << std::endl;
                     // Loop for whilst we're in the menu.
                     while (resumeGame == false)
@@ -1179,7 +1182,7 @@ int main()
                             }
                             if (isKeyPressed('Q'))
                             {
-                                std::cout << "\033cls";      
+                                std::cout << "\033[2J\033[H" << std::endl;      
                                 return (0);
                             }
                             if (isKeyPressed('S'))
@@ -1316,7 +1319,7 @@ int main()
                                 PlaySound(TEXT("encounter.wav"), NULL, SND_FILENAME | SND_ASYNC);
                                 gameRunning = false;
                                 displayGameOverAnimation();
-                                std::cout << "\033cls";      
+                                std::cout << "\033[2J\033[H" << std::endl;      
                             }
                         }
                     }
