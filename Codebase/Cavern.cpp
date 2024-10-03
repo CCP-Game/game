@@ -71,7 +71,7 @@ bool isKeyPressed(int key)
 */
 void clearScreen()
 {
-    std::cout << "\033[2J\033[H" << std::endl;
+    // system("cls");  
     system("cls");       // On Unix/Linux/OSX use "clear" instead of "cls"
 }   
 /*!
@@ -856,7 +856,7 @@ Room *initializeProceduralMap()
 
 void printToConsole(char **display)
 {
-    std::cout << "\033[2J\033[H" << std::endl;         // Clear the console
+     system("cls");           // Clear the console
     setCursorPosition(0, 0); // Sets the cursor position..
     for (int y = 0; y < HEIGHT; y++)
     {
@@ -951,7 +951,7 @@ int generateMathProblem()
 bool fightEnemy(Player &player, Enemy *enemy)
 {
 
-    std::cout << "\033[2J\033[H" << std::endl;      
+     system("cls");        
 
     clearInputBuffer();
 
@@ -1177,7 +1177,7 @@ int main()
             }
             if (isKeyPressed('Q'))
             {
-                std::cout << "\033[2J\033[H" << std::endl;      
+                 system("cls");        
                 return (0);
             }
         }
@@ -1200,7 +1200,7 @@ int main()
                 // Below, logic for when the menu button is pressed.
                 if (isKeyPressed('M'))
                 {
-                    std::cout << "\033[2J\033[H" << std::endl;      
+                     system("cls");        
                     std::cout << getMenuScreen(true) << std::endl;
                     // Loop for whilst we're in the menu.
                     while (resumeGame == false)
@@ -1214,7 +1214,7 @@ int main()
                             }
                             if (isKeyPressed('Q'))
                             {
-                                std::cout << "\033[2J\033[H" << std::endl;      
+                                 system("cls");        
                                 return (0);
                             }
                             if (isKeyPressed('S'))
@@ -1351,7 +1351,7 @@ int main()
                                 PlaySound(TEXT("encounter.wav"), NULL, SND_FILENAME | SND_ASYNC);
                                 gameRunning = false;
                                 displayGameOverAnimation();
-                                std::cout << "\033[2J\033[H" << std::endl;      
+                                 system("cls");        
                             }
                         }
                     }
