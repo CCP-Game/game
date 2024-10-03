@@ -1010,14 +1010,16 @@ double getEuclideanDist(Pos enemyPos, Pos playerpos){
 * @param playerpos - players current pos
 * @param enemypos - enemies current position.
 */
-Pos* findEnemyNextMove(Room* room, Pos* playerpos, Pos* enemypos){
+Pos* findEnemyNextMove(Room* room,Enemy* enemy){
     //Setup to get neighbours
+    Pos enemypos = enemy->getPos();
+    Pos playerpos = room->getPlayerPos();
     std::vector<std::vector<int>> pairs = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {0, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
     std::priority_queue<Pos*, std::vector<Pos*>, compare> pq;
     std::set<std::pair<int,int>> seen;
     boolean endstate = false;
     int tempx =0, tempy=0;
-    Pos * current = new Pos(enemypos->getX(),enemypos->getY(), getEuclideanDist(enemypos->getPos(),playerpos->getPos()));
+    Pos * current = new Pos(enemypos.getX(),enemypos.getY(), getEuclideanDist(enemypos.getPos(),playerpos.getPos()));
     current->setParent(nullptr);
     //Add the first node to the pq
     pq.push(current);
@@ -1027,7 +1029,7 @@ Pos* findEnemyNextMove(Room* room, Pos* playerpos, Pos* enemypos){
         pq.pop();
         
         //Check whether we've found the players pos.
-        if(current->getX() == playerpos->getX() && current->getY() == playerpos->getY()){
+        if(current->getX() == playerpos.getX() && current->getY() == playerpos.getY()){
             endstate = true;
         //Add new nodes to the pq
         }else{
@@ -1037,7 +1039,7 @@ Pos* findEnemyNextMove(Room* room, Pos* playerpos, Pos* enemypos){
                 tempy = current->getY() + pairs[i][1];
                 //Crucial checks. Seeing whether this is a valid move for our enemy agent.
                 if(room->validMove(tempx, tempy) == true && room->getEnemyAt(tempx,tempy) == NULL && room->getCharAt(tempx, tempy) != 'D' && room->getCharAt(tempx,tempy)!='K' && seen.find({tempx,tempy})==seen.end()){
-                    Pos * nextMove = new Pos(tempx,tempy,getEuclideanDist(current->getPos(),playerpos->getPos())+current->getDistance());
+                    Pos * nextMove = new Pos(tempx,tempy,getEuclideanDist(current->getPos(),playerpos.getPos())+current->getDistance());
                     nextMove->setParent(current);
                     seen.insert({tempx,tempy});
                     pq.push(nextMove);
@@ -1053,13 +1055,14 @@ Pos* findEnemyNextMove(Room* room, Pos* playerpos, Pos* enemypos){
         prev = current;
         current = current->getParent();
     }
-    return prev;
+    
     //Deallocate remaining memory.
     while (!pq.empty()) {
     Pos* nodeToDelete = pq.top();
     pq.pop();
     delete nodeToDelete; // Deallocate memory for nodes in the priority queue
     }
+    return prev;
 }
 /*!
     @brief Method updates all enemies position within the room.
@@ -1072,7 +1075,7 @@ void moveEnemies(Room *room)
     bool validmove = true;
     for (auto &enemy : room->getEnemies())
     {
-        nextMove = findEnemyNextMove(room,&room->getPlayerPos(),&enemy->getPos()); 
+        nextMove = findEnemyNextMove(room,enemy); 
         updateEnemyPosition(room, enemy,nextMove->getX(), nextMove->getY());
     }       
 }
