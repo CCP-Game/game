@@ -9,16 +9,18 @@ public:
     double getDistance() const;
     int getX() const;
     int getY() const;
+    Pos* getParent();
     Pos getPos();
     Pos();
     void setXY(int x, int y);
     void setX(int x);
     void setY(int y);
     void setDistance(double dist);
-
+    void setParent(Pos* parent);
 private:
     int x;
     int y;
     double distance;
+    Pos* parent;
 };
 #endif

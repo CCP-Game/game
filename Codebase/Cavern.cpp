@@ -16,6 +16,8 @@
 #include "animations.h"
 #include <random>
 #include <string>
+#include <queue>
+#include <set>
 #define WIDTH 25
 #define HEIGHT 13
 /*!
@@ -70,7 +72,7 @@ bool isKeyPressed(int key)
 void clearScreen()
 {
     std::cout << "\033[2J\033[H" << std::endl;
-    //system("cls");       // On Unix/Linux/OSX use "clear" instead of "cls"
+    system("cls");       // On Unix/Linux/OSX use "clear" instead of "cls"
 }   
 /*!
     @brief Method acts as a delay of given miliseconds.
@@ -985,6 +987,80 @@ void updateEnemyPosition(Room *room, Enemy *enemy, int newX, int newY)
     std::cout << enemy->getSkin();
     resetColour();
 }
+/*! 
+* @brief This is a customer comaprator class for our A* search.
+*/
+struct compare{
+  public:
+  bool operator()(Pos* a, Pos* b){
+    return a->getDistance() > b->getDistance();
+  }  
+};
+/*!
+* @brief calculates the Euclidean distance between two pos's
+* @param enemypos - the enemies positiom
+* @param playerpos - the players position
+*/
+double getEuclideanDist(Pos enemyPos, Pos playerpos){
+    return std::sqrt(std::pow(playerpos.getX()- enemyPos.getX(), 2) + std::pow(playerpos.getY() - enemyPos.getY(), 2));
+}
+/*!
+* @brief Method finds the next best *valid* move for our enemy implementing an A* search.
+* @param room - the current room
+* @param playerpos - players current pos
+* @param enemypos - enemies current position.
+*/
+Pos* findEnemyNextMove(Room* room, Pos* playerpos, Pos* enemypos){
+    //Setup to get neighbours
+    std::vector<std::vector<int>> pairs = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {0, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
+    std::priority_queue<Pos*, std::vector<Pos*>, compare> pq;
+    std::set<std::pair<int,int>> seen;
+    boolean endstate = false;
+    int tempx =0, tempy=0;
+    Pos * current = new Pos(enemypos->getX(),enemypos->getY(), getEuclideanDist(enemypos->getPos(),playerpos->getPos()));
+    current->setParent(nullptr);
+    //Add the first node to the pq
+    pq.push(current);
+    while(pq.empty() == false && endstate == false){
+        //Get the highest entry
+        current = pq.top();
+        pq.pop();
+        
+        //Check whether we've found the players pos.
+        if(current->getX() == playerpos->getX() && current->getY() == playerpos->getY()){
+            endstate = true;
+        //Add new nodes to the pq
+        }else{
+            //Create and add all valid nodes.
+            for(int i =0; i < pairs.size(); i++){
+                tempx = current->getX() + pairs[i][0];
+                tempy = current->getY() + pairs[i][1];
+                //Crucial checks. Seeing whether this is a valid move for our enemy agent.
+                if(room->validMove(tempx, tempy) == true && room->getEnemyAt(tempx,tempy) == NULL && room->getCharAt(tempx, tempy) != 'D' && room->getCharAt(tempx,tempy)!='K' && seen.find({tempx,tempy})==seen.end()){
+                    Pos * nextMove = new Pos(tempx,tempy,getEuclideanDist(current->getPos(),playerpos->getPos())+current->getDistance());
+                    nextMove->setParent(current);
+                    seen.insert({tempx,tempy});
+                    pq.push(nextMove);
+                }
+            }
+          
+        }
+        
+    }
+    //Get the next best move. (Backtracking)
+    Pos* prev = NULL;
+    while(current->getParent() != nullptr){
+        prev = current;
+        current = current->getParent();
+    }
+    return prev;
+    //Deallocate remaining memory.
+    while (!pq.empty()) {
+    Pos* nodeToDelete = pq.top();
+    pq.pop();
+    delete nodeToDelete; // Deallocate memory for nodes in the priority queue
+    }
+}
 /*!
     @brief Method updates all enemies position within the room.
     @param room [in] Room* - the current room.
@@ -992,59 +1068,15 @@ void updateEnemyPosition(Room *room, Enemy *enemy, int newX, int newY)
 */
 void moveEnemies(Room *room)
 {
+    Pos* nextMove = NULL;
     bool validmove = true;
     for (auto &enemy : room->getEnemies())
     {
-        const Pos &currentPos = enemy->getPos();
-        int newX = currentPos.getX();
-        int newY = currentPos.getY();
-
-        //Move towards the player
-        int playerX = room->getPlayerPos().getX();
-        int playerY = room->getPlayerPos().getY();
-
-        //Showcases the option available to our enemy
-        std::vector<std::vector<int>> pairs = {
-            {-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {0, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
-        //Finding the next best positoon
-        double nextbestposScore = 1e9; // Use a large number to find minimum
-        double tempscore = 0.0;
-        int nextbestmove = 0;
-        //Using Pythagorean theorem calculates the distances given a potential move. Chooses the shortest distance.
-        for (int i = 0; i < pairs.size(); i++)
-        {
-            //Calculate the new potential position
-            int potentialX = newX + pairs[i][0];
-            int potentialY = newY + pairs[i][1];
-            //Calculate the distance to the player
-            tempscore = std::sqrt(std::pow(playerX - potentialX, 2) + std::pow(playerY - potentialY, 2));
-            //Update the best move if the current score is better
-            if (tempscore < nextbestposScore)
-            {
-                nextbestposScore = tempscore;
-                nextbestmove = i;
-            }
-        }
-
-        // Update the position based on the best move found
-        newX += pairs[nextbestmove][0];
-        newY += pairs[nextbestmove][1];
-
-        // Ensure the move is valid (not hitting another enemy player.)
-        for (int i = 0; i < room->getEnemies().size(); i++)
-        {
-            if (room->getEnemies()[i]->getX() == newX && room->getEnemies()[i]->getY() == newY)
-                validmove = false;
-        }
-
-        if (room->validMove(newX, newY) == true && validmove == true && room->getCharAt(newX, newY) != 'D' && room->getCharAt(newX,newY)!='K')
-        {
-            updateEnemyPosition(room, enemy, newX, newY);
-        }
-
-        
-    }
+        nextMove = findEnemyNextMove(room,&room->getPlayerPos(),&enemy->getPos()); 
+        updateEnemyPosition(room, enemy,nextMove->getX(), nextMove->getY());
+    }       
 }
+
 /*!
  * @brief Simply returns the menu screen to be displayed. In this case a string.
  * @return - Returns the cavern homescreen logo.

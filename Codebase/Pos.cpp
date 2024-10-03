@@ -50,6 +50,12 @@ double Pos::getDistance()const{
     return this->distance;
 }
 /*!
+*  @brief This method gets a pointer to our Pos's parent
+*/
+Pos* Pos::getParent(){
+    return this->parent;
+}
+/*!
  * @brief Gets the current position.
  * 
  * @return Pos A Pos object representing the current coordinates.
@@ -92,6 +98,13 @@ void Pos::setY(int y) {
 */
 void Pos::setDistance(double d){
     this->distance = d;
+}
+/*!
+* @brief This method sets the Pos's parent useful for the enemy search/
+* @param parent - a pointer to the parent Pos
+*/
+void Pos::setParent(Pos* nparent){
+    this->parent=nparent;
 }
 /*!
  * @brief Unit test for the Pos class.
