@@ -133,12 +133,12 @@ const char *ASCII_NUMBERS[] = {
     "   | |   \n"
     "   \\_\\ \n",
 
-    "   __    \n"
-    "  \\ \\  \n"
-    "   | |   \n"
-    "   | |   \n"
-    "   | |   \n"
-    "  /_/    \n",
+    "    __    \n"
+    "   \\ \\  \n"
+    "    | |   \n"
+    "    | |   \n"
+    "    | |   \n"
+    "   /_/    \n",
 
 
     
@@ -444,8 +444,8 @@ bool generateComplexEquation()
     }
 
     // Print the complex equation
-    std::string equation = "(" + std::to_string(num1_1) + " " + op1 + " " + std::to_string(num1_2) + ") " + finalOp +
-                           " (" + std::to_string(num2_1) + " " + op2 + " " + std::to_string(num2_2) + ") =";
+    std::string equation = "(" + std::to_string(num1_1) + " " + op1 + " " + std::to_string(num1_2) + ")" + finalOp +
+                           "(" + std::to_string(num2_1) + " " + op2 + " " + std::to_string(num2_2) + ") =";
     printNums(equation); // Print the equation in ASCII art
 
     // Get the user's answer and check if it's correct
