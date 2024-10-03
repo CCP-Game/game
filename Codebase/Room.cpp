@@ -113,6 +113,7 @@ Room& Room::operator=(const Room& other) {
  */
 void Room::initializeRoom(int NUM_COINS, char type)
 {
+    this->type = type;
     // Clear the room first
     for (int y = 0; y < HEIGHT; y++)
     {
@@ -191,9 +192,50 @@ void Room::initializeRoom(int NUM_COINS, char type)
         maxX = startX + hallwayWidth - 2;
         minY = 1;
         maxY = HEIGHT - 2;
-    }
-    else
-    {
+    } else if(type == 'x'){
+        int passageWidth = 5;
+        int centerX = WIDTH / 2;
+        int centerY = HEIGHT / 2;
+        
+        int offsetX = (WIDTH - passageWidth)/ 2;
+        int offsetY = (HEIGHT - passageWidth)/ 2;
+
+        for (int i = 0; i < WIDTH; i++){
+            if (i < offsetX || i >= offsetX + passageWidth){
+                setCharAt(i, offsetY - 1, '#');
+                setCharAt(i, offsetY + passageWidth, '#');
+            }else{
+                setCharAt(i, 0, '#');
+                setCharAt(i, HEIGHT - 1, '#');
+            }
+        }
+
+        for (int y = 0; y < HEIGHT; y++){
+            if (y < offsetY || y >= offsetY + passageWidth){
+                setCharAt(offsetX - 1, y, '#');
+                setCharAt(offsetX + passageWidth, y, '#');
+            }else{
+                setCharAt(0, y, '#');
+                setCharAt(WIDTH - 1, y, '#');
+            }
+        }
+
+        minX = 1;
+        maxX = WIDTH - 2;
+        minY = 1;
+        maxY = HEIGHT - 2;
+        //Handles own scatter coins.
+        for (int i = 0; i < NUM_COINS; i++){
+            int coinX, coinY;
+            do
+            {
+                coinX = rand() % (maxX - minX + 1) + minX;
+                coinY = rand() % (maxY - minY + 1) + minY;
+            } while (getCharAt(coinX, coinY) != ' ' || coinX <= offsetX && coinY <= offsetY || coinX > offsetX + passageWidth && coinY <= offsetY || coinX <= offsetX && coinY > offsetY + passageWidth ||coinX > offsetX + passageWidth && coinY > offsetY + passageWidth);
+                setCharAt(coinX, coinY, 'C');
+        }
+        return;  
+    }else{
         // Handle invalid room type if necessary
         std::cerr << "Invalid room type!" << std::endl;
         return;
@@ -228,10 +270,14 @@ void Room::updatePlayerPos(int x, int y){
     @return boolean - true or false regardign a valid move or not.
  */
 bool Room::validMove(int newx, int newy){
-    if(this->getCharAt(newx,newy) !='#'){
-        return true;
+    if(this->getCharAt(newx,newy) =='#'){
+        return false;
     }
-    return false;
+    if(this->getCharAt(newx,newy) =='L'){
+        return false;
+    }
+
+    return true;
 }
 /*!
     @brief Checks whether our move is on a door.
@@ -269,6 +315,36 @@ void Room::setEnemy(Pos p, Enemy* e){
     this->enemies.push_back(e);
     // Set the enemy in the grid
 }
+
+
+/*! 
+    @brief Method sets the final room.
+    @param value [in] bool - the value of the room.
+    @return void
+*/
+void Room::setFinal(bool value)
+{
+    this->isFinal = value;
+}
+
+
+/*! 
+    @brief Method gets the final room.
+    @return bool - the value of the room.
+*/
+bool Room::getFinal()
+{
+    return this->isFinal;
+}
+
+/*! 
+    @brief Method gets the type of room.
+    @return char - the type of the room.
+*/
+char Room::getType(){
+    return this->type;
+}
+
 /*!
     @brief This method gets the enemy at a given position.
     @details this method should only be called when we know an enemy is at a given position, this just refers to the correct enemy.
@@ -322,6 +398,9 @@ char** Room::getDisplay()
 {
     return grid;
 }
+
+
+
 /*!
     @brief Returns the array of all enemies.
     @return std::vector - the array of enemies.
@@ -439,10 +518,48 @@ std::string Room::getRoomINFO(){
     @param roomInfo [in] String - the room information
     @return. void
 */
-void Room::setRoomINFO(std::string info){
+void Room::setRoomINFO(const std::string info){
     this->roomINFO = info;
 }
 /*!
+    @brief sets the key for the room.
+    @return void
+*/
+void Room::setKey()
+{
+    this->hasKey = true;
+    // set put a single key in the room ('K')
+    int keyX, keyY;
+    if (this->type == 'x'){
+        do
+        {
+            keyX = rand() % (WIDTH - 14) + 7;  
+            keyY = rand() % (HEIGHT - 10) + 5; 
+        } while (getCharAt(keyX, keyY) != ' ');
+        setCharAt(keyX, keyY, 'K');   
+    }else{
+        do
+        {
+            keyX = rand() % (WIDTH - 2) + 1;
+            keyY = rand() % (HEIGHT - 2) + 1;
+        } while (getCharAt(keyX, keyY) != ' ');
+        setCharAt(keyX, keyY, 'K');    
+    }
+}
+
+
+/*!
+    @brief Method checks if the room has a key.
+    @return bool - true or false whether the room has a key or not.
+*/
+bool Room::getKey()
+{
+    return this->hasKey;
+}
+
+/*!
+
+
     @brief this method contains our unit test for our room class.
     @return void.
 */
@@ -467,17 +584,25 @@ void Room::unittest() {
     assert(testRoom.getPlayerPos().getX() == 4);
     assert(testRoom.getPlayerPos().getY() == 5);
 
+    testRoom.removePlayer();
+    assert(testRoom.getCharAt(4, 5) == ' ');
+
+
     assert(testRoom.isDoorMove(10, 9) == false);
     testRoom.setDoor(Pos(8, 8), &testRoom);
     assert(testRoom.isDoorMove(8, 8));
 
+    Enemy* testEnemy = new Enemy(Pos(6, 7), 'K', 2);
+    std::vector<Enemy*> enemiesList = testRoom.getEnemies();
+    
     testRoom.setEnemy(Pos(3, 4), new Enemy(Pos(1, 1), 'E', 2));
-    assert(testRoom.getEnemyAt(3, 4)->getX() == 3);
-    assert(testRoom.getEnemyAt(3, 4)->getY() == 4);
-
+    int enemy1X = testRoom.getEnemyAt(3, 4)->getX();
+    int enemy1Y = testRoom.getEnemyAt(3, 4)->getY();
+    assert(enemy1X == 3);
+    assert(enemy1Y == 4);
+    
     testRoom.removeEnemyAt(3, 4);
     assert(testRoom.getEnemyAt(3, 4) == nullptr);
-
 
 
     // Test setting and getting characters in the grid
@@ -495,9 +620,18 @@ void Room::unittest() {
     testRoom.setRoomINFO("Test Room Info");
     assert(testRoom.getRoomINFO() == "Test Room Info");
 
+    // Room roomCopy = Room(testRoom);
+    // assert(roomCopy.getRoomINFO == "Test Room Info");
+
     // Doesn't work.
     //testRoom.initializeRoom(5, 'b');
+    
+    testRoom.getDisplay();
+    std::string enemys = testRoom.enemiesToString();
 
+    testRoom.setFinal(true);
+    assert(testRoom.getFinal() == true);
+    
 
     std::cout << "All Room tests passed!" << std::endl;
 

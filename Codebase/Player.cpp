@@ -10,9 +10,9 @@
  * @param skin The character representing the player's appearance.
  * @param colour The color code associated with the player.
  */
-Player::Player(char skin, int colour) : skin(skin), colour(colour) {
-    health = 100;  // Initialize health to 100
-    currentLocation = Pos(0, 0);  // Initialize Position to (0,0)
+Player::Player(char skin, int colour) : skin(skin), colour(colour), health(100), currentLocation(0, 0){
+    //health = 100;  // Initialize health to 100
+    //currentLocation = Pos(0, 0);  // Initialize Position to (0,0)
 }
 
 /*!

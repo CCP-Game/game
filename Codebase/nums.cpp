@@ -2,9 +2,14 @@
 #include <string>
 #include <vector>
 #include <random>
-#include <sstream>  // For stringstream
-#include <stack>    // For evaluating expressions
+#include <sstream> 
+#include <stack> 
 #include "nums.h"
+#include <cassert>
+#include <iostream>
+#include <functional>
+#include <sstream>
+
 
 /*!
  * @brief Array of ASCII art representations for digits 0-9 and some symbols.
@@ -125,13 +130,25 @@ const char *ASCII_NUMBERS[] = {
  *
  * @return The integer input by the user.
  */
-int getUserInput()
+int getUserInput() 
 {
     int userAnswer;
-    std::cout << "Enter your answer: ";
-    std::cin >> userAnswer;
-    return userAnswer;
+    while (true) {
+        std::cout << "Enter your answer: ";
+        std::cin >> userAnswer;
+
+        // Check if the input was valid
+        if (std::cin.fail()) {
+            std::cin.clear();  // Clear the error flag
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Discard invalid input
+            std::cout << "Invalid input. Please enter an integer.\n";
+        } else {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Discard any remaining input
+            return userAnswer;  // Valid input, return the answer
+        }
+    }
 }
+
 
 /*!
  * @brief Prints the given string as ASCII art.
@@ -420,4 +437,64 @@ bool generateDivisionEquation()
 
     int answer = getUserInput();
     return answer == result;
+}
+
+/*!
+ * @brief Generates a more complex equation with multiple operations, prints it in ASCII art, and checks if the user's answer is correct.
+ *
+ * Generates a random sequence of numbers and operations (+, -, *, /), prints the equation in ASCII art,
+ * and evaluates the user's input.
+ *
+ * @return Returns true if the user's answer is correct, false otherwise.
+ */
+// bool generateComplexEquation()
+// {
+//     int expressions = 
+//     int order = rand() % 4 + 1;
+
+//     if()
+// }
+
+/*!
+    @brief runs unittest for the other methods.
+    @return. void
+*/
+void numsunittest()
+{
+    std::cout << "Player unittest called!" << std::endl;
+
+    assert(improvedRandom(4, 4) == 4);
+
+    std::istringstream mockInput("5\n");
+    std::streambuf* originalCinBuffer = std::cin.rdbuf();
+    std::cin.rdbuf(mockInput.rdbuf());
+    int res = getUserInput();
+    assert(res == 5);
+    assert(res != 3);
+
+    std::istringstream mockInput1("201\n");
+    std::streambuf* CinBuffer1 = std::cin.rdbuf();
+    std::cin.rdbuf(mockInput1.rdbuf());
+    bool resPlus = generateEquation();
+    assert(resPlus == false);
+
+    std::istringstream mockInput2("101\n");
+    std::streambuf* CinBuffer2 = std::cin.rdbuf();
+    std::cin.rdbuf(mockInput1.rdbuf());
+    bool resMin = generateMultiplicationEquation();
+    assert(resMin == false);
+
+    std::istringstream mockInput3("151\n");
+    std::streambuf* CinBuffer3 = std::cin.rdbuf();
+    std::cin.rdbuf(mockInput1.rdbuf());
+    bool resMult = generateMultiplicationEquation();
+    assert(resMult == false);
+    
+    std::istringstream mockInput4("200\n");
+    std::streambuf* CinBuffer4 = std::cin.rdbuf();
+    std::cin.rdbuf(mockInput4.rdbuf());
+    bool resDiv = generateDivisionEquation();
+    assert(resDiv == false);
+    
+    std::cout << "All Player tests passed!" << std::endl;
 }

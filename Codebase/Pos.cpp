@@ -16,7 +16,14 @@ Pos::Pos() : x(0), y(0) {}
  * @param y The Y-coordinate of the position.
  */
 Pos::Pos(int x, int y) : x(x), y(y) {}
-
+/*!
+ * @brief Constructor utilised for nodes, storing the distance at this XY Pos to some other position.
+ * @param x - the x coord
+ * @param y - the y coord
+ * @param distance - the distance from xy to some other x_1 y_1 point
+ * 
+*/
+Pos::Pos(int x, int y, double dist): x(x),y(y),distance(dist){}
 /*!
  * @brief Gets the X-coordinate of the position.
  * 
@@ -34,7 +41,20 @@ int Pos::getX() const {
 int Pos::getY() const {
     return this->y;
 }
-
+/**
+ * @brief gets the distance from our XY to some othe XY 
+ * 
+ * @return the distance from our XY to some othe XY
+*/
+double Pos::getDistance()const{
+    return this->distance;
+}
+/*!
+*  @brief This method gets a pointer to our Pos's parent
+*/
+Pos* Pos::getParent(){
+    return this->parent;
+}
 /*!
  * @brief Gets the current position.
  * 
@@ -72,7 +92,20 @@ void Pos::setX(int x) {
 void Pos::setY(int y) {
     this->y = y;
 }
-
+/*!
+* @brief sets the the distance from our xy to some other xy coord
+* @param distance - a double dictating how far away the othe rxy is.
+*/
+void Pos::setDistance(double d){
+    this->distance = d;
+}
+/*!
+* @brief This method sets the Pos's parent useful for the enemy search/
+* @param parent - a pointer to the parent Pos
+*/
+void Pos::setParent(Pos* nparent){
+    this->parent=nparent;
+}
 /*!
  * @brief Unit test for the Pos class.
  * 

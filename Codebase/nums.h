@@ -20,17 +20,8 @@ bool generateEquation();
 bool generateSubtractionEquation();
 bool generateMultiplicationEquation();
 bool generateDivisionEquation();
-int evaluateExpression(const std::string &expression);
-
-/*!
- * @brief Generates a more complex equation with multiple operations, prints it in ASCII art, and checks if the user's answer is correct.
- *
- * Generates a random sequence of numbers and operations (+, -, *, /), prints the equation in ASCII art,
- * and evaluates the user's input.
- *
- * @return Returns true if the user's answer is correct, false otherwise.
- */
 bool generateComplexEquation();
 
+void numsunittest();
 
 #endif // NUMS_H
