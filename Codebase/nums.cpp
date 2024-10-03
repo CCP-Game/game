@@ -2,14 +2,13 @@
 #include <string>
 #include <vector>
 #include <random>
-#include <sstream> 
-#include <stack> 
+#include <sstream>
+#include <stack>
 #include "nums.h"
 #include <cassert>
 #include <iostream>
 #include <functional>
 #include <sstream>
-
 
 /*!
  * @brief Array of ASCII art representations for digits 0-9 and some symbols.
@@ -120,6 +119,30 @@ const char *ASCII_NUMBERS[] = {
     " |______|\n"
     "         \n",
 
+    "         \n"
+    "  ______ \n"
+    " |______|\n"
+    "  ______ \n"
+    " |______|\n"
+    "         \n",
+
+    "    __   \n"
+    "   / /   \n"
+    "   | |   \n"
+    "   | |   \n"
+    "   | |   \n"
+    "   \\_\\ \n",
+
+    "   __    \n"
+    "  \\ \\  \n"
+    "   | |   \n"
+    "   | |   \n"
+    "   | |   \n"
+    "  /_/    \n",
+
+
+    
+
 };
 
 /*!
@@ -130,25 +153,28 @@ const char *ASCII_NUMBERS[] = {
  *
  * @return The integer input by the user.
  */
-int getUserInput() 
+int getUserInput()
 {
     int userAnswer;
-    while (true) {
+    while (true)
+    {
         std::cout << "Enter your answer: ";
         std::cin >> userAnswer;
 
         // Check if the input was valid
-        if (std::cin.fail()) {
-            std::cin.clear();  // Clear the error flag
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Discard invalid input
+        if (std::cin.fail())
+        {
+            std::cin.clear();                                                   // Clear the error flag
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
             std::cout << "Invalid input. Please enter an integer.\n";
-        } else {
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Discard any remaining input
-            return userAnswer;  // Valid input, return the answer
+        }
+        else
+        {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard any remaining input
+            return userAnswer;                                                  // Valid input, return the answer
         }
     }
 }
-
 
 /*!
  * @brief Prints the given string as ASCII art.
@@ -191,6 +217,14 @@ void printNums(const std::string &nums)
         else if (ch == '=')
         {
             index = 14;
+        }
+        else if (ch == '(')
+        {
+            index = 15;
+        }
+        else if (ch == ')')
+        {
+            index = 16;
         }
         else if (ch == ' ')
         {
@@ -251,104 +285,172 @@ int improvedRandom(int min, int max)
 }
 
 /*!
- * @brief Evaluates a mathematical expression represented as a string.
+ * @brief Helper function to generate a random operation.
  *
- * This function uses stacks to evaluate an arithmetic expression containing +, -, *, / operations.
- * It respects the operator precedence ( higher than +-).
- *
- * @param expression [in] The string containing the arithmetic expression.
- *
- * @return The evaluated result of the expression.
+ * @return A random character representing an operation ('+', '-', '*', '/').
  */
- 
-int evaluateExpression(const std::string &expression)
+char generateRandomOperation()
 {
-    std::stack<int> values;
-    std::stack<char> operators;
-    std::stringstream ss(expression);
-    char ch;
-    int number;
-
-    while (ss >> ch)
-    {
-        if (isdigit(ch))
-        {
-            ss.putback(ch);
-            ss >> number;
-            values.push(number);
-        }
-        else if (ch == '+' || ch == '-')
-        {
-            while (!operators.empty() && (operators.top() == '*' || operators.top() == '/'))
-            {
-                char op = operators.top();
-                operators.pop();
-
-                int val2 = values.top(); values.pop();
-                int val1 = values.top(); values.pop();
-                if (op == '*') values.push(val1 * val2);
-                else values.push(val1 / val2);
-            }
-            operators.push(ch);
-        }
-        else if (ch == '*' || ch == '/')
-        {
-            operators.push(ch);
-        }
-    }
-
-    while (!operators.empty())
-    {
-        char op = operators.top();
-        operators.pop();
-
-        int val2 = values.top(); values.pop();
-        int val1 = values.top(); values.pop();
-        if (op == '+') values.push(val1 + val2);
-        else if (op == '-') values.push(val1 - val2);
-        else if (op == '*') values.push(val1 * val2);
-        else values.push(val1 / val2);
-    }
-
-    return values.top();
+    int randomIndex = improvedRandom(0, 3);
+    char operations[] = {'+', '-', '*', '/'};
+    return operations[randomIndex];
 }
 
 /*!
- * @brief Generates a more complex equation with multiple operations, prints it in ASCII art, and checks if the user's answer is correct.
+ * @brief Helper function to evaluate an operation between two integers.
  *
- * Generates a random sequence of numbers and operations (+, -, *, /), prints the equation in ASCII art,
- * and evaluates the user's input.
+ * @param num1 The first number.
+ * @param num2 The second number.
+ * @param op The operation to perform ('+', '-', '*', '/').
+ * @return The result of the operation.
+ */
+int evaluate(int num1, int num2, char op)
+{
+    switch (op)
+    {
+    case '+':
+        return num1 + num2;
+    case '-':
+        return num1 - num2;
+    case '*':
+        return num1 * num2;
+    case '/':
+        return num2 != 0 ? num1 / num2 : 0; // Avoid division by zero
+    default:
+        return 0;
+    }
+}
+/*!
+ * @brief Generates a complex equation, prints it in ASCII art, and checks if the user's answer is correct.
+ *
+ * The equation is formed by two random sub-equations inside brackets, each using random operations.
+ * A random operation is selected to combine these sub-equations, and the result is calculated.
  *
  * @return Returns true if the user's answer is correct, false otherwise.
  */
 bool generateComplexEquation()
 {
-    std::string operators = "+-*/";
-    std::string equation;
+    // Generate random numbers for the first sub-equation
+    int num1_1 = improvedRandom(2, 10);
+    int num1_2 = improvedRandom(2, 10);
+    char op1;
+    int result1;
+    
 
-    // Generate a random number of operations (e.g., 3 operations, resulting in 4 numbers)
-    int numOperations = improvedRandom(2, 4); // 2 to 4 operations
-
-    // Build the equation by alternating between random numbers and random operators
-    equation += std::to_string(improvedRandom(1, 50));
-    for (int i = 0; i < numOperations; ++i)
+    // Choose a random operation for the first sub-equation
+    int randomOp1 = improvedRandom(0, 3);
+    if (randomOp1 == 0)
     {
-        char op = operators[improvedRandom(0, 3)]; // Random operator
-        equation += op;
-        equation += std::to_string(improvedRandom(1, 50)); // Random number
+        num1_1 = improvedRandom(2, 100);
+        num1_2 = improvedRandom(2, 100);
+        op1 = '+';
+        result1 = num1_1 + num1_2;
     }
-    equation += "=";
+    else if (randomOp1 == 1)
+    
+    {
+        num1_1 = improvedRandom(2, 100);
+        num1_2 = improvedRandom(2, num1_1);
+        op1 = '-';
+        result1 = num1_1 - num1_2;
+    }
+    else if (randomOp1 == 2)
+    {
+        num1_1 = improvedRandom(2, 15);
+        num1_2 = improvedRandom(2, 15);
+        op1 = '*';
+        result1 = num1_1 * num1_2;
+    }
+    else
+    { // Division, ensuring no division by zero
+       num1_2 = improvedRandom(2, 15);
+       
+       num1_1 = num1_2 * improvedRandom(2, 15);
+       op1 = '/';
+       result1 = num1_1 / num1_2;
+    }
 
-    // Print the equation in ASCII art
-    printNums(equation);
+    // Generate random numbers for the second sub-equation
+    int num2_1;
+    int num2_2;
+    char op2;
+    int result2;
+    int randomFinalOp = improvedRandom(0, 3);
 
-    // Get the correct answer by evaluating the equation
-    int correctAnswer = evaluateExpression(equation);
+    // Choose a random operation for the second sub-equation
+    int randomOp2 = improvedRandom(0, 3);
+    if (randomOp2 == 0)
+    {
+        num2_1 = improvedRandom(2, 100);
+        num2_2 = improvedRandom(2, 100);
+        op2 = '+';
+        result2 = num2_1 + num2_2;
+    }
+    else if (randomOp2 == 1)
+    {
 
-    // Get user input
-    int userAnswer = getUserInput();
+        num2_1 = improvedRandom(2, result1);
+        num2_2 = improvedRandom(2, result1);
+        result2 = num2_1 - num2_2;
+        op2 = '-';
+        result2 = num2_1 - num2_2;
+    }
+    else if (randomOp2 == 2)
+    {
+        num2_1 = improvedRandom(1, 10);
+        num2_2 = improvedRandom(1, 10);
+        op2 = '*';
+        result2 = num2_1 * num2_2;
+    }
+    else
+    { 
+        num2_2 = improvedRandom(2, 15);
+       
+       num2_1 = num2_2 * improvedRandom(2, 15);
+       op1 = '/';
+       result2 = num2_1 / num2_2;
+    }
 
-    return userAnswer == correctAnswer;
+    // Choose a random operation to combine the two sub-equations
+    char finalOp;
+    int finalResult;
+    
+    if (randomFinalOp == 0)
+    {
+        finalOp = '+';
+        finalResult = result1 + result2;
+    }
+    else if (randomFinalOp == 1)
+    {
+        finalOp = '-';
+        finalResult = result1 - result2;
+    }
+    else if (randomFinalOp == 2)
+    {
+        finalOp = '*';
+        finalResult = result1 * result2;
+    }
+    else
+    { // Division, ensuring no division by zero
+        finalOp = '/';
+        if (result2 != 0)
+        {
+            finalResult = result1 / result2;
+        }
+        else
+        {
+            finalResult = 0; // Avoid division by zero by setting result to 0
+        }
+    }
+
+    // Print the complex equation
+    std::string equation = "(" + std::to_string(num1_1) + " " + op1 + " " + std::to_string(num1_2) + ") " + finalOp +
+                           " (" + std::to_string(num2_1) + " " + op2 + " " + std::to_string(num2_2) + ") =";
+    printNums(equation); // Print the equation in ASCII art
+
+    // Get the user's answer and check if it's correct
+    int answer = getUserInput();
+    return answer == finalResult;
 }
 
 /*!
@@ -449,7 +551,7 @@ bool generateDivisionEquation()
  */
 // bool generateComplexEquation()
 // {
-//     int expressions = 
+//     int expressions =
 //     int order = rand() % 4 + 1;
 
 //     if()
@@ -466,35 +568,35 @@ void numsunittest()
     assert(improvedRandom(4, 4) == 4);
 
     std::istringstream mockInput("5\n");
-    std::streambuf* originalCinBuffer = std::cin.rdbuf();
+    std::streambuf *originalCinBuffer = std::cin.rdbuf();
     std::cin.rdbuf(mockInput.rdbuf());
     int res = getUserInput();
     assert(res == 5);
     assert(res != 3);
 
     std::istringstream mockInput1("201\n");
-    std::streambuf* CinBuffer1 = std::cin.rdbuf();
+    std::streambuf *CinBuffer1 = std::cin.rdbuf();
     std::cin.rdbuf(mockInput1.rdbuf());
     bool resPlus = generateEquation();
     assert(resPlus == false);
 
     std::istringstream mockInput2("101\n");
-    std::streambuf* CinBuffer2 = std::cin.rdbuf();
+    std::streambuf *CinBuffer2 = std::cin.rdbuf();
     std::cin.rdbuf(mockInput1.rdbuf());
     bool resMin = generateMultiplicationEquation();
     assert(resMin == false);
 
     std::istringstream mockInput3("151\n");
-    std::streambuf* CinBuffer3 = std::cin.rdbuf();
+    std::streambuf *CinBuffer3 = std::cin.rdbuf();
     std::cin.rdbuf(mockInput1.rdbuf());
     bool resMult = generateMultiplicationEquation();
     assert(resMult == false);
-    
+
     std::istringstream mockInput4("200\n");
-    std::streambuf* CinBuffer4 = std::cin.rdbuf();
+    std::streambuf *CinBuffer4 = std::cin.rdbuf();
     std::cin.rdbuf(mockInput4.rdbuf());
     bool resDiv = generateDivisionEquation();
     assert(resDiv == false);
-    
+
     std::cout << "All Player tests passed!" << std::endl;
 }

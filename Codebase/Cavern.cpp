@@ -339,11 +339,11 @@ bool battleScreen(Enemy &enemy, Player &Player)
         else if (encounterType == 5)
         {
             //int firstChooser = rand() % 2 + 1;
-            int firstChooser = 2;
+            int firstChooser = 1;
 
             if (firstChooser == 1)
             {
-                //generateComplexEquation();
+                generateComplexEquation();
             }
             else
             {
