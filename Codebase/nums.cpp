@@ -119,19 +119,12 @@ const char *ASCII_NUMBERS[] = {
     " |______|\n"
     "         \n",
 
-    "         \n"
-    "  ______ \n"
-    " |______|\n"
-    "  ______ \n"
-    " |______|\n"
-    "         \n",
-
     "    __   \n"
     "   / /   \n"
     "   | |   \n"
     "   | |   \n"
     "   | |   \n"
-    "   \\_\\ \n",
+    "    \\_\\ \n",
 
     "   __    \n"
     "  \\ \\  \n"
@@ -367,10 +360,10 @@ bool generateComplexEquation()
     }
 
     // Generate random numbers for the second sub-equation
-    int num2_1;
-    int num2_2;
-    char op2;
-    int result2;
+    int num2_1=0;
+    int num2_2=0;
+    char op2 = ' ';
+    int result2 = 0;
     int randomFinalOp = improvedRandom(0, 3);
 
     // Choose a random operation for the second sub-equation
