@@ -1155,7 +1155,7 @@ int main()
         DWORD lastMoveTime = GetTickCount();
         DWORD lastEnemyMoveTime = GetTickCount();
         DWORD currentTime = GetTickCount();
-        const DWORD enemyMoveDelay = 500;
+        const DWORD enemyMoveDelay = 10000;
         const DWORD moveDelay = 100;
         int newX = 0;
         int newY = 0;

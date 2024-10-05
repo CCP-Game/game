@@ -119,19 +119,12 @@ const char *ASCII_NUMBERS[] = {
     " |______|\n"
     "         \n",
 
-    "         \n"
-    "  ______ \n"
-    " |______|\n"
-    "  ______ \n"
-    " |______|\n"
-    "         \n",
-
     "    __   \n"
     "   / /   \n"
     "   | |   \n"
     "   | |   \n"
     "   | |   \n"
-    "   \\_\\ \n",
+    "    \\_\\ \n",
 
     "    __    \n"
     "   \\ \\  \n"
@@ -139,9 +132,6 @@ const char *ASCII_NUMBERS[] = {
     "    | |   \n"
     "    | |   \n"
     "   /_/    \n",
-
-
-    
 
 };
 
@@ -335,7 +325,6 @@ bool generateComplexEquation()
     int num1_2 = improvedRandom(2, 10);
     char op1;
     int result1;
-    
 
     // Choose a random operation for the first sub-equation
     int randomOp1 = improvedRandom(0, 3);
@@ -347,7 +336,7 @@ bool generateComplexEquation()
         result1 = num1_1 + num1_2;
     }
     else if (randomOp1 == 1)
-    
+
     {
         num1_1 = improvedRandom(2, 100);
         num1_2 = improvedRandom(2, num1_1);
@@ -363,28 +352,49 @@ bool generateComplexEquation()
     }
     else
     { // Division, ensuring no division by zero
-       num1_2 = improvedRandom(2, 15);
-       
-       num1_1 = num1_2 * improvedRandom(2, 15);
-       op1 = '/';
-       result1 = num1_1 / num1_2;
+        num1_2 = improvedRandom(2, 15);
+
+        num1_1 = num1_2 * improvedRandom(2, 15);
+        op1 = '/';
+        result1 = num1_1 / num1_2;
     }
 
     // Generate random numbers for the second sub-equation
-    int num2_1;
-    int num2_2;
-    char op2;
-    int result2;
+    int num2_1=0;
+    int num2_2=0;
+    char op2 = ' ';
+    int result2 = 0;
     int randomFinalOp = improvedRandom(0, 3);
 
     // Choose a random operation for the second sub-equation
     int randomOp2 = improvedRandom(0, 3);
     if (randomOp2 == 0)
     {
-        num2_1 = improvedRandom(2, 100);
-        num2_2 = improvedRandom(2, 100);
+        if (randomFinalOp == 2)
+        {
+
+            result2 = improvedRandom(2, result1);
+            num2_1 = improvedRandom(2, result2);
+            num2_2 = result2 - num2_1;
+        }
+        else if (randomFinalOp >= 3)
+        {
+            result2 = rand() % (result1 - 1) + 1; // Random number from 1 to result1 - 1
+            while (result1 % result2 != 0)
+            {
+                result2 = rand() % (result1 - 1) + 1; // Keep generating until it's a divisor
+            }
+            num2_1 = improvedRandom(2, result2);
+            num2_2 = result2 - num2_1;
+        }
+        else
+        {
+
+            num2_1 = improvedRandom(2, 100);
+            num2_2 = improvedRandom(2, 100);
+        }
+
         op2 = '+';
-        result2 = num2_1 + num2_2;
     }
     else if (randomOp2 == 1)
     {
@@ -403,18 +413,18 @@ bool generateComplexEquation()
         result2 = num2_1 * num2_2;
     }
     else
-    { 
+    {
         num2_2 = improvedRandom(2, 15);
-       
-       num2_1 = num2_2 * improvedRandom(2, 15);
-       op1 = '/';
-       result2 = num2_1 / num2_2;
+
+        num2_1 = num2_2 * improvedRandom(2, 15);
+        op1 = '/';
+        result2 = num2_1 / num2_2;
     }
 
     // Choose a random operation to combine the two sub-equations
     char finalOp;
     int finalResult;
-    
+
     if (randomFinalOp == 0)
     {
         finalOp = '+';
