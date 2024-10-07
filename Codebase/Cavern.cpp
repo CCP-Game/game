@@ -1171,6 +1171,8 @@ int main()
         Room *currentRoom;
         bool resumeGame = false;
         clearScreen();
+        bool isFighting = false;
+
 
         displayCavernAnimation();
         std::cout << getMenuScreen(false) << std::endl;
@@ -1265,27 +1267,29 @@ int main()
                         currentRoom->setCharAt(doorPos.getX(), doorPos.getY(), 'L');
                     }
                 }
-                if (isKeyPressed('W'))
-                {
-                    newY--;
-                    playFootstep();
-                }
-                if (isKeyPressed('S'))
-                {
-                    newY++;
-                    playFootstep();
-                }
+                if(!isFighting){
+                    if (isKeyPressed('W'))
+                    {
+                        newY--;
+                        playFootstep();
+                    }
+                    if (isKeyPressed('S'))
+                    {
+                        newY++;
+                        playFootstep();
+                    }
 
-                if (isKeyPressed('A'))
-                {
-                    newX--;
-                    playFootstep();
-                }
+                    if (isKeyPressed('A'))
+                    {
+                        newX--;
+                        playFootstep();
+                    }
 
-                if (isKeyPressed('D'))
-                {
-                    newX++;
-                    playFootstep();
+                    if (isKeyPressed('D'))
+                    {
+                        newX++;
+                        playFootstep();
+                    }
                 }
 
                 char nextChar = currentRoom->getCharAt(newX, newY);
@@ -1344,6 +1348,7 @@ int main()
                     }
                     else if (touchingEnemy(currentRoom, player))
                     {
+                        isFighting = true;
                         PlaySound(TEXT("danger.wav"), NULL, SND_FILENAME | SND_ASYNC);
                         Enemy *enemy = currentRoom->getEnemyAt(newX, newY);
                         if (enemy)
@@ -1357,6 +1362,8 @@ int main()
                                 // display the room again
                                 printToConsole(currentRoom->getDisplay());
                                 updatePlayerPosition(currentRoom, player, newX, newY);
+                                isFighting = false;
+
                             }
                             else
                             {
@@ -1366,6 +1373,7 @@ int main()
                                  system("cls");        
                             }
                         }
+                        //Sleep(100);
                     }
                     else
                     {
@@ -1373,8 +1381,9 @@ int main()
                     }
 
                     // Move enemies.
-                    if ((currentTime - lastEnemyMoveTime) >= enemyMoveDelay)
+                    if ((currentTime - lastEnemyMoveTime) >= enemyMoveDelay&& !isFighting)
                     {
+                        //This seemed to be where the seg issue was coming from.
                         moveEnemies(currentRoom);
                         lastEnemyMoveTime = GetTickCount();
                     }

@@ -1,4 +1,4 @@
-add_executable(${PROJECT_NAME} Cavern.cpp Pos.cpp Enemy.cpp Player.cpp Room.cpp nums.cpp animations.cpp)
+add_executable(${PROJECT_NAME} Cavern.cpp Pos.cpp Enemy.cpp Player.cpp Room.cpp nums.cpp animations.cpp EventListener.cpp)
 
 enable_testing()
 
