@@ -320,6 +320,7 @@ bool battleScreen(Enemy &enemy, Player &Player)
         displayScene(12, 50, enemyHead);
         
         displayHealthBars(playerHealth, playerStartHealth, enemyHealth, enemyStartHealth, enemyName);
+        encounterType = 5;
 
         if (encounterType == 1)
         {
@@ -340,7 +341,9 @@ bool battleScreen(Enemy &enemy, Player &Player)
         }
         else if (encounterType == 5)
         {
-            int firstChooser = rand() % 2 + 1;
+            //int firstChooser = rand() % 2 + 1;
+
+            int firstChooser = 1;
             
 
             if (firstChooser == 1)

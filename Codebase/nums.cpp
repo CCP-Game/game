@@ -274,14 +274,6 @@ int improvedRandom(int min, int max)
     return dis(gen);
 }
 
-/*!
- * @brief Generates a complex equation, prints it in ASCII art, and checks if the user's answer is correct.
- *
- * The equation is formed by two random sub-equations inside brackets, each using random operations.
- * A random operation is selected to combine these sub-equations, and the result is calculated.
- *
- * @return Returns true if the user's answer is correct, false otherwise.
- */
 bool generateComplexEquation()
 {
     // Generate random numbers for the first sub-equation
@@ -291,34 +283,27 @@ bool generateComplexEquation()
     int result1;
 
     // Choose a random operation for the first sub-equation
-    int randomOp1 = improvedRandom(0, 2);
+    int randomOp1 = improvedRandom(0, 2);  // 0: +, 1: -, 2: *
     if (randomOp1 == 0)
     {
-        num1_1 = improvedRandom(2, 15);
-        num1_2 = improvedRandom(2, 15);
+        num1_1 = improvedRandom(2, 20);
+        num1_2 = improvedRandom(2, 20);
         op1 = '+';
         result1 = num1_1 + num1_2;
     }
     else if (randomOp1 == 1)
     {
-        num1_1 = improvedRandom(2, 15);
-        num1_2 = improvedRandom(2, num1_1); // Ensures positive result
+        num1_1 = improvedRandom(2, 50);
+        num1_2 = improvedRandom(2, num1_1);  // Ensures positive result
         op1 = '-';
         result1 = num1_1 - num1_2;
     }
     else if (randomOp1 == 2)
     {
-        num1_1 = improvedRandom(2, 9);
-        num1_2 = improvedRandom(2, 9);
+        num1_1 = improvedRandom(2, 10);
+        num1_2 = improvedRandom(2, 10);
         op1 = '*';
         result1 = num1_1 * num1_2;
-    }
-    else
-    { 
-        num1_2 = improvedRandom(2, 10);
-        num1_1 = num1_2 * improvedRandom(2, 10); // Ensures clean division
-        op1 = '/';
-        result1 = num1_1 / num1_2;
     }
 
     // Generate random numbers for the second sub-equation
@@ -328,18 +313,18 @@ bool generateComplexEquation()
     int result2 = 0;
 
     // Choose a random operation for the second sub-equation
-    int randomOp2 = improvedRandom(0, 2);
+    int randomOp2 = improvedRandom(0, 2);  // 0: +, 1: -, 2: *
     if (randomOp2 == 0)
     {
-        num2_1 = improvedRandom(2, 15);
-        num2_2 = improvedRandom(2, 15);
+        num2_1 = improvedRandom(2, 20);
+        num2_2 = improvedRandom(2, 20);
         op2 = '+';
         result2 = num2_1 + num2_2;
     }
     else if (randomOp2 == 1)
     {
-        num2_1 = improvedRandom(2, 15);
-        num2_2 = improvedRandom(2, num2_1); // Ensures positive result
+        num2_1 = improvedRandom(2, 50);
+        num2_2 = improvedRandom(2, num2_1);  // Ensures positive result
         op2 = '-';
         result2 = num2_1 - num2_2;
     }
@@ -350,18 +335,11 @@ bool generateComplexEquation()
         op2 = '*';
         result2 = num2_1 * num2_2;
     }
-    else
-    {
-        num2_2 = improvedRandom(2, 10);
-        num2_1 = num2_2 * improvedRandom(2, 10); // Ensures clean division
-        op2 = '/';
-        result2 = num2_1 / num2_2;
-    }
 
-    // Choose a random operation to combine the two sub-equations
+    // Choose a random operation to combine the two sub-equations (NO division here)
     char finalOp;
     int finalResult;
-    int randomFinalOp = improvedRandom(0, 3);
+    int randomFinalOp = improvedRandom(0, 2);  // Only +, -, and * allowed (no division)
 
     if (randomFinalOp == 0)
     {
@@ -377,9 +355,9 @@ bool generateComplexEquation()
         }
         else
         {
-            finalResult = result2 - result1; // Swapping to ensure a positive result
-            std::swap(result1, result2); // Also swap the operands for display
-            std::swap(num1_1, num2_1);  // Ensure the equation looks correct after swapping
+            finalResult = result2 - result1; // Swapping to ensure positive result
+            std::swap(result1, result2);  // Swap operands for correct display
+            std::swap(num1_1, num2_1);
             std::swap(num1_2, num2_2);
         }
     }
@@ -387,26 +365,6 @@ bool generateComplexEquation()
     {
         finalOp = '*';
         finalResult = result1 * result2;
-    }
-    else // Division between two sub-equations
-    { 
-        finalOp = '/';
-        
-        // Ensure clean division by checking if result1 is divisible by result2
-        if (result2 != 0 && result1 % result2 == 0)
-        {
-            finalResult = result1 / result2;
-        }
-        else
-        {
-            // Recalculate result2 to be a divisor of result1
-            result2 = improvedRandom(2, result1); // Ensure result2 is less than or equal to result1
-            while (result1 % result2 != 0) // Keep generating result2 until it's a divisor of result1
-            {
-                result2 = improvedRandom(2, result1);
-            }
-            finalResult = result1 / result2;
-        }
     }
 
     // Print the complex equation
