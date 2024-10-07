@@ -310,11 +310,12 @@ bool battleScreen(Enemy &enemy, Player &Player)
     int enemyHealth = enemy.getHealth();
 
     bool outcome = false;
+    int damager = 1;
     clearScreen();
 
     while (playerHealth > 0 && enemyHealth > 0)
     {
-        int damager = 1;
+        
 
         displayScene(12, 50, enemyHead);
         
@@ -345,7 +346,7 @@ bool battleScreen(Enemy &enemy, Player &Player)
             if (firstChooser == 1)
             {
                outcome = generateComplexEquation();
-               int damager = 2;
+               damager = 4;
             }
             else
             {
@@ -372,7 +373,8 @@ bool battleScreen(Enemy &enemy, Player &Player)
 
         if (outcome)
         {
-            enemyHealth -= (10 * damager);
+            int damage = 10 * damager;
+            enemyHealth -= damage;
             damager = 1;
 
             PlaySound(TEXT("good.wav"), NULL, SND_FILENAME | SND_ASYNC);
@@ -1158,7 +1160,7 @@ int main()
         DWORD lastMoveTime = GetTickCount();
         DWORD lastEnemyMoveTime = GetTickCount();
         DWORD currentTime = GetTickCount();
-        const DWORD enemyMoveDelay = 10000;
+        const DWORD enemyMoveDelay = 10000; //return to 500 after testing
         const DWORD moveDelay = 100;
         int newX = 0;
         int newY = 0;
