@@ -320,7 +320,7 @@ bool battleScreen(Enemy &enemy, Player &Player)
         displayScene(12, 50, enemyHead);
         
         displayHealthBars(playerHealth, playerStartHealth, enemyHealth, enemyStartHealth, enemyName);
-        encounterType = 5;
+        
 
         if (encounterType == 1)
         {
@@ -341,9 +341,9 @@ bool battleScreen(Enemy &enemy, Player &Player)
         }
         else if (encounterType == 5)
         {
-            //int firstChooser = rand() % 2 + 1;
+            int firstChooser = rand() % 2 + 1;
 
-            int firstChooser = 1;
+            //int firstChooser = 1;
             
 
             if (firstChooser == 1)
@@ -1163,7 +1163,7 @@ int main()
         DWORD lastMoveTime = GetTickCount();
         DWORD lastEnemyMoveTime = GetTickCount();
         DWORD currentTime = GetTickCount();
-        const DWORD enemyMoveDelay = 10000; //return to 500 after testing
+        const DWORD enemyMoveDelay = 500; //return to 500 after testing
         const DWORD moveDelay = 100;
         int newX = 0;
         int newY = 0;
