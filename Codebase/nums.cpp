@@ -275,42 +275,6 @@ int improvedRandom(int min, int max)
 }
 
 /*!
- * @brief Helper function to generate a random operation.
- *
- * @return A random character representing an operation ('+', '-', '*', '/').
- */
-char generateRandomOperation()
-{
-    int randomIndex = improvedRandom(0, 3);
-    char operations[] = {'+', '-', '*', '/'};
-    return operations[randomIndex];
-}
-
-/*!
- * @brief Helper function to evaluate an operation between two integers.
- *
- * @param num1 The first number.
- * @param num2 The second number.
- * @param op The operation to perform ('+', '-', '*', '/').
- * @return The result of the operation.
- */
-int evaluate(int num1, int num2, char op)
-{
-    switch (op)
-    {
-    case '+':
-        return num1 + num2;
-    case '-':
-        return num1 - num2;
-    case '*':
-        return num1 * num2;
-    case '/':
-        return num2 != 0 ? num1 / num2 : 0; // Avoid division by zero
-    default:
-        return 0;
-    }
-}
-/*!
  * @brief Generates a complex equation, prints it in ASCII art, and checks if the user's answer is correct.
  *
  * The equation is formed by two random sub-equations inside brackets, each using random operations.
@@ -465,8 +429,8 @@ bool generateComplexEquation()
  */
 bool generateEquation()
 {
-    int num1 = improvedRandom(1, 100); // Generate first number
-    int num2 = improvedRandom(1, 100); // Generate second number
+    int num1 = improvedRandom(1, 50); // Generate first number
+    int num2 = improvedRandom(1, 30); // Generate second number
     int result = num1 + num2;
 
     // Print the equation
@@ -487,8 +451,8 @@ bool generateEquation()
  */
 bool generateSubtractionEquation()
 {
-    int num1 = improvedRandom(1, 100);  // Generate first number
-    int num2 = improvedRandom(1, num1); // Generate second number
+    int num1 = improvedRandom(2, 50);  // Generate first number
+    int num2 = improvedRandom(2, num1); // Generate second number
     int result = num1 - num2;
 
     // Print the equation
@@ -509,7 +473,7 @@ bool generateSubtractionEquation()
  */
 bool generateMultiplicationEquation()
 {
-    int num1 = improvedRandom(1, 10); // Generate first number
+    int num1 = improvedRandom(1, 5); // Generate first number
     int num2 = improvedRandom(1, 15); // Generate second number
     int result = num1 * num2;
 
