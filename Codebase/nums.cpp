@@ -124,10 +124,10 @@ const char *ASCII_NUMBERS[] = {
     "   | |   \n"
     "   | |   \n"
     "   | |   \n"
-    "    \\_\\ \n",
+    "    \\_\\  \n",
 
     "    __    \n"
-    "   \\ \\  \n"
+    "    \\ \\   \n"
     "    | |   \n"
     "    | |   \n"
     "    | |   \n"
@@ -327,103 +327,77 @@ bool generateComplexEquation()
     int result1;
 
     // Choose a random operation for the first sub-equation
-    int randomOp1 = improvedRandom(0, 3);
+    int randomOp1 = improvedRandom(0, 2);
     if (randomOp1 == 0)
     {
-        num1_1 = improvedRandom(2, 100);
-        num1_2 = improvedRandom(2, 100);
+        num1_1 = improvedRandom(2, 20);
+        num1_2 = improvedRandom(2, 20);
         op1 = '+';
         result1 = num1_1 + num1_2;
     }
     else if (randomOp1 == 1)
-
     {
-        num1_1 = improvedRandom(2, 100);
-        num1_2 = improvedRandom(2, num1_1);
+        num1_1 = improvedRandom(2, 50);
+        num1_2 = improvedRandom(2, num1_1); // Ensures positive result
         op1 = '-';
         result1 = num1_1 - num1_2;
     }
     else if (randomOp1 == 2)
     {
-        num1_1 = improvedRandom(2, 15);
-        num1_2 = improvedRandom(2, 15);
+        num1_1 = improvedRandom(2, 10);
+        num1_2 = improvedRandom(2, 10);
         op1 = '*';
         result1 = num1_1 * num1_2;
     }
     else
-    { // Division, ensuring no division by zero
-        num1_2 = improvedRandom(2, 15);
-
-        num1_1 = num1_2 * improvedRandom(2, 15);
+    { 
+        num1_2 = improvedRandom(2, 10);
+        num1_1 = num1_2 * improvedRandom(2, 10); // Ensures clean division
         op1 = '/';
         result1 = num1_1 / num1_2;
     }
 
     // Generate random numbers for the second sub-equation
-    int num2_1=0;
-    int num2_2=0;
+    int num2_1 = 0;
+    int num2_2 = 0;
     char op2 = ' ';
     int result2 = 0;
-    int randomFinalOp = improvedRandom(0, 3);
 
     // Choose a random operation for the second sub-equation
-    int randomOp2 = improvedRandom(0, 3);
+    int randomOp2 = improvedRandom(0, 2);
     if (randomOp2 == 0)
     {
-        if (randomFinalOp == 2)
-        {
-
-            result2 = improvedRandom(2, result1);
-            num2_1 = improvedRandom(2, result2);
-            num2_2 = result2 - num2_1;
-        }
-        else if (randomFinalOp >= 3)
-        {
-            result2 = rand() % (result1 - 1) + 1; // Random number from 1 to result1 - 1
-            while (result1 % result2 != 0)
-            {
-                result2 = rand() % (result1 - 1) + 1; // Keep generating until it's a divisor
-            }
-            num2_1 = improvedRandom(2, result2);
-            num2_2 = result2 - num2_1;
-        }
-        else
-        {
-
-            num2_1 = improvedRandom(2, 100);
-            num2_2 = improvedRandom(2, 100);
-        }
-
+        num2_1 = improvedRandom(2, 20);
+        num2_2 = improvedRandom(2, 20);
         op2 = '+';
+        result2 = num2_1 + num2_2;
     }
     else if (randomOp2 == 1)
     {
-
-        num2_1 = improvedRandom(2, result1);
-        num2_2 = improvedRandom(2, result1);
-        result2 = num2_1 - num2_2;
+        num2_1 = improvedRandom(2, 50);
+        num2_2 = improvedRandom(2, num2_1); // Ensures positive result
         op2 = '-';
         result2 = num2_1 - num2_2;
     }
     else if (randomOp2 == 2)
     {
-        num2_1 = improvedRandom(1, 10);
-        num2_2 = improvedRandom(1, 10);
+        num2_1 = improvedRandom(2, 10);
+        num2_2 = improvedRandom(2, 10);
         op2 = '*';
         result2 = num2_1 * num2_2;
     }
     else
     {
-        num2_2 = improvedRandom(2, 15);
-
-        num2_1 = num2_2 * improvedRandom(2, 15);
-        op1 = '/';
+        num2_2 = improvedRandom(2, 10);
+        num2_1 = num2_2 * improvedRandom(2, 10); // Ensures clean division
+        op2 = '/';
         result2 = num2_1 / num2_2;
     }
 
     // Choose a random operation to combine the two sub-equations
     char finalOp;
     int finalResult;
+    int randomFinalOp = improvedRandom(0, 3);
 
     if (randomFinalOp == 0)
     {
@@ -433,29 +407,47 @@ bool generateComplexEquation()
     else if (randomFinalOp == 1)
     {
         finalOp = '-';
-        finalResult = result1 - result2;
+        if (result1 >= result2)
+        {
+            finalResult = result1 - result2;
+        }
+        else
+        {
+            finalResult = result2 - result1; // Swapping to ensure a positive result
+            std::swap(result1, result2); // Also swap the operands for display
+            std::swap(num1_1, num2_1);  // Ensure the equation looks correct after swapping
+            std::swap(num1_2, num2_2);
+        }
     }
     else if (randomFinalOp == 2)
     {
         finalOp = '*';
         finalResult = result1 * result2;
     }
-    else
-    { // Division, ensuring no division by zero
+    else // Division between two sub-equations
+    { 
         finalOp = '/';
-        if (result2 != 0)
+        
+        // Ensure clean division by checking if result1 is divisible by result2
+        if (result2 != 0 && result1 % result2 == 0)
         {
             finalResult = result1 / result2;
         }
         else
         {
-            finalResult = 0; // Avoid division by zero by setting result to 0
+            // Recalculate result2 to be a divisor of result1
+            result2 = improvedRandom(2, result1); // Ensure result2 is less than or equal to result1
+            while (result1 % result2 != 0) // Keep generating result2 until it's a divisor of result1
+            {
+                result2 = improvedRandom(2, result1);
+            }
+            finalResult = result1 / result2;
         }
     }
 
     // Print the complex equation
-    std::string equation = "(" + std::to_string(num1_1) + " " + op1 + " " + std::to_string(num1_2) + ")" + finalOp +
-                           "(" + std::to_string(num2_1) + " " + op2 + " " + std::to_string(num2_2) + ") =";
+    std::string equation = "(" + std::to_string(num1_1) + " " + op1 + " " + std::to_string(num1_2) + ") " + finalOp +
+                           " (" + std::to_string(num2_1) + " " + op2 + " " + std::to_string(num2_2) + ") = ";
     printNums(equation); // Print the equation in ASCII art
 
     // Get the user's answer and check if it's correct
