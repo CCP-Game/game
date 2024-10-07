@@ -294,22 +294,22 @@ bool generateComplexEquation()
     int randomOp1 = improvedRandom(0, 2);
     if (randomOp1 == 0)
     {
-        num1_1 = improvedRandom(2, 20);
-        num1_2 = improvedRandom(2, 20);
+        num1_1 = improvedRandom(2, 15);
+        num1_2 = improvedRandom(2, 15);
         op1 = '+';
         result1 = num1_1 + num1_2;
     }
     else if (randomOp1 == 1)
     {
-        num1_1 = improvedRandom(2, 50);
+        num1_1 = improvedRandom(2, 15);
         num1_2 = improvedRandom(2, num1_1); // Ensures positive result
         op1 = '-';
         result1 = num1_1 - num1_2;
     }
     else if (randomOp1 == 2)
     {
-        num1_1 = improvedRandom(2, 10);
-        num1_2 = improvedRandom(2, 10);
+        num1_1 = improvedRandom(2, 9);
+        num1_2 = improvedRandom(2, 9);
         op1 = '*';
         result1 = num1_1 * num1_2;
     }
@@ -331,14 +331,14 @@ bool generateComplexEquation()
     int randomOp2 = improvedRandom(0, 2);
     if (randomOp2 == 0)
     {
-        num2_1 = improvedRandom(2, 20);
-        num2_2 = improvedRandom(2, 20);
+        num2_1 = improvedRandom(2, 15);
+        num2_2 = improvedRandom(2, 15);
         op2 = '+';
         result2 = num2_1 + num2_2;
     }
     else if (randomOp2 == 1)
     {
-        num2_1 = improvedRandom(2, 50);
+        num2_1 = improvedRandom(2, 15);
         num2_2 = improvedRandom(2, num2_1); // Ensures positive result
         op2 = '-';
         result2 = num2_1 - num2_2;
@@ -506,22 +506,6 @@ bool generateDivisionEquation()
     int answer = getUserInput();
     return answer == result;
 }
-
-/*!
- * @brief Generates a more complex equation with multiple operations, prints it in ASCII art, and checks if the user's answer is correct.
- *
- * Generates a random sequence of numbers and operations (+, -, *, /), prints the equation in ASCII art,
- * and evaluates the user's input.
- *
- * @return Returns true if the user's answer is correct, false otherwise.
- */
-// bool generateComplexEquation()
-// {
-//     int expressions =
-//     int order = rand() % 4 + 1;
-
-//     if()
-// }
 
 /*!
     @brief runs unittest for the other methods.

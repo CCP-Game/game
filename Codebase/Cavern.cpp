@@ -314,6 +314,7 @@ bool battleScreen(Enemy &enemy, Player &Player)
 
     while (playerHealth > 0 && enemyHealth > 0)
     {
+        int damager = 1;
 
         displayScene(12, 50, enemyHead);
         
@@ -338,12 +339,13 @@ bool battleScreen(Enemy &enemy, Player &Player)
         }
         else if (encounterType == 5)
         {
-            //int firstChooser = rand() % 2 + 1;
-            int firstChooser = 1;
+            int firstChooser = rand() % 2 + 1;
+            
 
             if (firstChooser == 1)
             {
                outcome = generateComplexEquation();
+               int damager = 2;
             }
             else
             {
@@ -370,7 +372,8 @@ bool battleScreen(Enemy &enemy, Player &Player)
 
         if (outcome)
         {
-            enemyHealth -= 10;
+            enemyHealth -= (10 * damager);
+            damager = 1;
 
             PlaySound(TEXT("good.wav"), NULL, SND_FILENAME | SND_ASYNC);
 
