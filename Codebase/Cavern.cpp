@@ -983,12 +983,28 @@ bool fightEnemy(Player &player, Enemy *enemy)
 */
 void updateEnemyPosition(Room *room, Enemy *enemy, int newX, int newY)
 {
-
+    if (room == NULL || enemy == NULL || newX < 1 || newX > 25 || newY < 1 || newY > 13) {
+        std::cerr << "Error: room or enemy is null." << std::endl;
+        return;
+    }
     // Clear the old enemy position in the room matrix
     room->setCharAt(enemy->getX(), enemy->getY(), ' ');
     // Clear the old enemy position on the screen
     setCursorPosition(enemy->getX(), enemy->getY());
-    std::cout << ' ';
+    //Double check this
+    char oldChar = room->getCharAt(enemy->getX(), enemy->getY());
+    if (oldChar == ' ') {
+        std::cout << ' ';  // Clear the old position
+    } else {
+        std::cout << oldChar;  // Restore the character if something else is there
+    }
+    // std::cout << ' ';
+    // if(room->getCharAt(newX, newY) == 'P'){
+    //     std::cerr << "Pos same as player." << std::endl;
+    //     //return;
+    //     print = true;
+    // }
+    
     enemy->setX(newX);
     enemy->setY(newY);
     // Set the new enemy position in the room matrix
@@ -1075,7 +1091,13 @@ Pos *findEnemyNextMove(Room *room, Enemy *enemy)
     while (current->getParent() != nullptr)
     {
         prev = current;
-        current = current->getParent();
+        if (current != nullptr) {
+            current = current->getParent();
+        } else {
+            //std::cerr << "Error: current is null while backtracking." << std::endl;
+            return nullptr;
+        }
+        //current = current->getParent();
     }
 
     // Deallocate remaining memory.
@@ -1099,6 +1121,15 @@ void moveEnemies(Room *room)
     for (auto &enemy : room->getEnemies())
     {
         nextMove = findEnemyNextMove(room, enemy);
+        if (nextMove == nullptr){
+            //std::cerr << "Error: No valid move found for enemy." << std::endl;
+            continue;  // Skip this enemy's movement if no valid move is found
+        }
+        // Ensure nextMove is within bounds before moving the enemy
+        if(nextMove->getX() < 1 || nextMove->getX() > 25 || nextMove->getY() < 1 || nextMove->getY() > 13){
+            std::cerr << "Error: nextMove position out of bounds." << std::endl;
+            continue;
+        }
         updateEnemyPosition(room, enemy, nextMove->getX(), nextMove->getY());
     }
 }
