@@ -274,6 +274,14 @@ int improvedRandom(int min, int max)
     return dis(gen);
 }
 
+/*!
+ * @brief Generates a complex equation, prints it in ASCII art, and checks if the user's answer is correct.
+ *
+ * The equation is formed by two random sub-equations inside brackets, each using random operations.
+ * A random operation is selected to combine these sub-equations, and the result is calculated.
+ *
+ * @return Returns true if the user's answer is correct, false otherwise.
+ */
 bool generateComplexEquation()
 {
     // Generate random numbers for the first sub-equation
@@ -283,7 +291,7 @@ bool generateComplexEquation()
     int result1;
 
     // Choose a random operation for the first sub-equation
-    int randomOp1 = improvedRandom(0, 2);  // 0: +, 1: -, 2: *
+    int randomOp1 = improvedRandom(0, 2); // 0: +, 1: -, 2: *
     if (randomOp1 == 0)
     {
         num1_1 = improvedRandom(2, 20);
@@ -294,7 +302,7 @@ bool generateComplexEquation()
     else if (randomOp1 == 1)
     {
         num1_1 = improvedRandom(2, 50);
-        num1_2 = improvedRandom(2, num1_1);  // Ensures positive result
+        num1_2 = improvedRandom(2, num1_1); // Ensures positive result
         op1 = '-';
         result1 = num1_1 - num1_2;
     }
@@ -313,7 +321,7 @@ bool generateComplexEquation()
     int result2 = 0;
 
     // Choose a random operation for the second sub-equation
-    int randomOp2 = improvedRandom(0, 2);  // 0: +, 1: -, 2: *
+    int randomOp2 = improvedRandom(0, 2); // 0: +, 1: -, 2: *
     if (randomOp2 == 0)
     {
         num2_1 = improvedRandom(2, 20);
@@ -324,7 +332,7 @@ bool generateComplexEquation()
     else if (randomOp2 == 1)
     {
         num2_1 = improvedRandom(2, 50);
-        num2_2 = improvedRandom(2, num2_1);  // Ensures positive result
+        num2_2 = improvedRandom(2, num2_1); // Ensures positive result
         op2 = '-';
         result2 = num2_1 - num2_2;
     }
@@ -339,7 +347,7 @@ bool generateComplexEquation()
     // Choose a random operation to combine the two sub-equations (NO division here)
     char finalOp;
     int finalResult;
-    int randomFinalOp = improvedRandom(0, 2);  // Only +, -, and * allowed (no division)
+    int randomFinalOp = improvedRandom(0, 1); // Only 0 for +, and 1 for -
 
     if (randomFinalOp == 0)
     {
@@ -355,16 +363,11 @@ bool generateComplexEquation()
         }
         else
         {
-            finalResult = result2 - result1; // Swapping to ensure positive result
-            std::swap(result1, result2);  // Swap operands for correct display
+            finalResult = result2 - result1; // Swap operands to ensure non-negative result
+            std::swap(result1, result2);     // Swap operands for correct display
             std::swap(num1_1, num2_1);
             std::swap(num1_2, num2_2);
         }
-    }
-    else if (randomFinalOp == 2)
-    {
-        finalOp = '*';
-        finalResult = result1 * result2;
     }
 
     // Print the complex equation
@@ -409,7 +412,7 @@ bool generateEquation()
  */
 bool generateSubtractionEquation()
 {
-    int num1 = improvedRandom(2, 50);  // Generate first number
+    int num1 = improvedRandom(2, 50);   // Generate first number
     int num2 = improvedRandom(2, num1); // Generate second number
     int result = num1 - num2;
 
@@ -431,7 +434,7 @@ bool generateSubtractionEquation()
  */
 bool generateMultiplicationEquation()
 {
-    int num1 = improvedRandom(1, 5); // Generate first number
+    int num1 = improvedRandom(1, 5);  // Generate first number
     int num2 = improvedRandom(1, 15); // Generate second number
     int result = num1 * num2;
 
