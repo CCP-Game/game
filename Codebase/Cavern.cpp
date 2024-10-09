@@ -614,12 +614,13 @@ Position convertPosToPosition(Pos pos)
 Room *initializeProceduralMap();
 
 bool hasPlacedKey = false;
+int level = 0;
 
 Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerring)
 {
     Room *room = new Room(id, 1, WIDTH, HEIGHT);
-    char roomTypes[] = {'b', 'b', 'b', 'o', 'a', 'x'};
-    char roomType = roomTypes[rand() % 4];
+    char roomTypes[] = {'b', 'b', 'o', 'a', 'x'};
+    char roomType = roomTypes[rand() % 5];
     room->initializeRoom(5, roomType);
     // Set room information with id, isMainPath, isFinalRoom, and isRedHerring
     std::string roomInfo;
@@ -845,6 +846,7 @@ void createRedHerrings(std::unordered_map<Position, Room *, PositionHash> &place
 Room *initializeProceduralMap()
 {
     srand(static_cast<unsigned>(time(0))); // Seed random number generator
+    level++;
 
     hasKey = false;
     hasPlacedKey = false;
@@ -1194,6 +1196,15 @@ void playFootstep()
     // PlaySound(TEXT(stepSoundFile.c_str()), NULL, SND_FILENAME | SND_ASYNC);
 }
 
+// get screen size
+void getScreenSize(int &width, int &height)
+{
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+}
+
 /*!
     @brief This "main" runs our game. It is where the game-loop is located
     @details Method initalizes our game and runs it.
@@ -1203,6 +1214,25 @@ int main()
 {
     try
     {
+        // check the screen size and if not large enough, tell player until screen is large enough
+        int screenWidth = 0;
+        int screenHeight = 0;
+        getScreenSize(screenWidth, screenHeight);
+        if (screenWidth < WIDTH || screenHeight < HEIGHT)
+        {
+            std::cout << "Please resize your console window to at least " << WIDTH << "x" << HEIGHT << " and press any key to continue." << std::endl;
+            _getch();
+            getScreenSize(screenWidth, screenHeight);
+            while (screenWidth < WIDTH || screenHeight < HEIGHT)
+            {
+                std::cout << "Please resize your console window to at least " << WIDTH << "x" << HEIGHT << " and press any key to continue." << std::endl;
+                _getch();
+                getScreenSize(screenWidth, screenHeight);
+            }
+        }
+
+
+
         int score = 0;
         bool gameRunning = true;
         DWORD lastMoveTime = GetTickCount();
@@ -1348,6 +1378,7 @@ int main()
                         currentRoom->removePlayer();
                         Room *tempRoom = currentRoom->getRoom(newX, newY);
 
+
                         if (tempRoom)
                         {
                             currentRoom = tempRoom;
@@ -1458,7 +1489,7 @@ int main()
                 resetColour();
                 std::cout << "] " << player.getHealth() << "/" << 100 << std::string(50, ' ') << "\n";
                 std::cout << "Score: " << score << " | Press M for the menu " << std::string(50, ' ') << "\n";
-                std::cout << "Room: " << currentRoom->getID() << std::string(50, ' ') << "\n";
+                std::cout << "Room: " << currentRoom->getID() << " | Level: " << currentRoom->getLevel() << std::string(50, ' ') << "\n";
                 std::cout << "Has Key: " << (hasKey ? "Yes" : "No") << std::string(50, ' ') << "\n";
             }
 
