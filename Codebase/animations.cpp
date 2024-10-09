@@ -115,7 +115,7 @@ void displayCavernAnimation()
         return;
     }
     //this possible /0 error needs dealing with...
-    int totalDuration = 2000; // 2 seconds in milliseconds
+    int totalDuration = 1000; // 2 seconds in milliseconds
     int delay = totalDuration / maxLength; // Delay based on the longest line
 
     for (int step = 0; step <= maxLength; ++step) {

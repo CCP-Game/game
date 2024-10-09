@@ -71,9 +71,9 @@ bool isKeyPressed(int key)
 */
 void clearScreen()
 {
-    // system("cls");  
-    system("cls");       // On Unix/Linux/OSX use "clear" instead of "cls"
-}   
+    // system("cls");
+    system("cls"); // On Unix/Linux/OSX use "clear" instead of "cls"
+}
 /*!
     @brief Method acts as a delay of given miliseconds.
     @details Method runs a while loop for a given number of miliseconds delaying the code.
@@ -146,7 +146,7 @@ void animateEncounter(char enemyHead)
     { // 7 is the total width of the player character
         clearScreen();
         displayScene(playerPosition, enemyPosition, enemyHead);
-        delay(200); // Adjust speed here
+        delay(100); // Adjust speed here
         playerPosition++;
     }
 
@@ -315,12 +315,10 @@ bool battleScreen(Enemy &enemy, Player &Player)
 
     while (playerHealth > 0 && enemyHealth > 0)
     {
-        
 
         displayScene(12, 50, enemyHead);
-        
+
         displayHealthBars(playerHealth, playerStartHealth, enemyHealth, enemyStartHealth, enemyName);
-        
 
         if (encounterType == 1)
         {
@@ -343,13 +341,12 @@ bool battleScreen(Enemy &enemy, Player &Player)
         {
             int firstChooser = rand() % 2 + 1;
 
-            //int firstChooser = 1;
-            
+            // int firstChooser = 1;
 
             if (firstChooser == 1)
             {
-               outcome = generateComplexEquation();
-               damager = 4;
+                outcome = generateComplexEquation();
+                damager = 4;
             }
             else
             {
@@ -621,7 +618,9 @@ bool hasPlacedKey = false;
 Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerring)
 {
     Room *room = new Room(id, 1, WIDTH, HEIGHT);
-    room->initializeRoom(5, 'b'); // Always create big rooms
+    char roomTypes[] = {'b', 'b', 'b', 'o', 'a', 'x'};
+    char roomType = roomTypes[rand() % 4];
+    room->initializeRoom(5, roomType);
     // Set room information with id, isMainPath, isFinalRoom, and isRedHerring
     std::string roomInfo;
     // list of good adjectives
@@ -683,6 +682,9 @@ Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerr
         // if new room is final room, add boss enemy ('B')
         Enemy *boss = new Enemy('B', 100);
         room->setEnemy(Pos(WIDTH / 2, HEIGHT - 5), boss);
+
+        Pos doorPos = Pos(WIDTH / 2, HEIGHT / 2);
+        room->setCharAt(doorPos.getX(), doorPos.getY(), 'L');
     }
     else
     {
@@ -695,23 +697,25 @@ Room *createRandomRoom(int id, bool isMainPath, bool isFinalRoom, bool isRedHerr
 // Function to scatter enemies randomly in the room
 void scatterEnemies(Room *room)
 {
-    
 
     Enemy *enemies[] = {
-        new Enemy('+', 20), new Enemy('+', 30), new Enemy('+', 50),
-        new Enemy('*', 20), new Enemy('*', 30), new Enemy('*', 50),
-        new Enemy('/', 20), new Enemy('/', 30), new Enemy('/', 50)};
+        new Enemy('+', 10), new Enemy('+', 20), new Enemy('+', 30),
+        new Enemy('*', 10), new Enemy('*', 20), new Enemy('*', 30),
+        new Enemy('/', 10), new Enemy('/', 20), new Enemy('/', 30)};
     int numEnemies = rand() % 3 + 1; // 1 to 3 enemies
 
-//New for plus room
-    if (room->getType() == 'x'){
+    // New for plus room
+    if (room->getType() == 'x')
+    {
         for (int i = 0; i < numEnemies; i++)
         {
-        int xPos = rand() % (WIDTH - 14) + 7;  // Generate random x position within the inner ring
-        int yPos = rand() % (HEIGHT - 10) + 5; // Generate random y position within the inner ring
-        room->setEnemy(Pos(xPos, yPos), enemies[rand() % 9]);
+            int xPos = rand() % (WIDTH - 14) + 7;  // Generate random x position within the inner ring
+            int yPos = rand() % (HEIGHT - 10) + 5; // Generate random y position within the inner ring
+            room->setEnemy(Pos(xPos, yPos), enemies[rand() % 9]);
         }
-    }else{
+    }
+    else
+    {
         for (int i = 0; i < numEnemies; i++)
         {
             int xPos = rand() % (WIDTH - 2) + 1;  // Generate random x position within the inner ring
@@ -865,7 +869,7 @@ Room *initializeProceduralMap()
 
 void printToConsole(char **display)
 {
-     system("cls");           // Clear the console
+    system("cls");           // Clear the console
     setCursorPosition(0, 0); // Sets the cursor position..
     for (int y = 0; y < HEIGHT; y++)
     {
@@ -960,7 +964,7 @@ int generateMathProblem()
 bool fightEnemy(Player &player, Enemy *enemy)
 {
 
-     system("cls");        
+    system("cls");
 
     clearInputBuffer();
 
@@ -996,80 +1000,90 @@ void updateEnemyPosition(Room *room, Enemy *enemy, int newX, int newY)
     std::cout << enemy->getSkin();
     resetColour();
 }
-/*! 
-* @brief This is a customer comaprator class for our A* search.
-*/
-struct compare{
-  public:
-  bool operator()(Pos* a, Pos* b){
-    return a->getDistance() > b->getDistance();
-  }  
+/*!
+ * @brief This is a customer comaprator class for our A* search.
+ */
+struct compare
+{
+public:
+    bool operator()(Pos *a, Pos *b)
+    {
+        return a->getDistance() > b->getDistance();
+    }
 };
 /*!
-* @brief calculates the Euclidean distance between two pos's
-* @param enemypos - the enemies positiom
-* @param playerpos - the players position
-*/
-double getEuclideanDist(Pos enemyPos, Pos playerpos){
-    return std::sqrt(std::pow(playerpos.getX()- enemyPos.getX(), 2) + std::pow(playerpos.getY() - enemyPos.getY(), 2));
+ * @brief calculates the Euclidean distance between two pos's
+ * @param enemypos - the enemies positiom
+ * @param playerpos - the players position
+ */
+double getEuclideanDist(Pos enemyPos, Pos playerpos)
+{
+    return std::sqrt(std::pow(playerpos.getX() - enemyPos.getX(), 2) + std::pow(playerpos.getY() - enemyPos.getY(), 2));
 }
 /*!
-* @brief Method finds the next best *valid* move for our enemy implementing an A* search.
-* @param room - the current room
-* @param playerpos - players current pos
-* @param enemypos - enemies current position.
-*/
-Pos* findEnemyNextMove(Room* room,Enemy* enemy){
-    //Setup to get neighbours
+ * @brief Method finds the next best *valid* move for our enemy implementing an A* search.
+ * @param room - the current room
+ * @param playerpos - players current pos
+ * @param enemypos - enemies current position.
+ */
+Pos *findEnemyNextMove(Room *room, Enemy *enemy)
+{
+    // Setup to get neighbours
     Pos enemypos = enemy->getPos();
     Pos playerpos = room->getPlayerPos();
     std::vector<std::vector<int>> pairs = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {0, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
-    std::priority_queue<Pos*, std::vector<Pos*>, compare> pq;
-    std::set<std::pair<int,int>> seen;
+    std::priority_queue<Pos *, std::vector<Pos *>, compare> pq;
+    std::set<std::pair<int, int>> seen;
     boolean endstate = false;
-    int tempx =0, tempy=0;
-    Pos * current = new Pos(enemypos.getX(),enemypos.getY(), getEuclideanDist(enemypos.getPos(),playerpos.getPos()));
+    int tempx = 0, tempy = 0;
+    Pos *current = new Pos(enemypos.getX(), enemypos.getY(), getEuclideanDist(enemypos.getPos(), playerpos.getPos()));
     current->setParent(nullptr);
-    //Add the first node to the pq
+    // Add the first node to the pq
     pq.push(current);
-    while(pq.empty() == false && endstate == false){
-        //Get the highest entry
+    while (pq.empty() == false && endstate == false)
+    {
+        // Get the highest entry
         current = pq.top();
         pq.pop();
-        
-        //Check whether we've found the players pos.
-        if(current->getX() == playerpos.getX() && current->getY() == playerpos.getY()){
+
+        // Check whether we've found the players pos.
+        if (current->getX() == playerpos.getX() && current->getY() == playerpos.getY())
+        {
             endstate = true;
-        //Add new nodes to the pq
-        }else{
-            //Create and add all valid nodes.
-            for(int i =0; i < pairs.size(); i++){
+            // Add new nodes to the pq
+        }
+        else
+        {
+            // Create and add all valid nodes.
+            for (int i = 0; i < pairs.size(); i++)
+            {
                 tempx = current->getX() + pairs[i][0];
                 tempy = current->getY() + pairs[i][1];
-                //Crucial checks. Seeing whether this is a valid move for our enemy agent.
-                if(room->validMove(tempx, tempy) == true && room->getEnemyAt(tempx,tempy) == NULL && room->getCharAt(tempx, tempy) != 'D' && room->getCharAt(tempx,tempy)!='K' && seen.find({tempx,tempy})==seen.end()){
-                    Pos * nextMove = new Pos(tempx,tempy,getEuclideanDist(current->getPos(),playerpos.getPos())+current->getDistance());
+                // Crucial checks. Seeing whether this is a valid move for our enemy agent.
+                if (room->validMove(tempx, tempy) == true && room->getEnemyAt(tempx, tempy) == NULL && room->getCharAt(tempx, tempy) != 'D' && room->getCharAt(tempx, tempy) != 'K' && seen.find({tempx, tempy}) == seen.end())
+                {
+                    Pos *nextMove = new Pos(tempx, tempy, getEuclideanDist(current->getPos(), playerpos.getPos()) + current->getDistance());
                     nextMove->setParent(current);
-                    seen.insert({tempx,tempy});
+                    seen.insert({tempx, tempy});
                     pq.push(nextMove);
                 }
             }
-          
         }
-        
     }
-    //Get the next best move. (Backtracking)
-    Pos* prev = NULL;
-    while(current->getParent() != nullptr){
+    // Get the next best move. (Backtracking)
+    Pos *prev = NULL;
+    while (current->getParent() != nullptr)
+    {
         prev = current;
         current = current->getParent();
     }
-    
-    //Deallocate remaining memory.
-    while (!pq.empty()) {
-    Pos* nodeToDelete = pq.top();
-    pq.pop();
-    delete nodeToDelete; // Deallocate memory for nodes in the priority queue
+
+    // Deallocate remaining memory.
+    while (!pq.empty())
+    {
+        Pos *nodeToDelete = pq.top();
+        pq.pop();
+        delete nodeToDelete; // Deallocate memory for nodes in the priority queue
     }
     return prev;
 }
@@ -1080,13 +1094,13 @@ Pos* findEnemyNextMove(Room* room,Enemy* enemy){
 */
 void moveEnemies(Room *room)
 {
-    Pos* nextMove = NULL;
+    Pos *nextMove = NULL;
     bool validmove = true;
     for (auto &enemy : room->getEnemies())
     {
-        nextMove = findEnemyNextMove(room,enemy); 
-        updateEnemyPosition(room, enemy,nextMove->getX(), nextMove->getY());
-    }       
+        nextMove = findEnemyNextMove(room, enemy);
+        updateEnemyPosition(room, enemy, nextMove->getX(), nextMove->getY());
+    }
 }
 
 /*!
@@ -1163,7 +1177,7 @@ int main()
         DWORD lastMoveTime = GetTickCount();
         DWORD lastEnemyMoveTime = GetTickCount();
         DWORD currentTime = GetTickCount();
-        const DWORD enemyMoveDelay = 500; //return to 500 after testing
+        const DWORD enemyMoveDelay = 600; // return to 500 after testing
         const DWORD moveDelay = 100;
         int newX = 0;
         int newY = 0;
@@ -1172,7 +1186,6 @@ int main()
         bool resumeGame = false;
         clearScreen();
         bool isFighting = false;
-
 
         displayCavernAnimation();
         std::cout << getMenuScreen(false) << std::endl;
@@ -1191,15 +1204,15 @@ int main()
             }
             if (isKeyPressed('Q'))
             {
-                 system("cls");        
+                system("cls");
                 return (0);
             }
         }
         Player player('P', 100);
         player.setPosition(WIDTH / 2, HEIGHT / 2);
         currentRoom->setCharAt(player.getPos().getX(), player.getPos().getY(), player.getSkin());
-    //he
-        // Initial full screen draw
+        // he
+        //  Initial full screen draw
         printToConsole(currentRoom->getDisplay());
         hideCursor();
         // Game
@@ -1214,7 +1227,7 @@ int main()
                 // Below, logic for when the menu button is pressed.
                 if (isKeyPressed('M'))
                 {
-                     system("cls");        
+                    system("cls");
                     std::cout << getMenuScreen(true) << std::endl;
                     // Loop for whilst we're in the menu.
                     while (resumeGame == false)
@@ -1228,7 +1241,7 @@ int main()
                             }
                             if (isKeyPressed('Q'))
                             {
-                                 system("cls");        
+                                system("cls");
                                 return (0);
                             }
                             if (isKeyPressed('S'))
@@ -1260,14 +1273,15 @@ int main()
                     }
                     resumeGame = false;
                     printToConsole(currentRoom->getDisplay());
-                    // if final room and hasKey is false, set the center door to be locked 'L'
-                    if (currentRoom->getFinal() && !hasKey)
-                    {
-                        Pos doorPos = Pos(WIDTH / 2, HEIGHT / 2);
-                        currentRoom->setCharAt(doorPos.getX(), doorPos.getY(), 'L');
-                    }
                 }
-                if(!isFighting){
+                // if final room and hasKey is false, set the center door to be locked 'L'
+                if (currentRoom->getFinal() && !hasKey)
+                {
+                    Pos doorPos = Pos(WIDTH / 2, HEIGHT / 2);
+                    currentRoom->setCharAt(doorPos.getX(), doorPos.getY(), 'L');
+                }
+                if (!isFighting)
+                {
                     if (isKeyPressed('W'))
                     {
                         newY--;
@@ -1312,10 +1326,12 @@ int main()
                             updatePlayerPosition(currentRoom, player, newPos.getX(), newPos.getY());
                             // Full redraw when changing rooms
                             printToConsole(currentRoom->getDisplay());
-                            if (currentRoom->getFinal() && !hasKey)
+                            if (currentRoom->getFinal() && hasKey)
                             {
                                 Pos doorPos = Pos(WIDTH / 2, HEIGHT / 2);
-                                currentRoom->setCharAt(doorPos.getX(), doorPos.getY(), 'L');
+                                currentRoom->setCharAt(doorPos.getX(), doorPos.getY(), 'D');
+                                tempRoom->setCharAt(doorPos.getX(), doorPos.getY(), 'D');
+                                printToConsole(currentRoom->getDisplay());
                             }
                         }
                         else
@@ -1363,17 +1379,16 @@ int main()
                                 printToConsole(currentRoom->getDisplay());
                                 updatePlayerPosition(currentRoom, player, newX, newY);
                                 isFighting = false;
-
                             }
                             else
                             {
                                 PlaySound(TEXT("encounter.wav"), NULL, SND_FILENAME | SND_ASYNC);
                                 gameRunning = false;
                                 displayGameOverAnimation();
-                                 system("cls");        
+                                system("cls");
                             }
                         }
-                        //Sleep(100);
+                        // Sleep(100);
                     }
                     else
                     {
@@ -1381,9 +1396,9 @@ int main()
                     }
 
                     // Move enemies.
-                    if ((currentTime - lastEnemyMoveTime) >= enemyMoveDelay&& !isFighting)
+                    if ((currentTime - lastEnemyMoveTime) >= enemyMoveDelay && !isFighting)
                     {
-                        //This seemed to be where the seg issue was coming from.
+                        // This seemed to be where the seg issue was coming from.
                         moveEnemies(currentRoom);
                         lastEnemyMoveTime = GetTickCount();
                     }

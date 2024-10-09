@@ -136,6 +136,8 @@
     "ranges": "cpp",
     "span": "cpp",
     "stack": "cpp",
-    "xstddef": "cpp"
+    "xstddef": "cpp",
+    "queue": "cpp",
+    "set": "cpp"
   }
 }

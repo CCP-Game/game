@@ -143,6 +143,41 @@ void Room::initializeRoom(int NUM_COINS, char type)
         minY = 1;
         maxY = HEIGHT - 2;
     }
+    else if (type == 'o') // Room with indented corners (slight plus symbol)
+    {
+        // Set horizontal walls with indented corners
+        for (int x = 2; x < WIDTH - 2; x++)
+        {
+            setCharAt(x, 0, '#'); // Top wall
+            setCharAt(x, HEIGHT - 1, '#'); // Bottom wall
+        }
+        // Set vertical walls with indented corners
+        for (int y = 2; y < HEIGHT - 2; y++)
+        {
+            setCharAt(0, y, '#'); // Left wall
+            setCharAt(WIDTH - 1, y, '#'); // Right wall
+        }
+        // Indented corners
+        setCharAt(2, 1, '#'); // Top-left corner
+        setCharAt(2, 2, '#'); // Top-left corner
+        setCharAt(1, 2, '#'); // Top-left corner
+        setCharAt(WIDTH - 3, 1, '#'); // Top-right corner
+        setCharAt(WIDTH - 3, 2, '#'); // Top-right corner
+        setCharAt(WIDTH - 2, 2, '#'); // Top-right corner
+        setCharAt(2, HEIGHT - 3, '#'); // Bottom-left corner
+        setCharAt(2, HEIGHT - 2, '#'); // Bottom-left corner
+        setCharAt(1, HEIGHT - 3, '#'); // Bottom-left corner
+        setCharAt(WIDTH - 3, HEIGHT - 3, '#'); // Bottom-right corner
+        setCharAt(WIDTH - 3, HEIGHT - 2, '#'); // Bottom-right corner
+        setCharAt(WIDTH - 2, HEIGHT - 3, '#'); // Bottom-right corner
+    
+
+
+        minX = 3;
+        maxX = WIDTH - 3;
+        minY = 3;
+        maxY = HEIGHT - 3;
+    }
     else if (type == 'h') // Horizontal Hallway
     {
         int hallwayHeight = 5; // Set the height of the hallway
@@ -192,8 +227,8 @@ void Room::initializeRoom(int NUM_COINS, char type)
         maxX = startX + hallwayWidth - 2;
         minY = 1;
         maxY = HEIGHT - 2;
-    } else if(type == 'x'){
-        int passageWidth = 5;
+    } else if(type == 'x' || type == 'a'){
+        int passageWidth = type == 'x' ? 5 : 9;
         int centerX = WIDTH / 2;
         int centerY = HEIGHT / 2;
         
