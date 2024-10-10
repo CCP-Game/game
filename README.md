@@ -67,7 +67,8 @@ ctest --test-dir build -C Debug
 
 ### App Mock-Up
 
-![cavernmockup](https://github.com/user-attachments/assets/579d6424-0444-4193-9e68-f3a5212e35da)
+![cavernmockupsmaller](https://github.com/user-attachments/assets/28d6af66-1f83-46fd-ad13-96c47591836c)
+
 
 
 
