@@ -1399,6 +1399,7 @@ int main()
                         else
                         {
                             tempRoom = initializeProceduralMap();
+                            level++;
                             currentRoom = tempRoom;
                             // Calculate the new position in the next room
                             Pos newPos = getDoorsOpposite(Pos(newX, newY));
