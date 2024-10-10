@@ -706,7 +706,7 @@ void scatterEnemies(Room *room)
     int numEnemies = rand() % 3 + 1; // 1 to 3 enemies
 
     // New for plus room
-    if (room->getType() == 'x')
+    if (room->getType() == 'x' || room->getType() == 'a')
     {
         for (int i = 0; i < numEnemies; i++)
         {
