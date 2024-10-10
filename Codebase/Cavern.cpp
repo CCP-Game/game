@@ -1177,7 +1177,8 @@ std::string getMenuScreen(bool ingame)
         "       Press \"T\" to play the tutorial                           \n"
         "                                                                  \n"
         "       Press \"Q\" to quit CAVERN                                 \n"
-        "                                                                  \n";
+        "                                                                  \n"
+        "       Watch a walkthrough: https://youtu.be/kwdCK5yj-_c          \n";
     if (ingame == true)
     {
         return menuScreenInGame;
