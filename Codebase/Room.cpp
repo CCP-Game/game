@@ -42,6 +42,7 @@ Room::~Room()
 Room::Room(int id, int depth, int width, int height)
     : id(id), depth(depth), width(width), height(height)
 {
+    isFinal = false;
     // Initialize grid
     grid = new char *[height];
     for (int i = 0; i < height; ++i)

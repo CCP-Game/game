@@ -846,7 +846,6 @@ void createRedHerrings(std::unordered_map<Position, Room *, PositionHash> &place
 Room *initializeProceduralMap()
 {
     srand(static_cast<unsigned>(time(0))); // Seed random number generator
-    level++;
 
     hasKey = false;
     hasPlacedKey = false;
@@ -1490,7 +1489,7 @@ int main()
                 resetColour();
                 std::cout << "] " << player.getHealth() << "/" << 100 << std::string(50, ' ') << "\n";
                 std::cout << "Score: " << score << " | Press M for the menu " << std::string(50, ' ') << "\n";
-                std::cout << "Room: " << currentRoom->getID() << " | Level: " << currentRoom->getLevel() << std::string(50, ' ') << "\n";
+                std::cout << "Room: " << currentRoom->getID() << " | Level: " << level << std::string(50, ' ') << "\n";
                 std::cout << "Has Key: " << (hasKey ? "Yes" : "No") << std::string(50, ' ') << "\n";
             }
 
