@@ -65,4 +65,9 @@ ctest --test-dir build -C Debug
 
 [Questionaire](https://forms.gle/B84qPpR3fpZdZRZF9)
 
+### App Mock-Up
+
+![cavernmockup](https://github.com/user-attachments/assets/579d6424-0444-4193-9e68-f3a5212e35da)
+
+
 
