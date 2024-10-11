@@ -73,4 +73,7 @@ ctest --test-dir build -C Debug
 
 https://github.com/CCP-Game/game/blob/main/Feedback.pdf 
 
+### Video Tutorial
+[https://youtu.be/kwdCK5yj-_c](https://www.youtube.com/watch?v=kwdCK5yj-_c)
+
 
