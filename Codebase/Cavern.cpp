@@ -1152,9 +1152,9 @@ std::string getMenuScreen(bool ingame)
         "      | (____/\\| )   ( |  \\   /  | (____/\\| ) \\ \\__| )  \\  |\n"
         "      (_______/|/     \\|   \\_/   (_______/|/   \\__/|/    )_)   \n"
         "                                                                  \n"
-        "       Press \"R\" to continue current game                        \n"
+        "       Press \"C\" to continue current game                        \n"
         "                                                                  \n"
-        "       Press \"S\" to restart CAVERN                              \n"
+        "       Press \"R\" to restart CAVERN                              \n"
         "                                                                  \n"
         "       Press \"T\" to play the tutorial                           \n"
         "                                                                  \n"
@@ -1291,12 +1291,13 @@ int main()
                     system("cls");
                     std::cout << getMenuScreen(true) << std::endl;
                     // Loop for whilst we're in the menu.
+                    resumeGame = false;
                     while (resumeGame == false)
                     {
                         DWORD currentTime = GetTickCount();
                         if (currentTime - lastMoveTime >= (DWORD)500)
                         {
-                            if (isKeyPressed('R'))
+                            if (isKeyPressed('C'))
                             {
                                 resumeGame = true;
                             }
@@ -1305,7 +1306,7 @@ int main()
                                 system("cls");
                                 return (0);
                             }
-                            if (isKeyPressed('S'))
+                            if (isKeyPressed('R'))
                             {
                                 Room *tempRoom = initializeProceduralMap();
                                 currentRoom = tempRoom;
@@ -1332,7 +1333,7 @@ int main()
                         }
                         DWORD lastMoveTime = currentTime;
                     }
-                    resumeGame = false;
+                    
                     printToConsole(currentRoom->getDisplay());
                 }
                 // if final room and hasKey is false, set the center door to be locked 'L'
